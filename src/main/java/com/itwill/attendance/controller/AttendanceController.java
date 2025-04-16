@@ -3,9 +3,13 @@ package com.itwill.attendance.controller;
 import com.itwill.attendance.dto.*;
 import com.itwill.attendance.service.AttendanceService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/attendance")
@@ -142,4 +146,17 @@ public class AttendanceController {
             @RequestParam String endDate) {
         return attendanceService.getAttendanceSummaryForAdmin(startDate, endDate);
     }
+    
+    @PostMapping("/attendance")
+    public ResponseEntity<?> registerAttendance(@Valid @RequestBody AttendanceDTO dto, BindingResult bindingResult) {
+    	if (bindingResult.hasErrors()) {
+    	// 에러 메시지들을 모아서 응답으로 반환
+    	String errorMessage = bindingResult.getAllErrors().stream()
+    	.map(ObjectError::getDefaultMessage)
+    	.collect(Collectors.joining(", "));
+    	return ResponseEntity.badRequest().body("입력 오류: " + errorMessage);
+    	}
+    	attendanceService.registerAttendance(dto);
+    	return ResponseEntity.ok("출근 등록 완료");
+    	}
 }

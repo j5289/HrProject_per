@@ -2,7 +2,6 @@ package com.itwill.attendance.dto;
 
 import lombok.Builder;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 
 @Data
@@ -62,4 +61,18 @@ public class AttendanceDTO {
 
     // 기록 수정 시간
     private LocalDateTime updatedTime;
+    
+    @NotNull(message = "사원번호는 필수입니다.")
+    private String employeeId;
+    
+    @NotNull(message = "근태 날짜는 필수입니다.")
+    private LocalDate attendanceDate;
+    
+    @NotBlank(message = "근무 상태는 필수입니다.")
+    private String status;
+    
+    private LocalDateTime arrivalTime;
+    private LocalDateTime leavetime;
+    private String remark;
+    
 }

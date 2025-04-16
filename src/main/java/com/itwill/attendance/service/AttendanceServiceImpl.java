@@ -72,4 +72,19 @@ public class AttendanceServiceImpl implements AttendanceService {
     public List<AttendanceWarningDTO> getAttendanceSummaryForAdmin(String startDate, String endDate) {
         return attendanceMapper.getAttendanceSummaryForAdmin(startDate, endDate);
     }
+    
+//    @Override
+//    public void registerAttendance(AttendanceDTO dto) {
+//    // 예시 로직: 현재 시간으로 출근 기록 생성
+//    Attendance attendance = Attendance.builder()
+//    .attendanceId(dto.getEmployeeId() + "_" + dto.getAttendanceDate()) // 예시
+//    .employeeId(dto.getEmployeeId())
+//    .attendanceDate(dto.getAttendanceDate())
+//    .arrivalTime(LocalDateTime.now())
+//    .status(dto.getStatus())
+//    .build();
+//
+//    attendanceMapper.insertAttendance(attendance);
+//
+//    }
 }

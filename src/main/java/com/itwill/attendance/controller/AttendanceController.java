@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+import org.springframework.validation.BindingResult;
+
+
 @RestController
 @RequestMapping("/attendance")
 @RequiredArgsConstructor

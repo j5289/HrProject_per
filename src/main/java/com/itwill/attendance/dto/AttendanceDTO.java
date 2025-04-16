@@ -62,7 +62,7 @@ public class AttendanceDTO {
     // 기록 수정 시간
     private LocalDateTime updatedTime;
     
-    @NotNull(message = "사원번호는 필수입니다.")
+    @NotNull(message = "사원id는 필수입니다.")
     private String employeeId;
     
     @NotNull(message = "근태 날짜는 필수입니다.")

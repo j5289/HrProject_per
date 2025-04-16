@@ -41,4 +41,6 @@ public interface AttendanceService {
 
     // [12] 관리자용 근태 종합 조회
     List<AttendanceWarningDTO> getAttendanceSummaryForAdmin(String startDate, String endDate);
+
+    void registerAttendance(AttendanceDTO dto);
 }

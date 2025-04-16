@@ -299,11 +299,20 @@
 	</select>
 
 	<select id="selectApprovalResults" parameterType="string"
-		resultType="com.itwill.approval.dto.ApprovalAppDTO">
-		SELECT *
-		FROM APPROVAL_APP
-		WHERE approval_document_id =
-		#{approvalDocumentId}
+        resultType="com.itwill.approval.dto.ApprovalAppDTO">
+	    SELECT 
+	        aa.approval_id,
+	        aa.approval_document_id,
+	        aa.approver_id,
+	        aa.approval_order,
+	        aa.approval_status,
+	        aa.approval_date,
+	        aa.approval_comment AS comment,
+	        e.emp_name AS empName
+	    FROM APPROVAL_APP aa
+	    JOIN EMPLOYEE e ON aa.approver_id = e.emp_id
+	    WHERE aa.approval_document_id = #{documentId}
+	    ORDER BY aa.approval_order
 	</select>
 
 	<select id="selectEmployeeInfo" parameterType="string"
@@ -387,6 +396,7 @@
 		referenceTableName,
 		reference_id AS referenceId,
 		requester,
+		request_date,
 		attachment_count AS attachmentCount,
 		request_comment AS requestComment,
 		register
@@ -558,5 +568,69 @@
 	  WHERE approval_document_id = #{documentId}
 	    AND approver_id = #{approverId}
 	</select>
-
+	
+	<!-- 결재 문서 ID 기준 결재자 코멘트 목록 -->
+	<select id="selectApprovalComments" parameterType="string"
+		resultType="com.itwill.approval.dto.ApprovalAppDTO">
+		SELECT approval_id, approval_document_id, approver_id,
+		approval_status, approval_comment AS comment
+		FROM APPROVAL_APP
+		WHERE approval_document_id = #{documentId}
+	</select>
+	
+	<select id="selectMyDocuments" parameterType="string" resultMap="PendingApprovalResultMap">
+	    SELECT
+	        ar.approval_document_id,
+	        ar.document_title,
+	        ar.request_date,
+	        ar.requester,
+	        e.emp_name AS requester_name,
+	        d.dep_name AS requester_dept,
+	        e.pos_id AS requester_position,
+	        al.approval_order,
+	        al.approval_line_id,
+	        al.approver_id,
+	        al.approver_role,
+	        al.approval_status
+	    FROM APPROVAL_REQ ar
+	    JOIN APPROVAL_LINE al ON ar.approval_document_id = al.approval_document_id
+	    JOIN EMPLOYEE e ON ar.requester = e.emp_id
+	    JOIN DEPARTMENT d ON CAST(e.dep_id AS UNSIGNED) = d.dep_id
+	    WHERE ar.requester = #{requesterId}
+	    ORDER BY ar.request_date DESC
+	</select>
+	
+	<select id="selectRequestedApprovals" parameterType="string" resultMap="PendingApprovalResultMap">
+	  SELECT 
+	    ar.approval_document_id,
+	    ar.document_title,
+	    ar.request_date,
+	    ar.requester,
+	    e.emp_name AS requester_name,
+	    d.dep_name AS requester_dept,
+	    e.pos_id AS requester_position,
+	    al.approval_order,
+	    al.approval_line_id,
+	    al.approver_id,
+	    al.approver_role,
+	    (
+	      SELECT aa2.approval_status 
+	      FROM APPROVAL_APP aa2 
+	      WHERE aa2.approval_document_id = ar.approval_document_id 
+	      ORDER BY aa2.approval_order DESC 
+	      LIMIT 1
+	    ) AS approval_status
+	  FROM APPROVAL_REQ ar
+	  JOIN EMPLOYEE e ON ar.requester = e.emp_id
+	  JOIN DEPARTMENT d ON CAST(e.dep_id AS UNSIGNED) = d.dep_id
+	  JOIN (
+	    SELECT approval_document_id, MIN(approval_order) AS first_order
+	    FROM APPROVAL_LINE
+	    GROUP BY approval_document_id
+	  ) AS min_line ON ar.approval_document_id = min_line.approval_document_id
+	  JOIN APPROVAL_LINE al ON ar.approval_document_id = al.approval_document_id AND al.approval_order = min_line.first_order
+	  WHERE ar.requester = #{empId}
+	  ORDER BY ar.request_date DESC
+	</select>
+	
 </mapper>

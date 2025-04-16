@@ -3,6 +3,10 @@ package com.itwill.attendance.dto;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * [2.사용자 지각 현황 조회 DTO]
+ */
+
 @Data
 @Builder
 public class LatenessDTO {

@@ -57,14 +57,6 @@ public class AuthController {
 				return response;
 			}
 
-			/*
-			 * System.out.println("👉 member.getEmp_email(): " + member.getEmp_email());
-			 * 
-			 * System.out.println("empId: " + empId); System.out.println("inputEmail: " +
-			 * inputEmail); System.out.println("DB email: " + member.getEmp_email());
-			 * 
-			 * System.out.println("👉 member: " + member); // 전체 객체 로그
-			 */
 						
 			if (member.getEmp_email() == null || !inputEmail.equals(member.getEmp_email())) {
 				resultMap.put("status", "FAIL");
@@ -108,55 +100,10 @@ public class AuthController {
 			return response;
 		}
 
-//		    response.setResult("SUCCESS");
-//		    response.setMessage("성공");
-//		    Map<String ,Object> map12 = new HashMap<>();
-//		    map12.put("song1", "1");
-//		    map12.put("song2", "2");
-//		    map12.put("song3", "3");
-//		    map12.put("song4", "4");
-//		    response.setResult(map12);
 
-		// System.out.println("Request Content-Type: " + request.getContentType());
 	}
 
-	/*
-	 * // 인증코드 확인
-	 * 
-	 * @PostMapping("/verifyCode")
-	 * 
-	 * @ResponseBody public ResponseAPI verifyCode(@RequestBody Map<String, String>
-	 * data, HttpSession session) { String inputCode = data.get("code"); String
-	 * sessionCode = (String) session.getAttribute("authCode"); String newPassword =
-	 * data.get("newPassword"); // 사용자가 입력한 새 비밀번호 String empId = (String)
-	 * session.getAttribute("empId");
-	 * 
-	 * ResponseAPI response = new ResponseAPI(); Map<String, Object> resultMap = new
-	 * HashMap<>();
-	 * 
-	 * if (sessionCode == null || empId == null) { resultMap.put("status", "FAIL");
-	 * resultMap.put("message", "인증 요청이 없습니다."); response.setResult(resultMap);
-	 * return response; }
-	 * 
-	 * if (!inputCode.equals(sessionCode)) { resultMap.put("status", "FAIL");
-	 * resultMap.put("message", "인증코드가 일치하지 않습니다."); response.setResult(resultMap);
-	 * return response; }
-	 * 
-	 * // 비밀번호 유효성 검사 String pwPattern =
-	 * "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,16}$";
-	 * if (newPassword == null || !newPassword.matches(pwPattern)) {
-	 * resultMap.put("status", "FAIL"); resultMap.put("message",
-	 * "비밀번호는 8~16자의 영문, 숫자, 특수문자를 모두 포함해야 합니다."); response.setResult(resultMap);
-	 * return response; }
-	 * 
-	 * // 비밀번호 업데이트 mService.updatePassword(empId, newPassword);
-	 * 
-	 * // 세션 정리 session.removeAttribute("authCode");
-	 * session.removeAttribute("empId");
-	 * 
-	 * resultMap.put("status", "SUCCESS"); resultMap.put("message",
-	 * "비밀번호가 성공적으로 변경되었습니다."); response.setResult(resultMap); return response; }
-	 */
+	
 
 	@PostMapping("/verifyCode")
 	@ResponseBody

@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +25,8 @@ import com.itwill.util.ResponseAPI;
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
 	@Inject
 	private MemberService mService;
@@ -38,7 +42,7 @@ public class AuthController {
 	@PostMapping(value = "/sendCode")
 	@ResponseBody
 	public ResponseAPI sendVerificationCode(@RequestBody Map<String, String> data, HttpSession session) {
-		String empId = data.get("emp_id");
+		String empId = data.get("empId");
 		String inputEmail = data.get("email");
 
 		ResponseAPI response = new ResponseAPI();
@@ -86,6 +90,12 @@ public class AuthController {
 			session.setAttribute("authCode", code);
 			session.setAttribute("authEmail", inputEmail);
 			session.setAttribute("empId", empId);
+			
+			logger.info("authCode: " + code);
+			logger.info("authEmail: " + inputEmail);
+			logger.info("empId: " + empId);
+			
+			
 
 			resultMap.put("status", "SUCCESS");
 			resultMap.put("message", "인증코드가 이메일로 전송되었습니다.");
@@ -108,9 +118,12 @@ public class AuthController {
 	@PostMapping("/verifyCode")
 	@ResponseBody
 	public ResponseAPI verifyCode(@RequestBody Map<String, String> data, HttpSession session) {
-		String empId = (String) session.getAttribute("empId");
-	    String inputCode = data.get("code");
+		String empId = (String)session.getAttribute("empId");
+	    String inputCode = data.get("authCode");
 
+	    logger.info("empId -----------------> "+ empId);
+	    logger.info("inputCode -----------------> "+ inputCode);
+	    
 		ResponseAPI response = new ResponseAPI();
 		Map<String, Object> resultMap = new HashMap<>();
 
@@ -124,7 +137,7 @@ public class AuthController {
 	    // DB에서 인증 정보 조회
 	    EmailVerificationVO verification = emailVService.getVerificationByEmpId(empId);
 		
-	    if (verification == null) {
+	    if (verification == null || inputCode == null || inputCode.isEmpty()) {
 	        resultMap.put("status", "FAIL");
 	        resultMap.put("message", "인증 정보를 찾을 수 없습니다.");
 	        response.setResult(resultMap);

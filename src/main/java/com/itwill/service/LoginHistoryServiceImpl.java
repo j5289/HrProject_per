@@ -21,13 +21,13 @@ public class LoginHistoryServiceImpl implements LoginHistoryService {
 	}
 	
 	@Override
-	public int countRecentFailedLogins(String emp_id) {
-	    return LHdao.countRecentFailedLogins(emp_id);
+	public int countRecentFailedLogins(String empId) {
+	    return LHdao.countRecentFailedLogins(empId);
 	}
 	
 	@Override
-	public boolean isAccountLocked(String emp_id) {
-		return LHdao.isAccountLocked(emp_id);
+	public boolean isAccountLocked(String empId) {
+		return LHdao.isAccountLocked(empId);
 	}
 	
 }

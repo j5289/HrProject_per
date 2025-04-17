@@ -613,13 +613,22 @@
 	    al.approval_line_id,
 	    al.approver_id,
 	    al.approver_role,
-	    (
-	      SELECT aa2.approval_status 
-	      FROM APPROVAL_APP aa2 
-	      WHERE aa2.approval_document_id = ar.approval_document_id 
-	      ORDER BY aa2.approval_order DESC 
-	      LIMIT 1
-	    ) AS approval_status
+	    CASE
+		  WHEN EXISTS (
+		    SELECT 1
+		    FROM APPROVAL_LINE l
+		    WHERE l.approval_document_id = ar.approval_document_id
+		      AND l.approval_status = '반려'
+		  ) THEN '반려'
+		
+		  WHEN NOT EXISTS (
+		    SELECT 1
+		    FROM APPROVAL_LINE l
+		    WHERE l.approval_document_id = ar.approval_document_id
+		      AND (l.approval_status IS NULL OR l.approval_status = '대기')
+		  ) THEN '승인'
+		  ELSE '대기'
+		END AS approval_status
 	  FROM APPROVAL_REQ ar
 	  JOIN EMPLOYEE e ON ar.requester = e.emp_id
 	  JOIN DEPARTMENT d ON CAST(e.dep_id AS UNSIGNED) = d.dep_id

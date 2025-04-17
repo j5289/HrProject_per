@@ -55,8 +55,8 @@ html, body {
 }
 
 .my-content-wrapper {
-  padding: 40px;
-  background-color: #f9f9f9;
+	padding: 40px;
+	background-color: #f9f9f9;
 }
 
 /* 페이지네이션 스타일 */
@@ -82,10 +82,27 @@ html, body {
 	font-weight: bold;
 }
 
-.my-content-wrapper #pagination button:hover:not (.active ) {
-	background-color: #f0f8ff;
-}
+.my-content-wrapper
+ 
+#pagination
+ 
+button
+:hover
+:not
+ 
+(
+.active
+ 
+)
+{
+background-color
+:
+ 
+#f0f8ff
+;
 
+
+}
 .my-content-wrapper body {
 	font-family: "Noto Sans KR", sans-serif;
 	margin: 30px;
@@ -93,10 +110,10 @@ html, body {
 }
 
 .my-content-wrapper h2 {
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 24px;
-  font-weight: 600;
+	text-align: center;
+	margin-bottom: 30px;
+	font-size: 24px;
+	font-weight: 600;
 }
 
 .my-content-wrapper table {
@@ -155,6 +172,13 @@ html, body {
 	width: 100%;
 	height: 80px;
 	resize: vertical;
+	padding: 10px;
+	margin : 5px;
+	font-size: 14px;
+	line-height: 1.6;
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 5px;
 }
 
 .my-content-wrapper #popupWindow button {
@@ -179,34 +203,34 @@ html, body {
 }
 
 #popupContent {
-  line-height: 1.8; /* 줄 간격 */
-  font-size: 15px;
+	line-height: 1.8; /* 줄 간격 */
+	font-size: 15px;
 }
 
 #popupContent h3 {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
+	font-size: 18px;
+	font-weight: bold;
+	margin-bottom: 10px;
 }
 
 #popupContent p {
-  margin: 6px 0;
+	margin: 6px 0;
 }
 
 #popupContent ul {
-  margin: 6px 0 10px 20px;
-  padding: 0;
+	margin: 6px 0 10px 20px;
+	padding: 0;
 }
 
 #popupContent a {
-  color: #007bff;
-  text-decoration: underline;
+	color: #007bff;
+	text-decoration: underline;
 }
 
 #popupContent strong {
-  display: inline-block;
-  margin-top: 10px;
-  font-weight: bold;
+	display: inline-block;
+	margin-top: 10px;
+	font-weight: bold;
 }
 </style>
 

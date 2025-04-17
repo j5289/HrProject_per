@@ -63,7 +63,7 @@ public class AttendanceDTO {
     private LocalDateTime updatedTime;
     
     @NotNull(message = "사원id는 필수입니다.")
-    private String employeeId;
+    private String employeeId;l
     
     @NotNull(message = "근태 날짜는 필수입니다.")
     private LocalDate attendanceDate;

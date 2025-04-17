@@ -20,4 +20,6 @@ public interface AttendanceMapper {
     List<AttendanceStatusDTO> getAllWorkStatus(String empId, String startDate, String endDate);
     void updateAttendanceRecord(AttendanceUpdateDTO dto);
     List<AttendanceWarningDTO> getAttendanceSummaryForAdmin(String startDate, String endDate);
+    void insertAttendance(Attendance attendance);
+
 }

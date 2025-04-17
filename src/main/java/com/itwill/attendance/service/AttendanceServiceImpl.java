@@ -2,6 +2,8 @@ package com.itwill.attendance.service;
 
 import com.itwill.attendance.dto.*;
 import com.itwill.attendance.mapper.AttendanceMapper;
+import com.itwill.attendance.model.Attendance;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -72,6 +74,21 @@ public class AttendanceServiceImpl implements AttendanceService {
     public List<AttendanceWarningDTO> getAttendanceSummaryForAdmin(String startDate, String endDate) {
         return attendanceMapper.getAttendanceSummaryForAdmin(startDate, endDate);
     }
+    
+    @Override
+    public void registerAttendance(AttendanceDTO dto) {
+        // 출근 시간 기준 출근 기록 생성 예시
+        Attendance attendance = Attendance.builder()
+                .attendanceId(dto.getEmployeeId() + "_" + dto.getAttendanceDate())  // 예시 ID
+                .employeeId(dto.getEmployeeId())
+                .attendanceDate(dto.getAttendanceDate())
+                .arrivalTime(dto.getArrivalTime())  // 또는 LocalDateTime.now()
+                .status(dto.getStatus())
+                .build();
+
+        attendanceMapper.insertAttendance(attendance);
+    }
+
     
 //    @Override
 //    public void registerAttendance(AttendanceDTO dto) {

@@ -1,4 +1,10 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<!-- 템플릿 include -->
+<jsp:include page="../common/header.jsp" />
+<jsp:include page="../common/sidebar.jsp">
+    <jsp:param name="menu" value="approval" />
+</jsp:include>
 
 <%-- 테스트용 로그인 사용자 지정 (최아영 emp_id = 22100003) --%>
 <%
@@ -7,39 +13,83 @@
 	session.setAttribute("loginUser", loginUser);
 %>
 
-<html>
-<head>
-<title>전자결재 신청</title>
-<!-- 여기에 캐시 방지 메타 태그 삽입 -->
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
+<%-- <%
+	String empId = (String) session.getAttribute("id");
+	if (empId == null) {
+	    response.sendRedirect("/login.jsp");
+	    return;
+	}
+	com.itwill.approval.dto.ApprovalSearchDTO loginUser = new com.itwill.approval.dto.ApprovalSearchDTO();
+	loginUser.setEmpId(empId);
+	session.setAttribute("loginUser", loginUser); // 다시 DTO로 저장해버림
+%> --%>
+
+<!-- 페이지 제목 설정 (header.jsp에서 동적으로 표시) -->
+<%-- <c:set var="pageTitle" value="전자결재 신청" /> --%>
+
+<!-- 본문 시작 -->
+<div class="main-container">
+
 <script>
     // JSP에서 로그인한 사용자 ID를 JavaScript 변수로 저
     const loginUserId = "${sessionScope.loginUser.empId}";
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-<style>
-<style>
-    @font-face {
-      font-family: 'Pretendard';
-      src: url('/resources/fonts/Pretendard-Regular.otf') format('opentype');
-    }
 
-    html, body {
-      font-family: 'Pretendard', sans-serif;
-    }
-
-body {
-  font-family: "Noto Sans KR", sans-serif;
-  background: #f9f9f9;
-  margin: 0;
-  padding: 40px;
+<style>
+.main-container {
+  flex: 1;
+  padding: 0;
+  background-color: #fff;
 }
 
-form {
-  max-width: 800px;
+.main-container form {
+  max-width: 1000px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/resources/fonts/Pretendard-Regular.otf') format('opentype');
+}
+
+html, body {
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+  background: #f9f9f9;
+  margin: 0;
+  padding: 0;
+}
+
+.my-content-wrapper {
+  padding: 40px;
+  background-color: #f9f9f9;
+}
+
+.my-content-wrapper h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.my-content-wrapper h3 {
+  font-size: 18px;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.my-content-wrapper h4 {
+  font-size: 16px;
+  margin: 20px 0 10px;
+  font-weight: 500;
+}
+
+.my-content-wrapper form {
+  max-width: 1000px;
   margin: auto;
   background: #fff;
   padding: 30px 40px;
@@ -47,65 +97,61 @@ form {
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
 }
 
-
-
-h2 {
-  text-align: center;
+.my-content-wrapper .form-section {
   margin-bottom: 30px;
 }
 
-label {
+.my-content-wrapper label {
   display: block;
-  font-weight: 400;
-  margin: 20px 0 8px;
+  font-weight: 500;
+  margin: 18px 0 8px;
 }
 
-input[type="text"],
-input[type="date"],
-select,
-textarea {
+.my-content-wrapper .required {
+  color: red;
+  margin-right: 4px;
+}
+
+.my-content-wrapper input[type="text"],
+.my-content-wrapper input[type="date"],
+.my-content-wrapper input[type="file"],
+.my-content-wrapper select,
+.my-content-wrapper textarea {
   width: 100%;
   padding: 10px;
+  font-size: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 15px;
+  margin-bottom: 10px;
+  margin-left: 15px;
 }
 
-input[type="radio"] {
-  margin-right: 5px;
-}
-
-textarea {
+.my-content-wrapper textarea {
   resize: vertical;
+  min-height: 100px;
 }
 
-input[type="date"] {
-  width: 30%;
+.my-content-wrapper input.half-width {
+  width: 25%;
 }
 
-button {
-  padding: 7px 16px;
+.my-content-wrapper input[type="radio"] {
+  margin-right: 6px;
+}
+
+.my-content-wrapper .radio-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.my-content-wrapper .radio-group label {
+  display: flex;
+  align-items: center;
   font-size: 15px;
-  background: #f0f0f0;
-  color: black;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
-button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-#submitBtn:enabled {
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.fileList {
+.my-content-wrapper .fileList {
   margin-top: 10px;
   padding: 10px;
   background: #f3f3f3;
@@ -115,77 +161,101 @@ button:disabled {
   color: #333;
 }
 
-#leaveSection,
-#businessSection {
-  background: #fdfdfd;
-  padding: 20px;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  margin-top: 20px;
-}
-
-#approverResultTable {
+.my-content-wrapper #approverResultTable {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.my-content-wrapper #approverResultTable th,
+.my-content-wrapper #approverResultTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.my-content-wrapper .search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-top: 10px;
 }
 
-#approverResultTable th,
-#approverResultTable td {
-  border: 1px solid #ddd;
+.my-content-wrapper .search-input {
+  width: 200px;
   padding: 8px;
+  font-size: 14px;
 }
 
-#selectedApprovers {
+.my-content-wrapper #selectedApprovers {
   list-style: none;
   padding-left: 0;
+  margin-top: 15px;
+  margin-left: 15px;
 }
 
-#selectedApprovers li {
+.my-content-wrapper #selectedApprovers li {
   background: #e9f0ff;
-  padding: 5px 10px;
-  margin: 5px 0;
-  border-radius: 5px;
+  padding: 6px 12px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
-.required {
+.my-content-wrapper #selectedApprovers li button {
+  margin-left: 10px;
+  background: transparent;
+  border: none;
   color: red;
-  margin-right: 4px;
-}
-
-#leaveSection, #businessSection {
-    background: #fdfdfd;
-    padding: 0 20 20 20;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-    margin-top: 20px;
-}
-
-.search-wrapper {
-  display: flex;       /* 가로 정렬 */
-  align-items: center; /* 세로 정렬 */
-  gap: 8px;            /* 입력창과 버튼 사이 간격 */
-  margin: 15px;
-}
-
-.search-input {
-  width: 100px;
-  padding: 5px;
   font-size: 14px;
+  cursor: pointer;
 }
-.radio-group {
-  display: flex;
-  gap: 10px;  
-  margin-top: 3px;
+
+.my-content-wrapper #saveTemplateSection input {
+  width: 250px;
+  margin-right: 10px;
 }
-.radio-group label {
-  display: flex;
-  align-items: center;
-  font-size: 14px;
+
+.my-content-wrapper .btn {
+  padding: 8px 16px;
+  font-size: 15px;
+  background: #f0f0f0;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.my-content-wrapper .btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.my-content-wrapper #submitBtn:enabled {
+  background-color: #007bff;
+  color: white;
+  transition: 0.2s;
+}
+
+.my-content-wrapper .form-footer {
+  text-align: right;
+  margin-top: 30px;
+}
+
+.search-wrapper button {
+    padding: 8px 16px;
+    font-size: 15px;
+    background: #f0f0f0;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
 }
 </style>
 
-<body>
+<div class="my-content-wrapper">
 <h2>전자결재 신청</h2>
 <form class="form-box" id="approvalForm" method="post" action="/approval/apply" enctype="multipart/form-data">
 
@@ -207,12 +277,12 @@ button:disabled {
   </div>
 
   <!-- 휴가 영역 -->
-  <div id="leaveSection" class="form-section" style="display:none;">
+  <div id="leaveSection" class="form-section" style="display:none; background: #fdfdfd; padding: 0px 20px 20px 20px; border-radius: 8px; border: 1px solid #e0e0e0; margin: 20px 0;">
     <div class="radio-group">
     <label style="font-size: 16px;"><span class="required">* </span>휴가 구분 : </label>
-    <label style="font-size: 16px;"><input type="radio" name="leaveStatus" value="반차" style="margin-right: 10;"> 반차</label>
-    <label style="font-size: 16px;"><input type="radio" name="leaveStatus" value="연차" style="margin-right: 10;"> 연차</label>
-    <label style="font-size: 16px;"><input type="radio" name="leaveStatus" value="병가" style="margin-right: 10;"> 병가</label>
+    <label style="font-size: 16px;"><input type="radio" name="leaveStatus" value="반차" style="margin-right: 10px;"> 반차</label>
+    <label style="font-size: 16px;"><input type="radio" name="leaveStatus" value="연차" style="margin-right: 10px;"> 연차</label>
+    <label style="font-size: 16px;"><input type="radio" name="leaveStatus" value="병가" style="margin-right: 10px;"> 병가</label>
 	</div>
 	
     <label><span class="required">* </span>휴가 기간</label>
@@ -228,7 +298,7 @@ button:disabled {
   </div>
 
   <!-- 출장 영역 -->
-  <div id="businessSection" class="form-section" style="display:none;">
+  <div id="businessSection" class="form-section" style="display:none; background: #fdfdfd; padding: 0px 20px 20px 20px; border-radius: 8px; border: 1px solid #e0e0e0; margin: 20px 0;" >
     <label><span class="required">* </span>출장지</label>
     <input type="text" name="businessLocation" class="form-control">
 
@@ -248,28 +318,28 @@ button:disabled {
   </div>
 
   <!-- 결재선 지정 -->
-  <div class="form-section" style="background: #fdfdfd; padding: 0 20 20 20; border-radius: 8px; border: 1px solid #e0e0e0; margin: 20px 0;">
-    <h3>결재선 지정 <span style="color: blue; font-weight: 400; font-size: 80%; margin-left: 10">(저장된 결재선 선택 또는 직접 지정)</span></h3>
+  <div class="form-section" style=" background: #fdfdfd; padding: 0px 20px 20px 20px; border-radius: 8px; border: 1px solid #e0e0e0; margin: 20px 0;">
+    <h3>결재선 지정 <span style="color: blue; font-weight: 400px; font-size: 80%; margin-left: 10px">(저장된 결재선 선택 또는 직접 지정)</span></h3>
 	
     <label style="font-weight: bold;"><span class="required">* </span>저장된 결재선 선택</label>
-    <select id="templateSelect" class="form-control" style="width: 300px; margin-left: 15;">
+    <select id="templateSelect" class="form-control" style="width: 300px; margin-left: 15px;">
       <option value="">-- 결재선 선택 --</option>
     </select>
 	
     <h4 style="margin-bottom: 0"><span class="required">* </span>직접 결재선 지정</h4>
     <div class="search-wrapper">
-	  <input type="text" id="approverKeyword" class="search-input" placeholder="이름 입력" style="width: 100;">
+	  <input type="text" id="approverKeyword" class="search-input" placeholder="이름 입력" style="width: 100px;">
 	  <button type="button" id="searchApproverBtn">검색</button>
 	</div>
 
 	<div id="approverResultSection" style="display: none;">
-    <table style="width: 400; margin-left: 15;" id="approverResultTable">
+    <table style="width: 400px; margin-left: 15px;" id="approverResultTable">
       <thead>
         <tr>
-          <th style="font-weight: 400;">이름</th>
-          <th style="font-weight: 400;">부서</th>
-          <th style="font-weight: 400;">직책</th>
-          <th style="font-weight: 400;">추가</th>
+          <th style="font-weight: 400px;">이름</th>
+          <th style="font-weight: 400px;">부서</th>
+          <th style="font-weight: 400px;">직책</th>
+          <th style="font-weight: 400px;">추가</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -277,8 +347,8 @@ button:disabled {
 	</div>
 	
 	<div id="selectedApproversSection" style="display: none;">
-	<div style="display: flex; align-items: center;">
-		<h4 style="margin-bottom: 0; margin-top: 30;">선택된 결재자</h4>
+	<div style="display: flex; align-items: center; justify-content: space-between;">
+		<h4 style="margin-bottom: 0; margin-top: 30px;">선택된 결재자</h4>
         <button type="button" onclick="resetApprovalLine()" class="btn" style="margin-left: 25; margin-top:25; display:none;" id="resetBtn">결재선 초기화</button>
     </div>
     <ul id="selectedApprovers"></ul>
@@ -286,8 +356,8 @@ button:disabled {
 	</div>
 	
 	<div id="saveTemplateSection" style="display: none;">
-    <label style="font-weight: bold; margin-left: 15;">결재선 이름</label>
-    <input style="width: 100; margin-left: 15;" type="text" id="templateName" class="form-control" disabled>
+    <label style="font-weight: bold; margin-left: 15px;">결재선 이름</label>
+    <input style="width: 100px; margin-left: 15px;" type="text" id="templateName" class="form-control" disabled>
     <button type="button" id="saveTemplateBtn" class="btn" disabled>결재선 저장</button>
 	</div>
 	
@@ -777,6 +847,6 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 </script>
-
-</body>
-</html>
+</div>
+</div>
+<jsp:include page="../common/footer.jsp" />

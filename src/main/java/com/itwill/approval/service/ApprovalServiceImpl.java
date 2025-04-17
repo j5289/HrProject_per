@@ -199,7 +199,7 @@ public class ApprovalServiceImpl implements ApprovalService {
         for (ApprovalLineDTO line : lines) {
             String approverId = line.getApproverId();
             String status = line.getApprovalStatus();
-            if (status == null) status = "대기";
+            //if (status == null) status = "대기";
             if (hasRejectedBefore && !("승인".equals(status) || "반려".equals(status))) {
                 status = "취소";
             }

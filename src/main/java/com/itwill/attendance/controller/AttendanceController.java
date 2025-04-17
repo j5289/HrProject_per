@@ -1,10 +1,12 @@
 package com.itwill.attendance.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwill.attendance.dto.AttendanceDTO;
 import com.itwill.attendance.dto.AttendanceDetailDTO;
@@ -166,21 +169,26 @@ public class AttendanceController {
         return attendanceService.getAttendanceSummaryForAdmin(startDate, endDate);
     }
     
-    @PostMapping("/clockIn")
-    public String clockIn(@RequestParam String empId) {
-        attendanceService.clockIn(empId);  // 출근 처리
-        return "redirect:/attendance/status";  // 출퇴근 상태 페이지로 리다이렉트
+    @PostMapping("/attendance/clock-in")
+    @ResponseBody
+    public void clockIn(@RequestBody Map<String, String> request) {
+        String empId = request.get("empId");
+        attendanceService.clockIn(empId);
     }
 
-    @PostMapping("/clockOut")
-    public String clockOut(@RequestParam String empId) {
-        attendanceService.clockOut(empId);  // 퇴근 처리
-        return "redirect:/attendance/status";  // 출퇴근 상태 페이지로 리다이렉트
+    @PostMapping("/attendance/clock-out")
+    @ResponseBody
+    public void clockOut(@RequestBody Map<String, String> request) {
+        String empId = request.get("empId");
+        attendanceService.clockOut(empId);
     }
+
     
     @RequestMapping("/attendance-main")
-    public String showAttendanceMainPage() {
-        return "attendance/attendance-main";  // /WEB-INF/views/attendance/attendance-main.jsp로 매핑
+    public String showAttendanceMain(Model model) {
+      
+    	return "attendance-main";  // /WEB-INF/views/attendance/attendance-main.jsp로 매핑
+    
     }
     
    

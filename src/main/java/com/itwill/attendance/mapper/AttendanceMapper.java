@@ -2,6 +2,8 @@ package com.itwill.attendance.mapper;
 
 import java.util.List;
 
+import org.springframework.data.repository.query.Param;
+
 import com.itwill.attendance.dto.AttendanceDTO;
 import com.itwill.attendance.dto.AttendanceDetailDTO;
 import com.itwill.attendance.dto.AttendanceStatusDTO;
@@ -59,5 +61,9 @@ public interface AttendanceMapper {
 
     // 퇴근 기록 수정
     void updateAttendance(AttendanceDTO attendanceDTO);
+    
+    void insertClockIn(@Param("empId") String empId);
+    void updateClockOut(@Param("empId") String empId);
+
 
 }

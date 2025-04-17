@@ -157,5 +157,25 @@
         SET clock_out = #{clockOut}, updated_time = #{updatedTime}
         WHERE employee_id = #{employeeId} AND status = '출근' AND clock_out IS NULL;
     </update>
+    
+    <!-- 출근 기록 저장 -->
+<insert id="insertClockIn">
+    INSERT INTO ATTENDANCE (attendance_id, emp_id, attend_date, clock_in_time)
+    VALUES (
+        CONCAT(DATE_FORMAT(NOW(), '%y%m%d'), #{empId}, 'att'),
+        #{empId},
+        CURDATE(),
+        NOW()
+    )
+</insert>
+
+<!-- 퇴근 시간 업데이트 -->
+<update id="updateClockOut">
+    UPDATE ATTENDANCE
+    SET clock_out_time = NOW()
+    WHERE emp_id = #{empId}
+      AND attend_date = CURDATE()
+</update>
+    
 
 </mapper>

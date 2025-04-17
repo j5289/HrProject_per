@@ -30,6 +30,32 @@
                 document.getElementById("endTime").textContent = timeStr;
             }
         }
+
+        // 출근/퇴근 요청 함수
+        function sendAttendance(type) {
+            const empId = document.getElementById("empId").value; // 세션에서 empId 가져오기
+            const url = (type === 'start') ? '/attendance/clock-in' : '/attendance/clock-out';
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ empId })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert(type === 'start' ? '출근 등록 완료!' : '퇴근 등록 완료!');
+                    location.reload();
+                } else {
+                    alert('처리에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('에러 발생!');
+            });
+        }
     </script>
 </head>
 <body>
@@ -48,13 +74,16 @@
     <div class="main-content">
         <h1>반갑습니다, <strong>${sessionScope.loginUser.emp_name}</strong>님!</h1>
 
+        <!-- 세션에서 empId를 hidden input에 저장 -->
+        <input type="hidden" id="empId" value="<%= session.getAttribute("empId") %>" />
+
         <div class="clock-box">
             현재 시간: <span id="clock" style="font-weight: bold;"></span>
         </div>
 
         <div class="attendance-buttons">
-            <button onclick="setAttendanceTime('start')">출근하기</button>
-            <button onclick="setAttendanceTime('end')">퇴근하기</button>
+            <button onclick="sendAttendance('start')">출근하기</button>
+            <button onclick="sendAttendance('end')">퇴근하기</button>
         </div>
 
         <div class="attendance-times">

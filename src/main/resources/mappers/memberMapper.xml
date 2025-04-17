@@ -65,7 +65,7 @@
 	<update id="updatePassword" parameterType="map">
 		UPDATE EMPLOYEE
 		SET emp_pw = #{newPassword},
-		emp_modify_date = NOW()
+		emp_modifydate = NOW()
 		WHERE emp_id = #{empId}
 		LIMIT 1
 	</update>

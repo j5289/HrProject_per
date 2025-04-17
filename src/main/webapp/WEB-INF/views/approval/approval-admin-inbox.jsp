@@ -1,150 +1,216 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ page import="com.itwill.approval.dto.ApprovalSearchDTO"%>
+
+<!-- 템플릿 include -->
+<jsp:include page="../common/header.jsp" />
+<jsp:include page="../common/sidebar.jsp">
+    <jsp:param name="menu" value="approval" />
+</jsp:include>
+
 <%
 	// 테스트용 로그인 사용자 지정 (이민준 emp_id = 15100002, 박지원 emp_id = 10100001)
 	ApprovalSearchDTO loginUser = new ApprovalSearchDTO();
-	//loginUser.setEmpId("15100002"); // 박지원 테스트용
-	loginUser.setEmpId("10100001"); // 이민준 테스트용
+	loginUser.setEmpId("15100002"); // 박지원 테스트용
+	//loginUser.setEmpId("10100001"); // 이민준 테스트용
 	session.setAttribute("loginUser", loginUser);
 %>
 
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>결재 승인 및 반려</title>
+<%-- <%
+	String empId = (String) session.getAttribute("id");
+	if (empId == null) {
+	    response.sendRedirect("/login.jsp");
+	    return;
+	}
+	com.itwill.approval.dto.ApprovalSearchDTO loginUser = new com.itwill.approval.dto.ApprovalSearchDTO();
+	loginUser.setEmpId(empId);
+	session.setAttribute("loginUser", loginUser); // 다시 DTO로 저장해버림
+%> --%>
+
+<!-- 본문 시작 -->
+<div class="main-container">
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
-  	<style>
-    @font-face {
-      font-family: 'Pretendard';
-      src: url('/resources/fonts/Pretendard-Regular.otf') format('opentype');
-    }
+.main-container {
+	flex: 1;
+	padding: 0;
+	background-color: #fff;
+}
 
-    html, body {
-      font-family: 'Pretendard', sans-serif;
-    }
-  	
-  	/* 페이지네이션 스타일 */
-	#pagination {
-	  margin-top: 25px;
-	  text-align: center;
-	}
-	
-	#pagination button {
-	  margin: 0 5px;
-	  padding: 5px 12px;
-	  border: 1px solid #007bff;
-	  background-color: white;
-	  color: #007bff;
-	  border-radius: 5px;
-	  cursor: pointer;
-	  font-size: 0.95em;
-	}
-	
-	#pagination button.active {
-	  background-color: #007bff;
-	  color: white;
-	  font-weight: bold;
-	}
-	
-	#pagination button:hover:not(.active) {
-	  background-color: #f0f8ff;
-	}
-  	
-    body {
-      font-family: "Noto Sans KR", sans-serif;
-      margin: 30px;
-      background: #f5f5f5;
-    }
+.main-container form {
+	max-width: 1000px;
+	margin: auto;
+	padding: 30px;
+	border-radius: 10px;
+	box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+}
 
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+@font-face {
+	font-family: 'Pretendard';
+	src: url('/resources/fonts/Pretendard-Regular.otf') format('opentype');
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      background: #fff;
-      box-shadow: 0 0 4px rgba(0,0,0,0.1);
-    }
+html, body {
+	font-family: 'Pretendard', sans-serif;
+}
 
-    th, td {
-      border: 1px solid #ccc;
-      padding: 10px;
-      text-align: center;
-      font-size: 0.95em;
-    }
+.my-content-wrapper {
+  padding: 40px;
+  background-color: #f9f9f9;
+}
 
-    .popup, .popup-overlay {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-    }
+/* 페이지네이션 스타일 */
+.my-content-wrapper #pagination {
+	margin-top: 25px;
+	text-align: center;
+}
 
-    .popup-overlay {
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-    }
+.my-content-wrapper #pagination button {
+	margin: 0 5px;
+	padding: 5px 12px;
+	border: 1px solid #007bff;
+	background-color: white;
+	color: #007bff;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 0.95em;
+}
 
-    .popup {
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #fff;
-      width: 600px;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    }
+.my-content-wrapper #pagination button.active {
+	background-color: #007bff;
+	color: white;
+	font-weight: bold;
+}
 
-    .popup .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      cursor: pointer;
-      font-size: 1.2em;
-    }
+.my-content-wrapper #pagination button:hover:not (.active ) {
+	background-color: #f0f8ff;
+}
 
-    #popupCommentBox {
-      margin-top: 20px;
-    }
+.my-content-wrapper body {
+	font-family: "Noto Sans KR", sans-serif;
+	margin: 30px;
+	background: #f5f5f5;
+}
 
-    #popupCommentBox textarea {
-      width: 100%;
-      height: 80px;
-      resize: vertical;
-    }
+.my-content-wrapper h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: 600;
+}
 
-    #popupWindow button {
-      padding: 7px 15px;
-      margin-left: 10px;
-    }
+.my-content-wrapper table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 10px;
+	background: #fff;
+	box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
 
-    #noDataMsg {
-      text-align: center;
-      color: #999;
-      margin-top: 40px;
-    }
-    
-    button{
-      padding: 7px 16px;
-	  font-size: 15px;
-	  background: #f0f0f0;
-	  color: black;
-	  border: none;
-	  border-radius: 5px;
-	  cursor: pointer;
-    }
-  </style>
-</head>
-<body>
+.my-content-wrapper th, td {
+	border: 1px solid #ccc;
+	padding: 10px;
+	text-align: center;
+	font-size: 0.95em;
+}
 
+.my-content-wrapper .popup, .popup-overlay {
+	display: none;
+	position: fixed;
+	z-index: 1000;
+}
+
+.my-content-wrapper .popup-overlay {
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.4);
+}
+
+.my-content-wrapper .popup {
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: #fff;
+	width: 600px;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.my-content-wrapper .popup .close-btn {
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	cursor: pointer;
+	font-size: 1.2em;
+}
+
+.my-content-wrapper #popupCommentBox {
+	margin-top: 20px;
+}
+
+.my-content-wrapper #popupCommentBox textarea {
+	width: 100%;
+	height: 80px;
+	resize: vertical;
+}
+
+.my-content-wrapper #popupWindow button {
+	padding: 7px 15px;
+	margin-left: 10px;
+}
+
+.my-content-wrapper #noDataMsg {
+	text-align: center;
+	color: #999;
+	margin-top: 40px;
+}
+
+.my-content-wrapper button {
+	padding: 7px 16px;
+	font-size: 15px;
+	background: #f0f0f0;
+	color: black;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+#popupContent {
+  line-height: 1.8; /* 줄 간격 */
+  font-size: 15px;
+}
+
+#popupContent h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#popupContent p {
+  margin: 6px 0;
+}
+
+#popupContent ul {
+  margin: 6px 0 10px 20px;
+  padding: 0;
+}
+
+#popupContent a {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+#popupContent strong {
+  display: inline-block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+</style>
+
+<div class="my-content-wrapper">
   <h2>결재 승인 및 반려 처리</h2>
 
   <table id="approvalTable">
@@ -386,6 +452,6 @@
 			loadPendingList();
 		});
 	</script>
-
-</body>
-</html>
+</div>
+</div>
+<jsp:include page="../common/footer.jsp" />

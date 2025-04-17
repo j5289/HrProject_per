@@ -849,3 +849,4 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 </div>
 </div>
+<jsp:include page="../common/footer.jsp" />

@@ -1,7 +1,7 @@
 package com.itwill.attendance.dto;
 
-import lombok.Data;
 import lombok.Builder;
+import lombok.Data;
 
 /**
  * 12.관리자용 근태 종합 조회 (지각/결근 기준 이상 시 경고)

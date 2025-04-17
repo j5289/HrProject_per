@@ -1,13 +1,13 @@
 package com.itwill.attendance.dto;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;=
+
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder

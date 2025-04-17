@@ -119,7 +119,12 @@
         // 인증코드 확인 버튼
         document.querySelector(".verify-button").addEventListener("click", function () {
             const authCode = document.querySelector("input[name='authCode']").value;
+            
+            
 
+            console.log("인증코드 확인 버튼 클릭됨");  // 버튼 클릭 시 확인용 로그
+            console.log("입력된 인증코드: " + authCode); // 인증코드 값 확인
+            
             fetch("/auth/verifyCode", {
                 method: "POST",
                 headers: {

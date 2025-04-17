@@ -22,13 +22,13 @@ public class LoginHistoryDAOImpl implements LoginHistoryDAO {
     }
     
     @Override
-    public int countRecentFailedLogins(String emp_id) {
-        return sqlSession.selectOne(namespace + ".countRecentFailedLogins", emp_id);
+    public int countRecentFailedLogins(String empId) {
+        return sqlSession.selectOne(namespace + ".countRecentFailedLogins", empId);
     }
     
     @Override
-    public boolean isAccountLocked(String emp_id) {
-    	String status = sqlSession.selectOne(namespace + ".checkAccountLocked", emp_id);
+    public boolean isAccountLocked(String empId) {
+    	String status = sqlSession.selectOne(namespace + ".checkAccountLocked", empId);
         return "LOCKED".equals(status);
     }
     

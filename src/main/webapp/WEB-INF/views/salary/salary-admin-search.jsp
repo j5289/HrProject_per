@@ -1,4 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+
+<!-- 템플릿 include -->
+<jsp:include page="../common/header.jsp" />
+<jsp:include page="../common/sidebar.jsp">
+    <jsp:param name="menu" value="salary" />
+</jsp:include>
+
 <%
 	com.itwill.salary.dto.SalaryEmployeeDTO loginUser = new com.itwill.salary.dto.SalaryEmployeeDTO();
 	//loginUser.setEmpId("22100003"); // 최아영
@@ -7,39 +14,60 @@
 	session.setAttribute("loginUser", loginUser);
 %>
 
-<html>
-<head>
-<title>급여 지급 확정</title>
+<%-- <%
+	String empId = (String) session.getAttribute("id");
+	if (empId == null) {
+	    response.sendRedirect("/login.jsp");
+	    return;
+	}
+	com.itwill.approval.dto.ApprovalSearchDTO loginUser = new com.itwill.approval.dto.ApprovalSearchDTO();
+	loginUser.setEmpId(empId);
+	session.setAttribute("loginUser", loginUser); // 다시 DTO로 저장해버림
+%> --%>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<div class="main-container">
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <style>
-<
-style
->
+.main-container {
+	flex: 1;
+	padding: 0;
+	background-color: #fff;
+}
+
+.wrapper {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 40px;
+  background-color: #f9f9f9;
+}
+
+.my-content-wrapper {
+  max-width: 1000px;
+    margin: auto;
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+}
+
 @font-face {
-	font-family: 'Pretendard';
-	src: url('/resources/fonts/Pretendard-Regular.otf') format('opentype');
+  font-family: 'Pretendard';
+  src: url('/resources/fonts/Pretendard-Regular.otf') format('opentype');
 }
 
 html, body {
-	font-family: 'Pretendard', sans-serif;
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
 }
 
 body {
-	font-family: Arial, sans-serif;
 	background-color: #f9f9f9;
 	margin: 0;
 	padding: 0;
-}
-
-.container {
-	max-width: 900px;
-	margin: 20px auto;
-	background-color: white;
-	padding: 20px;
-	border: 1px solid #ccc;
-	border-radius: 8px;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 h2 {
@@ -124,108 +152,108 @@ th, td {
 	}
 }
 </style>
-</head>
-<body>
 
-	<div class="container">
 
-		<h2>급여 지급 확정</h2>
-		<div style="margin-bottom: 20px;">
-			<label>사원 검색 : </label> 
-			<input type="text" id="searchInput" placeholder="사번 또는 이름 입력" 
-			style="padding: 10px;
-		    border: 1px solid #ccc;
-		    border-radius: 5px;
-		    font-size: 15px;"/>
-			<button type="button" onclick="searchEmployee()" style="padding: 7px 16px; font-size: 15px; background: #f0f0f0; color: black; border: none; border-radius: 5px; cursor: pointer">검색</button>
+<div class="wrapper">
+<div class="my-content-wrapper">
+	<h2>급여 지급 확정</h2>
+	<div style="margin-bottom: 20px;">
+		<label>사원 검색 : </label> 
+		<input type="text" id="searchInput" placeholder="사번 또는 이름 입력" 
+		style="padding: 10px;
+	    border: 1px solid #ccc;
+	    border-radius: 5px;
+	    font-size: 15px;"/>
+		<button type="button" onclick="searchEmployee()" style="padding: 7px 16px; font-size: 15px; background: #f0f0f0; color: black; border: none; border-radius: 5px; cursor: pointer">검색</button>
 
-			<ul id="searchResults" style="list-style: none; padding-left: 0; margin-top: 10px;"></ul>
-		</div>
-
-		<!-- 연월 선택 -->
-		<div class="controls">
-			<label>연도:</label> <select id="yearSelect"></select> <label>월:</label> <select id="monthSelect"></select>
-
-			<button id="loadBtn" style="padding: 7px 16px; font-size: 15px; background: #f0f0f0; color: black; border: none; border-radius: 5px; cursor: pointer;">조회하기</button>
-		</div>
-
-		<!-- 사원 기본 정보 -->
-		<div class="table-wrapper">
-			<table>
-				<tr>
-					<td>이름</td>
-					<td><span id="empName" class="readonly-box"></span></td>
-					<td>부서</td>
-					<td><span id="deptName" class="readonly-box"></span></td>
-				</tr>
-				<tr>
-					<td>지급일</td>
-					<td><span id="payDate" class="readonly-box"></span></td>
-					<td>산정기간</td>
-					<td><span id="workRange" class="readonly-box"></span></td>
-				</tr>
-			</table>
-		</div>
-
-		<!-- 급여 상세 테이블 -->
-		<div class="table-wrapper">
-			<table id="salaryTable">
-				<thead>
-					<tr>
-						<th>지급항목</th>
-						<th>금액(원)</th>
-						<th>공제항목</th>
-						<th>금액(원)</th>
-					</tr>
-				</thead>
-				<tbody id="tableBody">
-				</tbody>
-				<tfoot>
-					<tr>
-						<td>지급총액</td>
-						<td><span id="totalPay"></span> 원</td>
-						<td>공제총액</td>
-						<td><span id="totalDeduct"></span> 원</td>
-					</tr>
-					<tr class="net-row">
-						<td colspan="3" style="text-align: right;">실지급액</td>
-						<td><span id="netPay"></span> 원</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-
-		<div class="button-group">
-			<button onclick="confirmSalary()" style="background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px;">지급 확정</button>
-		</div>
-
-		<!-- 다운로드 버튼 -->
-		<!-- 
-  <div class="button-group">
-    <button type="button" id="excelBtn" onclick="downloadExcel()" disabled style="padding: 7px 16px;
-		  font-size: 15px;
-		  background: #f0f0f0;
-		  color: black;
-		  border: none;
-		  border-radius: 5px;
-		  cursor: pointer;">
-      <img src="/resources/img/excel-icon.png" class="btn-icon" />
-      엑셀 다운로드
-    </button>
-    <button type="button" id="pdfBtn" onclick="downloadPdf()" disabled style="padding: 7px 16px;
-		  font-size: 15px;
-		  background: #f0f0f0;
-		  color: black;
-		  border: none;
-		  border-radius: 5px;
-		  cursor: pointer;">
-      <img src="/resources/img/pdf-icon.png" class="btn-icon" />
-      PDF 다운로드
-    </button>
-  </div>
-  -->
-
+		<ul id="searchResults" style="list-style: none; padding-left: 0; margin-top: 10px;"></ul>
 	</div>
+
+	<!-- 연월 선택 -->
+	<div class="controls">
+		<label>연도:</label> <select id="yearSelect"></select> <label>월:</label> <select id="monthSelect"></select>
+
+		<button id="loadBtn" style="padding: 7px 16px; font-size: 15px; background: #f0f0f0; color: black; border: none; border-radius: 5px; cursor: pointer;">조회하기</button>
+	</div>
+
+	<!-- 사원 기본 정보 -->
+	<div class="table-wrapper">
+		<table>
+			<tr>
+				<td>이름</td>
+				<td><span id="empName" class="readonly-box"></span></td>
+				<td>부서</td>
+				<td><span id="deptName" class="readonly-box"></span></td>
+			</tr>
+			<tr>
+				<td>지급일</td>
+				<td><span id="payDate" class="readonly-box"></span></td>
+				<td>산정기간</td>
+				<td><span id="workRange" class="readonly-box"></span></td>
+			</tr>
+		</table>
+	</div>
+
+	<!-- 급여 상세 테이블 -->
+	<div class="table-wrapper">
+		<table id="salaryTable">
+			<thead>
+				<tr>
+					<th>지급항목</th>
+					<th>금액(원)</th>
+					<th>공제항목</th>
+					<th>금액(원)</th>
+				</tr>
+			</thead>
+			<tbody id="tableBody">
+			</tbody>
+			<tfoot>
+				<tr>
+					<td>지급총액</td>
+					<td><span id="totalPay"></span> 원</td>
+					<td>공제총액</td>
+					<td><span id="totalDeduct"></span> 원</td>
+				</tr>
+				<tr class="net-row">
+					<td colspan="3" style="text-align: right;">실지급액</td>
+					<td><span id="netPay"></span> 원</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+
+	<div class="button-group">
+		<button onclick="confirmSalary()" style="background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px;">지급 확정</button>
+	</div>
+
+	<!-- 다운로드 버튼 -->
+	<!-- 
+ <div class="button-group">
+   <button type="button" id="excelBtn" onclick="downloadExcel()" disabled style="padding: 7px 16px;
+	  font-size: 15px;
+	  background: #f0f0f0;
+	  color: black;
+	  border: none;
+	  border-radius: 5px;
+	  cursor: pointer;">
+     <img src="/resources/img/excel-icon.png" class="btn-icon" />
+     엑셀 다운로드
+   </button>
+   <button type="button" id="pdfBtn" onclick="downloadPdf()" disabled style="padding: 7px 16px;
+	  font-size: 15px;
+	  background: #f0f0f0;
+	  color: black;
+	  border: none;
+	  border-radius: 5px;
+	  cursor: pointer;">
+     <img src="/resources/img/pdf-icon.png" class="btn-icon" />
+     PDF 다운로드
+   </button>
+ </div>
+ -->
+</div>
+</div>
+</div>
 
 <script>
 const loggedInAdminId = '<%=((com.itwill.salary.dto.SalaryEmployeeDTO) session.getAttribute("loginUser")).getEmpId()%>';
@@ -429,5 +457,4 @@ function confirmSalary() {
 }
 </script>
 
-</body>
-</html>
+<jsp:include page="../common/footer.jsp" />

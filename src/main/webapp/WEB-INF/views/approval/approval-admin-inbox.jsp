@@ -82,27 +82,10 @@ html, body {
 	font-weight: bold;
 }
 
-.my-content-wrapper
- 
-#pagination
- 
-button
-:hover
-:not
- 
-(
-.active
- 
-)
-{
-background-color
-:
- 
-#f0f8ff
-;
-
-
+.my-content-wrapper #pagination button:hover:not(.active) {
+  background-color: #f0f8ff;
 }
+
 .my-content-wrapper body {
 	font-family: "Noto Sans KR", sans-serif;
 	margin: 30px;
@@ -267,8 +250,8 @@ background-color
     </div>
 
     <div style="text-align: right; margin-top: 15px;">
-      <button onclick="approve()">승인</button>
-      <button onclick="reject()">반려</button>
+      <button onclick="approve()" style="background-color: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 5px;">승인</button>
+	  <button onclick="reject()" style="background-color: orange; color: white; border: none; padding: 8px 16px; border-radius: 5px;">반려</button>
     </div>
   </div>
 

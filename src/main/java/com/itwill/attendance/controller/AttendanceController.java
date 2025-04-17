@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.itwill.attendance.dto.AttendanceDTO;
 import com.itwill.attendance.dto.AttendanceDetailDTO;
@@ -28,7 +28,7 @@ import com.itwill.attendance.service.AttendanceService;
 import lombok.RequiredArgsConstructor;
 
 
-@RestController
+@Controller
 @RequestMapping("/attendance")
 @RequiredArgsConstructor
 public class AttendanceController {
@@ -41,7 +41,7 @@ public class AttendanceController {
      * [1. 사용자 출퇴근 기록 조회 + 현황]
      * 사용자가 기간별 출퇴근 기록을 조회하고, 출근/퇴근 여부 및 상태를 확인할 수 있음
      */
-    @GetMapping("/my-record")
+    @GetMapping("/main")
     public List<AttendanceDetailDTO> getMyAttendanceRecord(
             @RequestParam String empId,
             @RequestParam String startDate,
@@ -177,5 +177,12 @@ public class AttendanceController {
         attendanceService.clockOut(empId);  // 퇴근 처리
         return "redirect:/attendance/status";  // 출퇴근 상태 페이지로 리다이렉트
     }
+    
+    @RequestMapping("/attendance-main")
+    public String showAttendanceMainPage() {
+        return "attendance/attendance-main";  // /WEB-INF/views/attendance/attendance-main.jsp로 매핑
+    }
+    
+   
 
 }

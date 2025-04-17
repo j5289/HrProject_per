@@ -28,7 +28,7 @@ public class EmailVerificationDAOImpl implements EmailVerificationDAO {
 
     @Override
     public boolean isVerificationExpired(EmailVerificationVO verification) {
-        return verification.getVerexp_at().isBefore(java.time.LocalDateTime.now());
+        return verification.getVerexpAt().isBefore(java.time.LocalDateTime.now());
     }
 
     @Override

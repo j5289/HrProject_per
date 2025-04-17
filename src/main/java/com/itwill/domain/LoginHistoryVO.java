@@ -6,9 +6,9 @@ import lombok.Data;
 
 @Data
 public class LoginHistoryVO {
-	private String emp_id;
-	private String login_ip;
-	private String login_status;   // ACTIVE, LOCKED 등
-    private String login_result;   // SUCCESS, FAIL
-	private Timestamp login_time;
+	private String empId;
+	private String loginIp;
+	private String loginStatus;   // ACTIVE, LOCKED 등
+    private String loginResult;   // SUCCESS, FAIL
+	private Timestamp loginTime;
 }

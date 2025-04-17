@@ -70,6 +70,8 @@ public class MemberServiceImpl implements MemberService {
 	
 	@Override
 	public MemberVO getMemberById(String empId) {
+		logger.info(" selectByEmpId 호출 ");
+		logger.info("empId: " + empId);
 	    return mdao.selectByEmpId(empId);
 	}
 

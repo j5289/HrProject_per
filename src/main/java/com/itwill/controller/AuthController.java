@@ -58,7 +58,7 @@ public class AuthController {
 			}
 
 						
-			if (member.getEmp_email() == null || !inputEmail.equals(member.getEmp_email())) {
+			if (member.getEmpEmail() == null || !inputEmail.equals(member.getEmpEmail())) {
 				resultMap.put("status", "FAIL");
 				resultMap.put("message", "이메일이 일치하지 않습니다.");
 				response.setResult(resultMap);
@@ -73,11 +73,11 @@ public class AuthController {
 			
 			// 인증 정보를 EMAIL_VERIFICATION 테이블에 저장
 	        EmailVerificationVO verification = new EmailVerificationVO();
-	        verification.setEmp_id(empId);
+	        verification.setEmpId(empId);
 	        verification.setEmail(inputEmail);
-	        verification.setUnlock_code(code);
-	        verification.setCreated_at(LocalDateTime.now()); // 인증 요청 시간 저장
-	        verification.setVerexp_at(LocalDateTime.now().plusMinutes(5)); // 인증 만료 시간 5분 후
+	        verification.setUnlockCode(code);
+	        verification.setCreatedAt(LocalDateTime.now()); // 인증 요청 시간 저장
+	        verification.setVerexpAt(LocalDateTime.now().plusMinutes(5)); // 인증 만료 시간 5분 후
 	        verification.setVerified(false);
 	        
 	        emailVService.saveVerification(verification); // 인증 정보 저장
@@ -133,7 +133,7 @@ public class AuthController {
 		
 
 	    // 인증 코드 만료 체크
-	    if (verification.getVerexp_at().isBefore(LocalDateTime.now())) {
+	    if (verification.getVerexpAt().isBefore(LocalDateTime.now())) {
 	        resultMap.put("status", "FAIL");
 	        resultMap.put("message", "인증번호가 만료되었습니다.");
 	        response.setResult(resultMap);
@@ -141,7 +141,7 @@ public class AuthController {
 	    }
 
 	    // 인증 코드 비교
-	    if (!inputCode.equals(verification.getUnlock_code())) {
+	    if (!inputCode.equals(verification.getUnlockCode())) {
 	        resultMap.put("status", "FAIL");
 	        resultMap.put("message", "인증코드가 일치하지 않습니다.");
 	        response.setResult(resultMap);
@@ -183,7 +183,7 @@ public class AuthController {
 	    }
 
 	    // 인증 코드 만료 확인
-	    if (verification.getVerexp_at().isBefore(LocalDateTime.now())) {
+	    if (verification.getVerexpAt().isBefore(LocalDateTime.now())) {
 	        resultMap.put("status", "FAIL");
 	        resultMap.put("message", "인증번호가 만료되었습니다.");
 	        response.setResult(resultMap);

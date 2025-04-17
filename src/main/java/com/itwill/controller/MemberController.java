@@ -22,7 +22,6 @@ import com.itwill.service.MemberService;
 @RequestMapping("/member")
 public class MemberController {
 
-	
 	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
 	@Inject
@@ -35,11 +34,9 @@ public class MemberController {
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String memberLoginGET() {
 		logger.info(" /login -> memberLoginGET()호출");
-		
-		System.out.println("🔥 HomeController loaded");
-		
-		logger.info(" /login.jsp 페이지로 이동");
-		return "/member/login";
+
+		logger.info(" /member/login.jsp 페이지로 이동");
+		return "/member/login"; // "/login"
 	}
 
 	// HTTP 상태 405 – 허용되지 않는 메소드
@@ -67,7 +64,7 @@ public class MemberController {
 		// logger.info(" userpw : "+userpw );
 
 		String clientIp = request.getRemoteAddr();
-		String inputId = vo.getEmp_id();
+		String inputId = vo.getEmpId();
 		logger.info(" 로그인 vo : " + vo);
 
 		// IPv6 로컬 주소일 경우 IPv4로 변환
@@ -78,6 +75,7 @@ public class MemberController {
 		// DB에 존재하는 ID인지 확인
 		MemberVO existVO = mService.getMemberById(inputId);
 		if (existVO == null) {
+			logger.info("해당 emp_id가 DB에 존재하지 않습니다. emp_id: " + inputId);
 			rttr.addFlashAttribute("message", "존재하지 않는 계정입니다.");
 			return "redirect:/member/login";
 		}
@@ -108,10 +106,10 @@ public class MemberController {
 
 				// 상태를 LOCKED로 기록
 				LoginHistoryVO historylock = new LoginHistoryVO();
-				historylock.setEmp_id(inputId);
-				historylock.setLogin_ip(clientIp);
-				historylock.setLogin_status("LOCKED"); // 👈 요거 추가
-				historylock.setLogin_result("FAIL"); // 실패지만 잠금임
+				historylock.setEmpId(inputId);
+				historylock.setLoginIp(clientIp);
+				historylock.setLoginStatus("LOCKED"); // 👈 요거 추가
+				historylock.setLoginResult("FAIL"); // 실패지만 잠금임
 				lService.insertLoginHistory(historylock); // 다시 기록!
 
 				rttr.addFlashAttribute("message", "계정이 잠금되었습니다. 관리자에게 문의하세요.");
@@ -119,10 +117,10 @@ public class MemberController {
 			} else {
 				// 실패 시 기록
 				LoginHistoryVO historyfail = new LoginHistoryVO();
-				historyfail.setEmp_id(inputId);
-				historyfail.setLogin_ip(clientIp);
-				historyfail.setLogin_status("INACTIVE");
-				historyfail.setLogin_result("FAIL");
+				historyfail.setEmpId(inputId);
+				historyfail.setLoginIp(clientIp);
+				historyfail.setLoginStatus("INACTIVE");
+				historyfail.setLoginResult("FAIL");
 				lService.insertLoginHistory(historyfail);
 				
 				rttr.addFlashAttribute("message", "로그인 실패! (" + failCount + "회 실패)[5회 실패시 잠금]");
@@ -133,17 +131,20 @@ public class MemberController {
 
 		// 로그인 성공 시 기록
 		LoginHistoryVO historysuc = new LoginHistoryVO();
-		historysuc.setEmp_id(inputId);
-		historysuc.setLogin_ip(clientIp);
-		historysuc.setLogin_status("ACTIVE");
-		historysuc.setLogin_result("SUCCESS");
+		historysuc.setEmpId(inputId);
+		historysuc.setLoginIp(clientIp);
+		historysuc.setLoginStatus("ACTIVE");
+		historysuc.setLoginResult("SUCCESS");
 		lService.insertLoginHistory(historysuc);
 
 		// 세션 영역에 로그인 성공한 사용자의 아이디를 저장
-		session.setAttribute("id", resultVO.getEmp_id());
+		session.setAttribute("id", resultVO.getEmpId());
+		
+		// 로그인 성공 시 세션에 role_id 저장
+		session.setAttribute("role_id", resultVO.getRoleId());
 
-		if ("1234".equals(resultVO.getEmp_pw())) {
-			session.setAttribute("loginUser", resultVO.getEmp_id()); // 세션에 사용자 정보 저장
+		if ("1234".equals(resultVO.getEmpPw())) {
+			session.setAttribute("loginUser", resultVO.getEmpId()); // 세션에 사용자 정보 저장
 			return "redirect:/member/userinfo"; // 특정 페이지로 이동
 		} else {
 			rttr.addFlashAttribute("message", "정상 로그인 되었습니다.");
@@ -171,9 +172,8 @@ public class MemberController {
 	@PostMapping(value = "/find/email")
 	public String findMemberEmailPOST(MemberVO vo) {
 
-		return "/member/login";
+		return "/member/login"; // "/login"
 	}
-
 
 	@RequestMapping(value = "/main", method = RequestMethod.GET)
 	public String MemberMainGET(HttpSession session, Model model) {

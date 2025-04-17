@@ -4,7 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.itwillbs.mapper.EmailVerificationMapper">
-	<!-- emp_id로 가장 최근 인증 정보 조회 -->
+	<!-- empId로 가장 최근 인증 정보 조회 -->
 	<select id="selectByEmpId"
 		resultType="com.itwill.domain.EmailVerificationVO">
 		SELECT emp_id, email, verexp_at, verified, unlock_code,
@@ -19,7 +19,7 @@
 	<update id="update">
 		UPDATE EMAIL_VERIFICATION
 		SET verified = #{verified},
-		updated_at = #{updated_at}
+		updated_at = #{updatedAt}
 		WHERE emp_id = #{empId}
 	</update>
 
@@ -27,7 +27,7 @@
 		INSERT INTO EMAIL_VERIFICATION (
 			emp_id, email, verexp_at, verified, unlock_code
 		) VALUES (
-			#{emp_id}, #{email}, #{verexp_at}, #{verified}, #{unlock_code}
+			#{empId}, #{email}, #{verexpAt}, #{verified}, #{unlockCode}
 		)
 	</insert>
 

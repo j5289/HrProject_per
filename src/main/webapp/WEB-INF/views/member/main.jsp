@@ -40,7 +40,7 @@
 	        <%-- 권한이 없는 경우 (role_id가 설정되지 않거나 다른 값일 경우) --%>
 	        <c:otherwise>
 	            <ul>
-	                <li><a href="../login">로그인</a></li>
+	                <li><a href="login">로그인</a></li>
 	            </ul>
 	        </c:otherwise>
 	    </c:choose>

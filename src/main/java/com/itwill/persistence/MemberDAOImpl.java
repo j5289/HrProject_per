@@ -24,7 +24,7 @@ public class MemberDAOImpl implements MemberDAO {
 	
 	// mapper에 접근하는 주소(위치)
 	private static final String NAMESPACE 
-	       = "com.itwillbs.mapper.MemberMapper."; 
+	       = "com.itwillbs.mapper.MemberMapper"; 
 	
 	
 	@Override
@@ -60,7 +60,7 @@ public class MemberDAOImpl implements MemberDAO {
 		//sqlSession.insert(statement, parameter);
 		// -> sql구문 + 전달인자를 사용 실행
 		//               "com.itwillbs.mapper.MemberMapper.insertMember"
-		sqlSession.insert(NAMESPACE + "insertMember", vo);
+		sqlSession.insert(NAMESPACE + ".insertMember", vo);
 	}
 
 
@@ -73,7 +73,7 @@ public class MemberDAOImpl implements MemberDAO {
 		//  dto.setId(rs.getString("id"));  
 		// => 코드 생략 / Mybatis가 대신수행해줌
 		MemberVO resultVO
-		    = sqlSession.selectOne(NAMESPACE + "loginCheck",loginVO);
+		    = sqlSession.selectOne(NAMESPACE + ".loginCheck",loginVO);
 		
 		logger.info(" resultVO :"+resultVO);
 		
@@ -81,33 +81,24 @@ public class MemberDAOImpl implements MemberDAO {
 	}
 
 
-	@Override
-	public MemberVO loginMember(String id, String pw) {
-		logger.info(" loginMember(String id, String pw) 호출 ");
-		
-		// * 가정) 전달받은 매개변수의 값이 하나의 객체(DTO/VO)에 
-		//         저장이 불가능한 경우 (SQL구문 - join)
-		// * 컬렉션(Map) - 데이터를 Key:Value 쌍으로 저장
-//		Map<String, String> paramMap = new HashMap<String, String>();
-//		//paramMap.put("SQL구문에서 매핑된 이름", 값);
-//		paramMap.put("userid", id);
-//		paramMap.put("userpw", pw);
+//	@Override
+//	public MemberVO loginMember(String id, String pw) {
+//		logger.info(" loginMember(String id, String pw) 호출 ");
 //		
-//		 sqlSession.selectOne(NAMESPACE + "loginCheck",paramMap);
-		
-		MemberVO vo = new MemberVO();
-		vo.setEmp_id(id);
-		vo.setEmp_pw(pw);
-		
-		//sqlSession.selectOne(NAMESPACE + "loginCheck",id,pw);
-		// => 매개변수를 2개만 사용가능(전달정보는 1개만 사용가능)
-		// *  mapper에 1개이상의 정보를 전달해야하는 경우는
-		//    반드시 객체에 담아서 전달해야함!
-		MemberVO resultVO =
-		  sqlSession.selectOne(NAMESPACE + "loginCheck",vo);
-		
-		return resultVO;
-	}
+//		
+//		MemberVO vo = new MemberVO();
+//		vo.setEmp_id(id);
+//		vo.setEmp_pw(pw);
+//		
+//		//sqlSession.selectOne(NAMESPACE + "loginCheck",id,pw);
+//		// => 매개변수를 2개만 사용가능(전달정보는 1개만 사용가능)
+//		// *  mapper에 1개이상의 정보를 전달해야하는 경우는
+//		//    반드시 객체에 담아서 전달해야함!
+//		MemberVO resultVO =
+//		  sqlSession.selectOne(NAMESPACE + ".loginCheck",vo);
+//		
+//		return resultVO;
+//	}
 
 
 	@Override
@@ -117,7 +108,7 @@ public class MemberDAOImpl implements MemberDAO {
 		
 		// SQL 실행
 		MemberVO resultVO =
-		sqlSession.selectOne(NAMESPACE + "getMemberInfo",userid);
+		sqlSession.selectOne(NAMESPACE + ".getMemberInfo",userid);
 		logger.info(" SQL-내정보 보기 실행완료! ");
 		
 		//수정필요시) 
@@ -146,7 +137,7 @@ public class MemberDAOImpl implements MemberDAO {
 	public int deleteMember(MemberVO deleteVO) {
 		logger.info(" deleteMember(MemberVO deleteVO) 호출 ");
 		
-		return sqlSession.delete(NAMESPACE + "deleteMember",deleteVO);
+		return sqlSession.delete(NAMESPACE + ".deleteMember",deleteVO);
 	}
 
 
@@ -157,20 +148,23 @@ public class MemberDAOImpl implements MemberDAO {
 		// select 구문의 결과를 List형태로 만들어주는 메서드
 		// => (rs -> DTO -> List)작업을 한번에 처리
 		List<MemberVO> memberList =
-		  sqlSession.selectList(NAMESPACE + "getMemberList");
+		  sqlSession.selectList(NAMESPACE + ".getMemberList");
 		
 		return memberList;
 	}
 	
 	@Override
 	public MemberVO selectByEmpId(String empId) {
-		MemberVO member = sqlSession.selectOne(NAMESPACE + "selectByEmpId", empId);
+		logger.info(" selectByEmpId 호출 ");
+		logger.info(" empId: " + empId);
+		MemberVO member = sqlSession.selectOne(NAMESPACE + ".selectByEmpId", empId);
+		logger.info("selectByEmpId() 반환 값: " + member);
 		return member;
 	}
 	
 	@Override
 	public int updatePassword(String empId, String newPassword) {
-		return sqlSession.update(NAMESPACE + "updatePassword", 
+		return sqlSession.update(NAMESPACE + ".updatePassword", 
 		        Map.of("empId", empId, "newPassword", newPassword));
 	}
 	

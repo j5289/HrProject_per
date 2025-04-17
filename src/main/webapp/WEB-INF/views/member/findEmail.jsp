@@ -66,21 +66,21 @@
         <h1>아이디/비밀번호 찾기</h1>
         <form action="/member/find/email" method="POST">
             <div class="input-group">
-                <input type="text" name="emp_id" placeholder="사원번호(ID)">
+                <input type="text" name="empId" placeholder="사원번호(ID)">
             </div>
             <div class="input-group">
                 <input type="email" name="email" id="email-input" placeholder="Email">
                 <button type="button" class="auth-button" id="send-code">인증코드 보내기</button>
             </div>
             <div class="input-group">
-                <input type="text" name="auth_code" placeholder="인증코드 입력">
+                <input type="text" name="authCode" placeholder="인증코드 입력">
                 <button type="button" class="verify-button">인증코드 확인</button>
             </div>
             <div class="input-group">
-                <input type="password" name="new_password" placeholder="새로운 비밀번호 입력">
+                <input type="password" name="newPassword" placeholder="새로운 비밀번호 입력">
             </div>
             <div class="input-group">
-                <input type="password" name="confirm_password" placeholder="비밀번호 재확인">
+                <input type="password" name="confirmPassword" placeholder="비밀번호 재확인">
             </div>
             <button type="submit">send</button>
         </form>
@@ -91,11 +91,11 @@
 
         // 인증코드 보내기 버튼
         document.querySelector("#send-code").addEventListener("click", function () {
-            const empId = document.querySelector("input[name='emp_id']").value;
+            const empId = document.querySelector("input[name='empId']").value;
             const email = document.querySelector("input[name='email']").value;
 
             // 값 확인
-            console.log("empId:", empId, "emp_email:", email);
+            console.log("empId:", empId, "email:", email);
 
             fetch("/auth/sendCode", {
                 method: "POST",
@@ -104,13 +104,12 @@
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
-                    emp_id: empId,
+                    empId: empId,
                     email: email
                 })
             })
             .then(function(res){return res.json();})
             .then(function(data){alert(data.result.message);})
-            //.then(function(msg){console.log(JSON.parse(msg).result.song2)})
             .catch(function(err) {
             	console.error(err);
                 alert("인증코드 전송 실패");
@@ -119,7 +118,7 @@
 
         // 인증코드 확인 버튼
         document.querySelector(".verify-button").addEventListener("click", function () {
-            const code = document.querySelector("input[name='auth_code']").value;
+            const authCode = document.querySelector("input[name='authCode']").value;
 
             fetch("/auth/verifyCode", {
                 method: "POST",
@@ -127,7 +126,7 @@
                     "Content-Type": "application/json",
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({ code: code })
+                body: JSON.stringify({ authCode: authCode })
             })
             .then(function(res){return res.json();})
             .then(function(data){alert(data.result.message);})
@@ -141,8 +140,8 @@
         document.querySelector("form").addEventListener("submit", function (e) {
             e.preventDefault(); // 폼 전송 막기
 
-            const newPassword = document.querySelector("input[name='new_password']").value;
-            const confirmPassword = document.querySelector("input[name='confirm_password']").value;
+            const newPassword = document.querySelector("input[name='newPassword']").value;
+            const confirmPassword = document.querySelector("input[name='confirmPassword']").value;
 
             if (newPassword !== confirmPassword) {
                 alert("비밀번호가 일치하지 않습니다.");

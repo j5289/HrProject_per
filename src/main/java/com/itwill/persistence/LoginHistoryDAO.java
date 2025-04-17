@@ -8,8 +8,8 @@ public interface LoginHistoryDAO {
     public LoginHistoryVO insertLoginHistory(LoginHistoryVO history);
     
     // 로그인 실패 기록
-    public int countRecentFailedLogins(String emp_id);
+    public int countRecentFailedLogins(String empId);
 
-	public boolean isAccountLocked(String emp_id);
+	public boolean isAccountLocked(String empId);
     
 }

@@ -2,7 +2,11 @@ package com.itwill.attendance.dto;
 
 import lombok.Builder;
 import lombok.Data;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import com.sun.istack.NotNull;
 
 @Data
 @Builder
@@ -63,7 +67,7 @@ public class AttendanceDTO {
     private LocalDateTime updatedTime;
     
     @NotNull(message = "사원id는 필수입니다.")
-    private String employeeId;l
+    private String employeeId;
     
     @NotNull(message = "근태 날짜는 필수입니다.")
     private LocalDate attendanceDate;

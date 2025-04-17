@@ -1,6 +1,8 @@
 package com.itwill.attendance.mapper;
 
 import com.itwill.attendance.dto.*;
+import com.itwill.attendance.model.Attendance;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwill.attendance.mapper.AttendanceMapper">
-
-		<insert id="insertAttendance" parameterType="com.itwill.attendance.model.Attendance">
-		    INSERT INTO attendance (attendance_id, employee_id, attendance_date, arrival_time, status)
-		    VALUES (#{attendanceId}, #{employeeId}, #{attendanceDate}, #{arrivalTime}, #{status});
-		</insert>
 		
-
     <!-- [1] 사용자 출퇴근 기록 조회 + 현황 -->
     <select id="getMyAttendanceRecord" resultType="com.itwill.attendance.dto.AttendanceDetailDTO">
         SELECT a.attendance_id, a.emp_id, a.check_in_time, a.check_out_time, a.attendance_status,
@@ -151,17 +145,17 @@
         </where>
     </select>
     
-        <!-- 출근 처리 -->
-    <insert id="insertAttendance">
-        INSERT INTO attendance (emp_id, status, clock_in, created_time)
-        VALUES (#{empId}, #{status}, #{clockIn}, #{createdTime});
+    <!-- 출퇴근 기록 삽입 (통합된 쿼리) -->
+    <insert id="insertAttendance" parameterType="com.itwill.attendance.model.Attendance">
+        INSERT INTO attendance (attendance_id, employee_id, attendance_date, status, clock_in, created_time)
+        VALUES (#{attendanceId}, #{employeeId}, #{attendanceDate}, #{status}, #{clockIn}, #{createdTime});
     </insert>
 
     <!-- 퇴근 처리 -->
     <update id="updateAttendance">
         UPDATE attendance
         SET clock_out = #{clockOut}, updated_time = #{updatedTime}
-        WHERE emp_id = #{empId} AND status = '출근' AND clock_out IS NULL;
+        WHERE employee_id = #{employeeId} AND status = '출근' AND clock_out IS NULL;
     </update>
 
 </mapper>

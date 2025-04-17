@@ -112,12 +112,22 @@ html, body {
   margin-right: 4px;
 }
 
-.my-content-wrapper input[type="text"],
 .my-content-wrapper input[type="date"],
 .my-content-wrapper input[type="file"],
 .my-content-wrapper select,
 .my-content-wrapper textarea {
   width: 100%;
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  margin-left: 15px;
+}
+
+.my-content-wrapper input[type="text"],
+.my-content-wrapper select{
+  width: 97%;
   padding: 10px;
   font-size: 15px;
   border: 1px solid #ccc;

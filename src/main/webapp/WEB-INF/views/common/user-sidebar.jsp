@@ -27,8 +27,7 @@
                 <span>급여관리</span>
             </a>
             <ul class="submenu ${param.menu == 'salary' ? 'open' : ''}">
-                <li><a href="<c:url value='/salary/payroll' />">급여 대장</a></li>
-                <li><a href="<c:url value='/salary/tax' />">세금 관리</a></li>
+                <li><a href="<c:url value='/salary' />">급여명세서 조회</a></li>
             </ul>
         </li>
         <li class="menu-item ${param.menu == 'approval' ? 'active' : ''} has-submenu">

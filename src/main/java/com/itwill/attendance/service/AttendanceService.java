@@ -9,6 +9,7 @@ import com.itwill.attendance.dto.AttendanceUpdateDTO;
 import com.itwill.attendance.dto.AttendanceWarningDTO;
 import com.itwill.attendance.dto.LatenessDTO;
 import com.itwill.attendance.dto.LeaveBalanceDTO;
+import com.itwill.attendance.dto.LeaveDTO;
 import com.itwill.attendance.dto.LeaveHistoryDTO;
 import com.itwill.attendance.dto.LeaveUpdateRequestDTO;
 import com.itwill.attendance.dto.WorkSummaryDTO;
@@ -56,5 +57,12 @@ public interface AttendanceService {
     //출퇴근 기능에 필요한 clockIn, clockOut 메서드 선언
     void clockIn(String empId);  // 출근 처리
     void clockOut(String empId); // 퇴근 처리
+    
+ // AttendanceService.java
+    List<LeaveDTO> getMyLeaveHistory(String empId, String startDate, String endDate);
+
+    // AttendanceServiceImpl.java
+    public List<LeaveDTO> getMyLeaveHistoryByDate(String empId, String startDate, String endDate);
+
     
 }

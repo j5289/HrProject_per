@@ -24,6 +24,7 @@ import com.itwill.attendance.dto.AttendanceUpdateDTO;
 import com.itwill.attendance.dto.AttendanceWarningDTO;
 import com.itwill.attendance.dto.LatenessDTO;
 import com.itwill.attendance.dto.LeaveBalanceDTO;
+import com.itwill.attendance.dto.LeaveDTO;
 import com.itwill.attendance.dto.LeaveHistoryDTO;
 import com.itwill.attendance.dto.LeaveUpdateRequestDTO;
 import com.itwill.attendance.dto.WorkSummaryDTO;
@@ -207,14 +208,18 @@ public class AttendanceController {
     }
     
     @RequestMapping("/attendance-leave")
-    public String showLeaveHistory(@RequestParam("startDate") String startDate,
-                                   @RequestParam("endDate") String endDate,
-                                   Model model) {
+    public String showLeaveHistory(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate,
+            Model model
+    ) {
         String empId = (String) session.getAttribute("empId");
 
-        List<LeaveDTO> leaveList = attendanceService.getMyLeaveHistory(empId, startDate, endDate);
-        model.addAttribute("leaveList", leaveList);
+        // 해당 사원의 기간별 휴가 내역 조회
+        List<LeaveDTO> leaveHistory = attendanceService.getMyLeaveHistoryByDate(empId, startDate, endDate);
 
-        return "attendance/attendance-leave";
+        model.addAttribute("leaveList", leaveHistory);
+
+        return "attendance/attendance-leave";  // JSP 뷰 이름
     }
 }

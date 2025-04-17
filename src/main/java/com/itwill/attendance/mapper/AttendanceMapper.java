@@ -11,6 +11,7 @@ import com.itwill.attendance.dto.AttendanceUpdateDTO;
 import com.itwill.attendance.dto.AttendanceWarningDTO;
 import com.itwill.attendance.dto.LatenessDTO;
 import com.itwill.attendance.dto.LeaveBalanceDTO;
+import com.itwill.attendance.dto.LeaveDTO;
 import com.itwill.attendance.dto.LeaveHistoryDTO;
 import com.itwill.attendance.dto.LeaveUpdateRequestDTO;
 import com.itwill.attendance.dto.WorkSummaryDTO;
@@ -64,6 +65,11 @@ public interface AttendanceMapper {
     
     void insertClockIn(@Param("empId") String empId);
     void updateClockOut(@Param("empId") String empId);
+    
+    // 날짜 기준으로 휴가 내역 조회
+    List<LeaveDTO> getMyLeaveHistoryByDate(@Param("empId") String empId,
+                                           @Param("startDate") String startDate,
+                                           @Param("endDate") String endDate);
 
 
 }

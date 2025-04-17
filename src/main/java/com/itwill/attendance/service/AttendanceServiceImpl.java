@@ -43,11 +43,6 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public LeaveBalanceDTO getMyLeaveBalance(String empId) {
-        return attendanceMapper.getMyLeaveBalance(empId);
-    }
-
-    @Override
     public List<AttendanceDetailDTO> getAttendanceRecordsByCategory(String empId, String departmentId, String startDate, String endDate) {
         return attendanceMapper.getAttendanceRecordsByCategory(empId, departmentId, startDate, endDate);
     }
@@ -110,6 +105,16 @@ public class AttendanceServiceImpl implements AttendanceService {
             // 퇴근 기록 추가
             attendanceMapper.updateAttendance(attendanceDTO);  // 퇴근 기록 DB에 저장
         }
+    }
+    
+    @Override
+    public List<LeaveDTO> getMyLeaveHistoryByDate(String empId, String startDate, String endDate) {
+        return attendanceMapper.getMyLeaveHistoryByDate(empId, startDate, endDate);
+    }
+
+    @Override
+    public LeaveBalanceDTO getMyLeaveBalance(String empId) {
+        return attendanceMapper.getMyLeaveBalance(empId);
     }
 
 

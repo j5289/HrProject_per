@@ -6,7 +6,8 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.sun.istack.NotNull;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @Data
 @Builder

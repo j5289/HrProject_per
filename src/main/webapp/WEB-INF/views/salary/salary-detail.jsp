@@ -1,135 +1,161 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<!-- 템플릿 include -->
+<jsp:include page="../common/header.jsp" />
+<jsp:include page="../common/sidebar.jsp">
+    <jsp:param name="menu" value="salary" />
+</jsp:include>
+
 <%
 	com.itwill.salary.dto.SalaryEmployeeDTO loginUser = new com.itwill.salary.dto.SalaryEmployeeDTO();
 	//loginUser.setEmpId("22100003"); // 최아영
-	//loginUser.setEmpId("10100001");
-	loginUser.setEmpId("15100002");
+	//loginUser.setEmpId("10100001"); // 이민준
+	loginUser.setEmpId("15100002"); // 박지원
 	session.setAttribute("loginUser", loginUser);
 %>
 
-<html>
-<head>
-  <title>급여 명세서 조회</title>
+<%-- <%
+	String empId = (String) session.getAttribute("id");
+	if (empId == null) {
+	    response.sendRedirect("/login.jsp");
+	    return;
+	}
+	com.itwill.approval.dto.ApprovalSearchDTO loginUser = new com.itwill.approval.dto.ApprovalSearchDTO();
+	loginUser.setEmpId(empId);
+	session.setAttribute("loginUser", loginUser); // 다시 DTO로 저장해버림
+%> --%>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  
+  <div class="main-container">
+  
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
-  <style>
-    @font-face {
-      font-family: 'Pretendard';
-      src: url('/resources/fonts/Pretendard-Regular.otf') format('opentype');
-    }
+.main-container {
+	flex: 1;
+	padding: 0;
+	background-color: #fff;
+}
 
-    html, body {
-      font-family: 'Pretendard', sans-serif;
-    }
-  
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
-      margin: 0;
-      padding: 0;
-    }
+.wrapper {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 40px;
+  background-color: #f9f9f9;
+}
 
-    .container {
-      max-width: 900px;
-      margin: 20px auto;
-      background-color: white;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
+.my-content-wrapper {
+  max-width: 1000px;
+    margin: auto;
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+}
 
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 1.5rem;
-    }
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/resources/fonts/Pretendard-Regular.otf') format('opentype');
+}
 
-    .controls {
-      text-align: center;
-      margin-bottom: 15px;
-    }
+html, body {
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+}
 
-    select, button {
-      padding: 5px 10px;
-      margin: 5px;
-      font-size: 1rem;
-    }
+body {
+	background-color: #f9f9f9;
+	margin: 0;
+	padding: 0;
+}
 
-    .table-wrapper {
-      overflow-x: auto;
-      margin-top: 15px;
-    }
+h2 {
+	text-align: center;
+	margin-bottom: 20px;
+	font-size: 1.5rem;
+}
 
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      min-width: 600px;
-    }
+.controls {
+	text-align: center;
+	margin-bottom: 15px;
+}
 
-    th, td {
-      border: 1px solid #999;
-      padding: 8px;
-      text-align: center;
-    }
+select, button {
+	padding: 5px 10px;
+	margin: 5px;
+	font-size: 1rem;
+}
 
-    .readonly-box {
-      display: inline-block;
-      min-width: 100px;
-    }
+.table-wrapper {
+	overflow-x: auto;
+	margin-top: 15px;
+}
 
-    .button-group {
-      margin-top: 30px;
-      text-align: center;
-    }
+table {
+	border-collapse: collapse;
+	width: 100%;
+	min-width: 600px;
+}
 
-    .button-group button {
-      margin: 5px;
-      padding: 8px 20px;
-      font-size: 1rem;
-    }
+th, td {
+	border: 1px solid #999;
+	padding: 8px;
+	text-align: center;
+}
 
-    .btn-icon {
-      width: 20px !important;
-      height: 20px !important;
-      vertical-align: middle;
-      margin-right: 6px;
-      object-fit: contain;
-    }
+.readonly-box {
+	display: inline-block;
+	min-width: 100px;
+}
 
-    .net-row td {
-      border: none !important;
-      font-weight: bold;
-      background-color: #fff;
-    }
+.button-group {
+	margin-top: 30px;
+	text-align: center;
+}
 
-    @media screen and (max-width: 600px) {
-      h2 {
-        font-size: 1.2rem;
-      }
+.button-group button {
+	margin: 5px;
+	padding: 8px 20px;
+	font-size: 1rem;
+}
 
-      .controls {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
+.btn-icon {
+	width: 20px !important;
+	height: 20px !important;
+	vertical-align: middle;
+	margin-right: 6px;
+	object-fit: contain;
+}
 
-      select, button {
-        width: 100%;
-        margin: 5px 0;
-      }
+.net-row td {
+	border: none !important;
+	font-weight: bold;
+	background-color: #fff;
+}
 
-      .container {
-        padding: 15px;
-      }
-    }
-  </style>
-</head>
-<body>
+@media screen and (max-width: 600px) {
+	h2 {
+		font-size: 1.2rem;
+	}
+	.controls {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	select, button {
+		width: 100%;
+		margin: 5px 0;
+		border: 1px solid #ccc;
+    	border-radius: 5px;
+	}
+	.container {
+		padding: 15px;
+	}
+}
+</style>
 
-<div class="container">
-
+<div class="wrapper">
+<div class="my-content-wrapper">
   <h2>급여명세서 조회</h2>
 
   <!-- 연월 선택 -->
@@ -211,8 +237,6 @@
       PDF 다운로드
     </button>
   </div>
-
-</div>
 
 <script>
 $(document).ready(function () {
@@ -324,6 +348,7 @@ function downloadPdf() {
   window.location.href = '/salary/download/pdf?salMonth=' + salMonth;
 }
 </script>
-
-</body>
-</html>
+</div>
+</div>
+</div>
+<jsp:include page="../common/footer.jsp" />

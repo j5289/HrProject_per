@@ -33,11 +33,12 @@
         </li>
         <li class="menu-item ${param.menu == 'approval' ? 'active' : ''} has-submenu">
             <a href="#" class="menu-toggle">
-                <span>전자결제</span>
+                <span>전자결재</span>
             </a>
             <ul class="submenu ${param.menu == 'approval' ? 'open' : ''}">
-                <li><a href="<c:url value='/approval/draft' />">기안 작성</a></li>
-                <li><a href="<c:url value='/approval/list' />">결재 목록</a></li>
+                <li><a href="<c:url value='/approval/apply' />">결재 신청</a></li>
+                <li><a href="<c:url value='/approval/user' />">결재 신청 내역</a></li>
+                <li><a href="<c:url value='/approval/admin' />">결재 승인/반려 처리</a></li>
             </ul>
         </li>
         <li class="menu-item ${param.menu == 'notice' ? 'active' : ''} has-submenu">

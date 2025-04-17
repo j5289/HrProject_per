@@ -38,7 +38,7 @@
             <ul class="submenu ${param.menu == 'approval' ? 'open' : ''}">
                 <li><a href="<c:url value='/approval/apply' />">결재 신청</a></li>
                 <li><a href="<c:url value='/approval/user' />">결재 신청 내역</a></li>
-                <li><a href="<c:url value='/approval/user' />">결재 승인/반려 처리</a></li>
+                <li><a href="<c:url value='/approval/admin' />">결재 승인/반려 처리</a></li>
             </ul>
         </li>
         

@@ -39,7 +39,7 @@
 <style>
 .main-container {
   flex: 1;
-  padding: 40px;
+  padding: 0;
   background-color: #fff;
 }
 

@@ -73,9 +73,7 @@ public class MemberController {
 		}
 
 		// DB에 존재하는 ID인지 확인
-		logger.info("서비스 메서드 호출 전");
 		MemberVO existVO = mService.getMemberById(inputId);
-		logger.info("서비스 메서드 호출 후");
 		if (existVO == null) {
 			logger.info("해당 emp_id가 DB에 존재하지 않습니다. emp_id: " + inputId);
 			rttr.addFlashAttribute("message", "존재하지 않는 계정입니다.");

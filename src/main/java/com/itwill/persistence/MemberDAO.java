@@ -16,7 +16,7 @@ public interface MemberDAO {
 	
 	// 로그인 체크
 	public MemberVO loginMember(MemberVO loginVO);
-	public MemberVO loginMember(String id,String pw);
+	//public MemberVO loginMember(String id,String pw);
 	
 	// 내정보 보기(정보 조회)
 	public MemberVO getMemberInfo(String eid);

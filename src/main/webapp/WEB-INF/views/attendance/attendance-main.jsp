@@ -1,7 +1,7 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.itwill.attendance.dto.AttendanceStatusDTO" %>
 <!-- 템플릿 include -->
-<!--     http://localhost:8088/attendance/attendance-main -->
+<!-- http://localhost:8088/attendance/attendance-main -->
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <link rel="stylesheet" href="<c:url value='/resources/css/style.css' />">
 <html>
@@ -75,7 +75,7 @@
         <h1>반갑습니다, <strong>${sessionScope.loginUser.emp_name}</strong>님!</h1>
 
         <!-- 세션에서 empId를 hidden input에 저장 -->
-        <input type="hidden" id="empId" value="<%= session.getAttribute("empId") %>" />
+        <input type="hidden" id="empId" value="${sessionScope.empId}" />
 
         <div class="clock-box">
             현재 시간: <span id="clock" style="font-weight: bold;"></span>

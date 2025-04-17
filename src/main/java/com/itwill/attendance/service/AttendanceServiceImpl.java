@@ -3,6 +3,7 @@ package com.itwill.attendance.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.itwill.attendance.dto.*;
@@ -12,8 +13,9 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AttendanceServiceImpl implements AttendanceService {
-
-    private final AttendanceMapper attendanceMapper;
+	
+	@Autowired
+    private  AttendanceMapper attendanceMapper;
 
     @Override
     public List<AttendanceDetailDTO> getMyAttendanceRecord(String empId, String startDate, String endDate) {

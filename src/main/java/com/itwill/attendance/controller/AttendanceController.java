@@ -1,14 +1,15 @@
 package com.itwill.attendance.controller;
 
+import javax.servlet.http.HttpSession;  // HttpSession 추가
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,16 +31,17 @@ import com.itwill.attendance.service.AttendanceService;
 
 import lombok.RequiredArgsConstructor;
 
-
 @Controller
 @RequestMapping("/attendance")
 @RequiredArgsConstructor
 public class AttendanceController {
 
-    private final AttendanceService attendanceService;
+    @Autowired
+    private AttendanceService attendanceService;
 
-  
-    
+    @Autowired
+    private HttpSession session;  // HttpSession 객체를 주입받습니다.
+
     /**
      * [1. 사용자 출퇴근 기록 조회 + 현황]
      * 사용자가 기간별 출퇴근 기록을 조회하고, 출근/퇴근 여부 및 상태를 확인할 수 있음
@@ -168,7 +170,7 @@ public class AttendanceController {
             @RequestParam String endDate) {
         return attendanceService.getAttendanceSummaryForAdmin(startDate, endDate);
     }
-    
+
     @PostMapping("/attendance/clock-in")
     @ResponseBody
     public void clockIn(@RequestBody Map<String, String> request) {
@@ -183,14 +185,36 @@ public class AttendanceController {
         attendanceService.clockOut(empId);
     }
 
-    
+    // 변경 X!
     @RequestMapping("/attendance-main")
     public String showAttendanceMain(Model model) {
-      
-    	return "attendance-main";  // /WEB-INF/views/attendance/attendance-main.jsp로 매핑
-    
+        return "attendance/attendance-main";  // /WEB-INF/views/attendance/attendance-main.jsp로 매핑
+    }
+
+    // 지각 현황 페이지로 이동
+    @RequestMapping("/attendance-late")
+    public String showLateAttendance(Model model, @RequestParam String startDate, @RequestParam String endDate) {
+        // 세션에서 empId 가져오기 (현재 로그인한 사용자)
+        String empId = (String) session.getAttribute("empId");
+
+        // 사용자의 지각 내역 조회
+        List<LatenessDTO> lateAttendanceList = attendanceService.getMyLateness(empId, startDate, endDate);
+
+        // 조회된 지각 내역을 모델에 추가
+        model.addAttribute("attendanceLateList", lateAttendanceList);
+
+        return "attendance/attendance-late";  // JSP 파일 이름
     }
     
-   
+    @RequestMapping("/attendance-leave")
+    public String showLeaveHistory(@RequestParam("startDate") String startDate,
+                                   @RequestParam("endDate") String endDate,
+                                   Model model) {
+        String empId = (String) session.getAttribute("empId");
 
+        List<LeaveDTO> leaveList = attendanceService.getMyLeaveHistory(empId, startDate, endDate);
+        model.addAttribute("leaveList", leaveList);
+
+        return "attendance/attendance-leave";
+    }
 }

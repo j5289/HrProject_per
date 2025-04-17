@@ -145,6 +145,13 @@
         </where>
     </select>
     
+  <!-- 지각 내역 조회 쿼리 -->
+    <select id="selectLatenessByEmpId" resultType="com.itwill.attendance.dto.LatenessDTO">
+        SELECT * FROM lateness
+        WHERE emp_id = #{empId}
+        AND lateness_date BETWEEN #{startDate} AND #{endDate}
+    </select>
+    
     <!-- 출퇴근 기록 삽입 (통합된 쿼리) -->
     <insert id="insertAttendance" parameterType="com.itwill.attendance.model.Attendance">
         INSERT INTO attendance (attendance_id, employee_id, attendance_date, status, clock_in, created_time)

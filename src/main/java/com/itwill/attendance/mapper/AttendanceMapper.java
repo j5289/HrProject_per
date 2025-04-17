@@ -2,8 +2,7 @@ package com.itwill.attendance.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Mapper;
-
+import com.itwill.attendance.dto.AttendanceDTO;
 import com.itwill.attendance.dto.AttendanceDetailDTO;
 import com.itwill.attendance.dto.AttendanceStatusDTO;
 import com.itwill.attendance.dto.AttendanceUpdateDTO;
@@ -55,8 +54,10 @@ public interface AttendanceMapper {
     //관리자용 근태 종합 조회 
     List<AttendanceWarningDTO> getAttendanceSummaryForAdmin(String startDate, String endDate);
     
-//    //출근 기록 insert 
-//    void insertAttendance(Attendance attendance);//삽입된 행 수를 반환
+    // 출근 기록 추가
+    void insertAttendance(AttendanceDTO attendanceDTO);
 
+    // 퇴근 기록 수정
+    void updateAttendance(AttendanceDTO attendanceDTO);
 
 }

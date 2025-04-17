@@ -1,10 +1,6 @@
 package com.itwill.attendance.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +12,8 @@ public class AttendanceDTO {
     // 고유 출퇴근 기록 ID (예: 250302250010001att)
     private String attendanceId;
 
+    private String status; // 출근/퇴근 상태 (DB에 없는데..?)
+    
     // 사원 번호
     private String empId;
 
@@ -66,15 +64,6 @@ public class AttendanceDTO {
 
     // 기록 수정 시간
     private LocalDateTime updatedTime;
-    
-    @NotNull(message = "사원id는 필수입니다.")
-    private String employeeId;
-    
-    @NotNull(message = "근태 날짜는 필수입니다.")
-    private LocalDate attendanceDate;
-    
-    @NotBlank(message = "근무 상태는 필수입니다.")
-    private String status;
     
     private LocalDateTime arrivalTime;
     private LocalDateTime leavetime;

@@ -2,23 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itwill.attendance.mapper.AttendanceMapper">
 
-<!--     출근 기록 INSERT -->
-<!--     <insert id="insertAttendance" parameterType="com.itwill.attendance.model.Attendance"> -->
-<!--         INSERT INTO ATTENDANCE ( -->
-<!--             attendance_id, -->
-<!--             employee_id, -->
-<!--             attendance_date, -->
-<!--             arrival_time, -->
-<!--             status -->
-<!--         ) VALUES ( -->
-<!--             #{attendanceId}, -->
-<!--             #{employeeId}, -->
-<!--             #{attendanceDate}, -->
-<!--             #{arrivalTime}, -->
-<!--             #{status} -->
-<!--         ) -->
-<!--     </insert> -->
-
 		<insert id="insertAttendance" parameterType="com.itwill.attendance.model.Attendance">
 		    INSERT INTO attendance (attendance_id, employee_id, attendance_date, arrival_time, status)
 		    VALUES (#{attendanceId}, #{employeeId}, #{attendanceDate}, #{arrivalTime}, #{status});
@@ -167,5 +150,18 @@
             </if>
         </where>
     </select>
+    
+        <!-- 출근 처리 -->
+    <insert id="insertAttendance">
+        INSERT INTO attendance (emp_id, status, clock_in, created_time)
+        VALUES (#{empId}, #{status}, #{clockIn}, #{createdTime});
+    </insert>
+
+    <!-- 퇴근 처리 -->
+    <update id="updateAttendance">
+        UPDATE attendance
+        SET clock_out = #{clockOut}, updated_time = #{updatedTime}
+        WHERE emp_id = #{empId} AND status = '출근' AND clock_out IS NULL;
+    </update>
 
 </mapper>

@@ -3,8 +3,6 @@ package com.itwill.attendance.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -37,6 +35,8 @@ public class AttendanceController {
 
     private final AttendanceService attendanceService;
 
+  
+    
     /**
      * [1. 사용자 출퇴근 기록 조회 + 현황]
      * 사용자가 기간별 출퇴근 기록을 조회하고, 출근/퇴근 여부 및 상태를 확인할 수 있음
@@ -166,16 +166,16 @@ public class AttendanceController {
         return attendanceService.getAttendanceSummaryForAdmin(startDate, endDate);
     }
     
-    @PostMapping("/attendance")
-    public ResponseEntity<?> registerAttendance(@Valid @RequestBody AttendanceDTO dto, BindingResult bindingResult) {
-    	if (bindingResult.hasErrors()) {
-    	// 에러 메시지들을 모아서 응답으로 반환
-    	String errorMessage = bindingResult.getAllErrors().stream()
-    	.map(ObjectError::getDefaultMessage)
-    	.collect(Collectors.joining(", "));
-    	return ResponseEntity.badRequest().body("입력 오류: " + errorMessage);
-    	}
-    	attendanceService.registerAttendance(dto);
-    	return ResponseEntity.ok("출근 등록 완료");
-    	}
+    @PostMapping("/clockIn")
+    public String clockIn(@RequestParam String empId) {
+        attendanceService.clockIn(empId);  // 출근 처리
+        return "redirect:/attendance/status";  // 출퇴근 상태 페이지로 리다이렉트
+    }
+
+    @PostMapping("/clockOut")
+    public String clockOut(@RequestParam String empId) {
+        attendanceService.clockOut(empId);  // 퇴근 처리
+        return "redirect:/attendance/status";  // 출퇴근 상태 페이지로 리다이렉트
+    }
+
 }

@@ -1,22 +1,12 @@
 package com.itwill.attendance.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.itwill.attendance.dto.AttendanceDTO;
-import com.itwill.attendance.dto.AttendanceDetailDTO;
-import com.itwill.attendance.dto.AttendanceStatusDTO;
-import com.itwill.attendance.dto.AttendanceUpdateDTO;
-import com.itwill.attendance.dto.AttendanceWarningDTO;
-import com.itwill.attendance.dto.LatenessDTO;
-import com.itwill.attendance.dto.LeaveBalanceDTO;
-import com.itwill.attendance.dto.LeaveHistoryDTO;
-import com.itwill.attendance.dto.LeaveUpdateRequestDTO;
-import com.itwill.attendance.dto.WorkSummaryDTO;
+import com.itwill.attendance.dto.*;
 import com.itwill.attendance.mapper.AttendanceMapper;
-import com.itwill.attendance.model.Attendance;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -84,34 +74,41 @@ public class AttendanceServiceImpl implements AttendanceService {
     public List<AttendanceWarningDTO> getAttendanceSummaryForAdmin(String startDate, String endDate) {
         return attendanceMapper.getAttendanceSummaryForAdmin(startDate, endDate);
     }
-    
-    @Override
-    public void registerAttendance(AttendanceDTO dto) {
-        // 출근 시간 기준 출근 기록 생성 예시
-        Attendance attendance = Attendance.builder()
-                .attendanceId(dto.getEmployeeId() + "_" + dto.getAttendanceDate())  // 예시 ID
-                .employeeId(dto.getEmployeeId())
-                .attendanceDate(dto.getAttendanceDate())
-                .arrivalTime(dto.getArrivalTime())  // 또는 LocalDateTime.now()
-                .status(dto.getStatus())
-                .build();
 
-        attendanceMapper.insertAttendance(attendance);
+    @Override
+    public void clockIn(String empId) {
+        // 출근 기록 추가
+        AttendanceDTO attendanceDTO = AttendanceDTO.builder()
+            .empId(empId)
+            .status("출근")  // 출근 상태
+            .clockIn(LocalDateTime.now())  // 현재 시간을 출근 시간으로 설정
+            .build();
+
+        attendanceMapper.insertAttendance(attendanceDTO); // 출근 정보 DB에 저장
     }
 
-    
-//    @Override
-//    public void registerAttendance(AttendanceDTO dto) {
-//    // 예시 로직: 현재 시간으로 출근 기록 생성
-//    Attendance attendance = Attendance.builder()
-//    .attendanceId(dto.getEmployeeId() + "_" + dto.getAttendanceDate()) // 예시
-//    .employeeId(dto.getEmployeeId())
-//    .attendanceDate(dto.getAttendanceDate())
-//    .arrivalTime(LocalDateTime.now())
-//    .status(dto.getStatus())
-//    .build();
-//
-//    attendanceMapper.insertAttendance(attendance);
-//
-//    }
+    @Override
+    public void clockOut(String empId) {
+        // 퇴근 기록 추가
+        AttendanceDTO attendanceDTO = AttendanceDTO.builder()
+            .empId(empId)
+            .status("퇴근")  // 퇴근 상태
+            .clockOut(LocalDateTime.now())  // 현재 시간을 퇴근 시간으로 설정
+            .build();
+
+        attendanceMapper.updateAttendance(attendanceDTO); // 퇴근 정보 DB에 저장
+    }
+
+    @Override
+    public void registerAttendance(AttendanceDTO attendanceDTO) {
+        if ("출근".equals(attendanceDTO.getStatus())) {
+            // 출근 기록 추가
+            attendanceMapper.insertAttendance(attendanceDTO);  // 출근 기록 DB에 저장
+        } else if ("퇴근".equals(attendanceDTO.getStatus())) {
+            // 퇴근 기록 추가
+            attendanceMapper.updateAttendance(attendanceDTO);  // 퇴근 기록 DB에 저장
+        }
+    }
+
+
 }

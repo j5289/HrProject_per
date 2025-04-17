@@ -51,5 +51,10 @@ public interface AttendanceService {
     // [12] 관리자용 근태 종합 조회
     List<AttendanceWarningDTO> getAttendanceSummaryForAdmin(String startDate, String endDate);
 
-    void registerAttendance(AttendanceDTO dto);
+    void registerAttendance(AttendanceDTO attendanceDTO);
+    
+    //출퇴근 기능에 필요한 clockIn, clockOut 메서드 선언
+    void clockIn(String empId);  // 출근 처리
+    void clockOut(String empId); // 퇴근 처리
+    
 }

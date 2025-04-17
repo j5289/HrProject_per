@@ -7,11 +7,11 @@ import lombok.Data;
 @Data
 public class EmailVerificationVO {
 
-	private String emp_id;
+	private String empId;        // emp_id → empId
     private String email;
-    private LocalDateTime verexp_at;
+    private LocalDateTime verexpAt;  // verexp_at → verexpAt
     private boolean verified;
-    private String unlock_code;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private String unlockCode;     // unlock_code → unlockCode
+    private LocalDateTime createdAt; // created_at → createdAt
+    private LocalDateTime updatedAt; // updated_at → updatedAt
 }

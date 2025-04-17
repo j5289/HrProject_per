@@ -59,8 +59,8 @@
         <h1>LOGIN</h1>
         <p>아이디 : 사원번호</p>
         <form action="/member/login" method="POST">
-            <input type="text" name="emp_id" placeholder="ID"> <br>
-            <input type="password" name="emp_pw" placeholder="password"> <br>
+            <input type="text" name="empId" placeholder="ID"> <br>
+            <input type="password" name="empPw" placeholder="password"> <br>
             <div class="links">
                 <!-- <a href="/member/join">회원가입</a> -->
                 <a href="/member/find">아이디 / 비밀번호 찾기</a>

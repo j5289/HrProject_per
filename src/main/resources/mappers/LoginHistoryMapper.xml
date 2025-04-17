@@ -14,10 +14,10 @@
 		login_result,
 		login_time
 		) VALUES (
-		#{emp_id},
-		#{login_ip},
-		#{login_status},
-		#{login_result},
+		#{empId},
+		#{loginIp},
+		#{loginStatus},
+		#{loginResult},
 		NOW()
 		)
 	</insert>
@@ -27,7 +27,7 @@
 		resultType="String">
 		SELECT login_status
 		FROM USER_LOGIN_HISTORY
-		WHERE emp_id = #{emp_id}
+		WHERE emp_id = #{empId}
 		ORDER BY login_time DESC
 		LIMIT 1
 	</select>
@@ -39,13 +39,13 @@
 		SELECT COUNT(*)
 		FROM USER_LOGIN_HISTORY
 		WHERE emp_id =
-		#{emp_id}
+		#{empId}
 		AND login_result = 'FAIL'
-		AND login_time > IFNULL((
+		AND login_time > IFNULL(( 
 		SELECT
 		MAX(login_time)
 		FROM USER_LOGIN_HISTORY
-		WHERE emp_id = #{emp_id} AND
+		WHERE emp_id = #{empId} AND 
 		login_result = 'SUCCESS'
 		), '2000-01-01')
 		AND login_time >

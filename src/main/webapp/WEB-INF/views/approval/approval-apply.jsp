@@ -8,6 +8,7 @@
 
 <%-- 테스트용 로그인 사용자 지정 (최아영 emp_id = 22100003) --%>
 <%
+
 	com.itwill.approval.dto.ApprovalSearchDTO loginUser = new com.itwill.approval.dto.ApprovalSearchDTO();
 	loginUser.setEmpId("22100003");
 	session.setAttribute("loginUser", loginUser);

@@ -97,9 +97,27 @@ public class AttendanceController {
      * 사용자가 자신이 신청한 휴가 기록과 승인 현황을 확인하고, 다운로드할 수 있음
      */
     @GetMapping("/leave-history")
-    public List<LeaveHistoryDTO> getMyLeaveHistory(
-            @RequestParam String empId) {
-        return attendanceService.getMyLeaveHistory(empId);
+    public List<LeaveHistoryDTO> getMyLeaveHistory(@RequestParam String empId) {
+        return attendanceService.getMyTotalLeaveHistory(empId);  // LeaveHistoryDTO 반환
+    }
+    
+    /**
+     * [5-1. 사용자 특정 기간 내의 휴가 내역 조회 ]
+     */
+    @RequestMapping("/attendance-leave")
+    public String showLeaveHistory(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate,
+            Model model
+    ) {
+        String empId = (String) session.getAttribute("empId");
+        
+        // 기간별 휴가 내역 조회 시 LeaveHistoryDTO로 반환
+        List<LeaveHistoryDTO> leaveHistory = attendanceService.getMyLeaveHistoryByDate(empId, startDate, endDate);
+        
+        model.addAttribute("leaveList", leaveHistory);
+        
+        return "attendance/attendance-leave";  // JSP 뷰 이름
     }
 
     /**
@@ -111,6 +129,15 @@ public class AttendanceController {
             @RequestParam String empId) {
         return attendanceService.getMyLeaveBalance(empId);
     }
+    
+    /**
+     * [6-1. 사용자 휴가 신청 기능]
+     */
+    @PostMapping("/leave/apply")
+    public void applyForLeave(@RequestBody LeaveDTO leaveDTO) {
+        attendanceService.applyForLeave(leaveDTO);
+    }
+    
 
     /**
      * [7. 관리자용 출퇴근 기록부 조회 (사원별/부서별/일자별)]
@@ -187,13 +214,13 @@ public class AttendanceController {
         attendanceService.clockOut(empId);
     }
 
-    // 변경 X!
+    // jsp뷰페이지 - 근태 관리 메인 페이지  (변경 X!)
     @RequestMapping("/attendance-main")
     public String showAttendanceMain(Model model) {
         return "attendance/attendance-main";  // /WEB-INF/views/attendance/attendance-main.jsp로 매핑
     }
 
-    // 지각 현황 페이지로 이동
+    // jsp뷰페이지 - 근태관리 - 지각 현황 페이지로 이동
     @RequestMapping("/attendance-late")
     public String showLateAttendance(Model model, @RequestParam String startDate, @RequestParam String endDate) {
         // 세션에서 empId 가져오기 (현재 로그인한 사용자)
@@ -208,19 +235,5 @@ public class AttendanceController {
         return "attendance/attendance-late";  // JSP 파일 이름
     }
     
-    @RequestMapping("/attendance-leave")
-    public String showLeaveHistory(
-            @RequestParam("startDate") String startDate,
-            @RequestParam("endDate") String endDate,
-            Model model
-    ) {
-        String empId = (String) session.getAttribute("empId");
 
-        // 해당 사원의 기간별 휴가 내역 조회
-        List<LeaveDTO> leaveHistory = attendanceService.getMyLeaveHistoryByDate(empId, startDate, endDate);
-
-        model.addAttribute("leaveList", leaveHistory);
-
-        return "attendance/attendance-leave";  // JSP 뷰 이름
-    }
 }

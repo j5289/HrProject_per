@@ -33,11 +33,17 @@ public interface AttendanceMapper {
     //사용자 근태 항목 및 근무 형태 조회 
     List<AttendanceStatusDTO> getMyAttendanceStatus(String empId, String startDate, String endDate);
     
-    //사용자 휴가 내역 조회 
-    List<LeaveHistoryDTO> getMyLeaveHistory(String empId);
+    //사용자 전체 휴가 내역 확인(모든기간)
+    List<LeaveHistoryDTO> getMyTotalLeaveHistory(String empId);
+    
+    //사용자 특정 기간 내의 휴가 내역 확인
+    List<LeaveHistoryDTO> getMyLeaveHistoryByDate(@Param("empId") String empId, @Param("startDate") String startDate, @Param("endDate") String endDate);
     
     //사용자 휴가 잔여 일수 확인 
     LeaveBalanceDTO getMyLeaveBalance(String empId);
+    
+    //사용자 휴가 신청 기능
+    void applyForLeave(LeaveDTO leaveDTO);
     
     //관리자용 출퇴근 기록부 조회
     List<AttendanceDetailDTO> getAttendanceRecordsByCategory(String empId, String departmentId, String startDate, String endDate);
@@ -66,10 +72,6 @@ public interface AttendanceMapper {
     void insertClockIn(@Param("empId") String empId);
     void updateClockOut(@Param("empId") String empId);
     
-    // 날짜 기준으로 휴가 내역 조회
-    List<LeaveDTO> getMyLeaveHistoryByDate(@Param("empId") String empId,
-                                           @Param("startDate") String startDate,
-                                           @Param("endDate") String endDate);
 
 
 }

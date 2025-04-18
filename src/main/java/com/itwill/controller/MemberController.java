@@ -15,7 +15,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itwill.domain.LoginHistoryVO;
 import com.itwill.domain.MemberVO;
-import com.itwill.domain.UserSessionVO;
 import com.itwill.service.LoginHistoryService;
 import com.itwill.service.MemberService;
 import com.itwill.util.PasswordEncoderUtil;

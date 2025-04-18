@@ -38,9 +38,6 @@ public class AuthController {
 	
 	@Inject
 	private EmailVerificationService emailVService;
-	
-	@Inject
-	private LoginHistoryService userSessionService;
 
 	@Inject
 	private LoginHistoryService loginHistoryService;

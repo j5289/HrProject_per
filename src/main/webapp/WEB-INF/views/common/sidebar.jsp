@@ -6,7 +6,6 @@
 	request.setAttribute("roleId", roleId); // JSTL에서 쓸 수 있게 전달
 %>
 
-
 <div class="sidebar">
     <ul class="menu-list">
         <li class="menu-item ${param.menu == 'personnel' ? 'active' : ''} has-submenu">
@@ -33,17 +32,22 @@
                 <span>급여관리</span>
             </a>
             <ul class="submenu ${param.menu == 'salary' ? 'open' : ''}">
-                <li><a href="<c:url value='/salary/payroll' />">급여 대장</a></li>
-                <li><a href="<c:url value='/salary/tax' />">세금 관리</a></li>
+                <li><a href="<c:url value='/salary' />">급여명세서 조회</a></li>
+                <c:if test="${roleId == 1 || roleId == 2}">
+		            <li><a href="<c:url value='/salary/admin' />">급여 지급 확정 처리</a></li>
+		        </c:if>
             </ul>
         </li>
         <li class="menu-item ${param.menu == 'approval' ? 'active' : ''} has-submenu">
             <a href="#" class="menu-toggle">
-                <span>전자결제</span>
+                <span>전자결재</span>
             </a>
             <ul class="submenu ${param.menu == 'approval' ? 'open' : ''}">
-                <li><a href="<c:url value='/approval/draft' />">기안 작성</a></li>
-                <li><a href="<c:url value='/approval/list' />">결재 목록</a></li>
+                <li><a href="<c:url value='/approval/apply' />">결재 신청</a></li>
+                <li><a href="<c:url value='/approval/user' />">결재 신청 내역</a></li>
+                <c:if test="${sessionScope.role_id == 1 || sessionScope.role_id == 2}">
+		            <li><a href="<c:url value='/salary/admin' />">급여 지급 확정 처리</a></li>
+		        </c:if>
             </ul>
         </li>
         <li class="menu-item ${param.menu == 'notice' ? 'active' : ''} has-submenu">

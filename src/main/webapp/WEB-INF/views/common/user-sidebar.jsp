@@ -51,12 +51,11 @@
         </li>
     </ul>
     
-    <!-- 관리자 전환 버튼 (관리자 권한이 있는 사용자에게만 표시) -->
-    <c:if test="${sessionScope.user.isAdmin == true}">
-        <div class="admin-switch">
-            <a href="<c:url value='/admin/main' />" class="admin-switch-btn">
-                <i class="fas fa-user-shield"></i> 관리자 모드로 전환
-            </a>
-        </div>
-    </c:if>
-</div>
+    <!-- 관리자 전환 버튼 (roleId가 1 또는 2인 사용자에게만 표시) -->
+	<c:if test="${sessionScope.user.roleId == 1 || sessionScope.user.roleId == 2}">
+	    <div class="admin-switch">
+	        <a href="<c:url value='/admin/main' />" class="admin-switch-btn">
+	            <i class="fas fa-user-shield"></i> 관리자 모드로 전환
+	        </a>
+	    </div>
+	</c:if>

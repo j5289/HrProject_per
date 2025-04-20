@@ -215,6 +215,26 @@ html, body {
 	margin-top: 10px;
 	font-weight: bold;
 }
+
+.status {
+  font-weight: bold;
+}
+
+.status.approved {
+  color: blue;
+}
+
+.status.rejected {
+  color: orange;
+}
+
+.status.cancelled {
+  color: gray;
+}
+
+.status.pending {
+  color: gray;
+}
 </style>
 
 <div class="my-content-wrapper">
@@ -425,7 +445,7 @@ html, body {
 		    const totalItems = approvalData.length;
 		    const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-		    if (totalPages <= 1) return;
+		    //if (totalPages <= 1) return;
 
 		    const maxPagesToShow = 5;
 		    const currentGroup = Math.ceil(currentPage / maxPagesToShow);

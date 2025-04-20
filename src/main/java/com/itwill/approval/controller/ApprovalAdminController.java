@@ -101,11 +101,23 @@ public class ApprovalAdminController {
 	        html.append("<p><strong>결재선:</strong><br>");
 	        for (int i = 0; i < detail.getApprovers().size(); i++) {
 	            ApprovalLineWithStatusDTO approver = detail.getApprovers().get(i);
+	            String status = approver.getStatus() != null ? approver.getStatus() : "대기";
+	            String statusClass = "";
+
+	            switch (status) {
+	                case "승인": statusClass = "approved"; break;
+	                case "반려": statusClass = "rejected"; break;
+	                case "취소": statusClass = "cancelled"; break;
+	                default: statusClass = "pending"; break;
+	            }
+
 	            html.append((i + 1)).append(". ")
 	                .append(approver.getName()).append(" (")
 	                .append(approver.getDept()).append(" / ")
 	                .append(approver.getPosition()).append(") ")
-	                .append("(").append(approver.getStatus() != null ? approver.getStatus() : "대기").append(")");
+	                .append("<span class='status ").append(statusClass).append("'>(")
+	                .append(status).append(")</span>");
+
 	            if (i < detail.getApprovers().size() - 1) html.append(" → ");
 	        }
 	        html.append("</p>");

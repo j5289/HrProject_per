@@ -13,6 +13,7 @@
                 <li><a href="<c:url value='/user/employee/organization' />">조직도</a></li>
             </ul>
         </li>
+
         <li class="menu-item ${param.menu == 'attendance' ? 'active' : ''} has-submenu">
             <a href="#" class="menu-toggle">
                 <span>근태관리</span>
@@ -22,6 +23,7 @@
                 <li><a href="<c:url value='/attendance/monthly' />">월간 근태</a></li>
             </ul>
         </li>
+
         <li class="menu-item ${param.menu == 'salary' ? 'active' : ''} has-submenu">
             <a href="#" class="menu-toggle">
                 <span>급여관리</span>
@@ -30,6 +32,7 @@
                 <li><a href="<c:url value='/salary' />">급여명세서 조회</a></li>
             </ul>
         </li>
+
         <li class="menu-item ${param.menu == 'approval' ? 'active' : ''} has-submenu">
             <a href="#" class="menu-toggle">
                 <span>전자결재</span>
@@ -40,7 +43,7 @@
                 <li><a href="<c:url value='/approval/admin' />">결재 승인/반려 처리</a></li>
             </ul>
         </li>
-        
+
         <li class="menu-item ${param.menu == 'notice' ? 'active' : ''} has-submenu">
             <a href="#" class="menu-toggle">
                 <span>공지사항</span>
@@ -50,9 +53,9 @@
             </ul>
         </li>
     </ul>
-    
-    <!-- 관리자 전환 버튼 (관리자 권한이 있는 사용자에게만 표시) -->
-    <c:if test="${sessionScope.user.isAdmin == true}">
+
+    <!-- 관리자 전환 버튼 (roleId가 1 또는 2인 사용자에게만 표시) -->
+    <c:if test="${sessionScope.user.roleId == 1 || sessionScope.user.roleId == 2}">
         <div class="admin-switch">
             <a href="<c:url value='/admin/main' />" class="admin-switch-btn">
                 <i class="fas fa-user-shield"></i> 관리자 모드로 전환

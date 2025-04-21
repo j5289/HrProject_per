@@ -51,8 +51,14 @@ public class UserController {
 
 	@GetMapping("/main")
 	public String userMain(HttpSession session, Model model) {
-	    String empId = (String) session.getAttribute("empId");	// 로그인 하면 쓸거임
+	    String empId = (String) session.getAttribute("id");	// 로그인 하면 쓸거임
 	    //String testEmpId = "240420001";
+	    
+	    if (empId == null) {
+	        return "redirect:/member/login";
+	    }
+	    
+	    
 	    EmployeeVO employee = employeeService.getEmployeeById(empId); // 로그인 하면 쓸거임
 	    //EmployeeVO employee = employeeService.getEmployeeById(testEmpId);
 	    

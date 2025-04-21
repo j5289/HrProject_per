@@ -87,7 +87,7 @@ public class UserController {
     // 인사관리 - 인사조회
     @GetMapping("/employee/info")
     public String employeeInfo(HttpSession session, Model model) {
-        String empId = (String) session.getAttribute("empId"); // 로그인 하면 쓸거임
+        String empId = (String) session.getAttribute("id"); // 로그인 하면 쓸거임
         // String testEmpId = "240420001";
         EmployeeVO employee = employeeService.getEmployeeById(empId); // 로그인 하면 쓸거임
         // EmployeeVO employee = employeeService.getEmployeeById(testEmpId);
@@ -98,7 +98,7 @@ public class UserController {
     // 정보 수정 페이지
     @GetMapping("/employee/edit")
     public String editEmployeeForm(HttpSession session, Model model) {
-        String empId = (String) session.getAttribute("empId"); //로그인 하면 쓸거임
+        String empId = (String) session.getAttribute("id"); //로그인 하면 쓸거임
         // String testEmpId = "240420001";
         EmployeeVO employee = employeeService.getEmployeeById(empId); //로그인 하면 쓸거임
         // EmployeeVO employee = employeeService.getEmployeeById(testEmpId);
@@ -109,7 +109,7 @@ public class UserController {
     @PostMapping("/employee/update")
     public String updateEmployee(EmployeeVO employee, HttpSession session, RedirectAttributes redirectAttributes) {
         // 실제 로그인 적용 시 아래 코드 사용
-        String empId = (String) session.getAttribute("empId");	// 로그인 하면 쓸거임
+        String empId = (String) session.getAttribute("id");	// 로그인 하면 쓸거임
 
         // 테스트용 ID (개발 중에만 사용)
         // String empId = "240420001";
@@ -128,7 +128,7 @@ public class UserController {
     // 퇴사 신청 페이지
     @GetMapping("/employee/resignation")
     public String resignationForm(HttpSession session, Model model) {
-        String empId = (String) session.getAttribute("empId"); //로그인 하면 쓸거임
+        String empId = (String) session.getAttribute("id"); //로그인 하면 쓸거임
         //String testEmpId = "240420001";
         EmployeeVO employee = employeeService.getEmployeeById(empId); //로그인하면 쓸거임
         // EmployeeVO employee = employeeService.getEmployeeById(testEmpId);
@@ -147,7 +147,7 @@ public class UserController {
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
-        String empId = (String) session.getAttribute("empId");
+        String empId = (String) session.getAttribute("id");
         // if (empId == null) empId = "240420001"; // 테스트용
 
         ResignationVO resignation = new ResignationVO();
@@ -180,7 +180,7 @@ public class UserController {
     // 발령 조회
     @GetMapping("/employee/appointment")
     public String appointmentInfo(HttpSession session, Model model) {
-        String empId = (String) session.getAttribute("empId");	// 로그인 하면 쓸거임
+        String empId = (String) session.getAttribute("id");	// 로그인 하면 쓸거임
         // String testEmpId = "240420001";
         List<AppointmentVO> appointments = appointmentService.getAppointmentsByEmpId(empId);	// 로그인 하면 쓸거임
         //List<AppointmentVO> appointments = appointmentService.getAppointmentsByEmpId(testEmpId);

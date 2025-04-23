@@ -2,6 +2,7 @@ package com.itwill.attendance.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +39,21 @@ public class AttendanceServiceImpl implements AttendanceService {
     // 3) 특정 사원의 출퇴근 기록 조회 (날짜 기준)
     @Override
     public AttendanceCheckDTO getAttendanceByEmpIdAndDate(String empId, LocalDate workDate) {
-        // 특정 날짜의 출퇴근 기록 조회
-        return attendanceMapper.selectAttendanceByEmpIdAndDate(empId,  workDate.toString());
-    }
+    	//출퇴근 기록 조회
+    	AttendanceCheckDTO result = attendanceMapper.selectAttendanceByEmpIdAndDate(empId, workDate.toString());
+
+         if (result != null && result.getCheckInTime() != null) {
+             // 출근 시간이 9시 이후면 지각으로 간주
+             LocalTime expectedCheckInTime = LocalTime.of(9, 0); // 9시
+             if (result.getCheckInTime().isAfter(expectedCheckInTime)) {
+                 result.setIsLate(true); //지각 여부 설정
+             } else {
+                 result.setIsLate(false); //지각 아님
+             }
+         }
+         
+         return result;
+     }
    
     
 }

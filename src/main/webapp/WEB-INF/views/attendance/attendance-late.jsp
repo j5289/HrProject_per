@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.itwill.attendance.dto.LatenessDTO" %>
+<%@ page import="com.itwill.attendance.dto.AttendanceLateDTO" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!-- 템플릿 include -->
 <!-- http://localhost:8088/attendance/attendance-late -->

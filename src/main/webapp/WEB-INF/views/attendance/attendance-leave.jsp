@@ -1,6 +1,7 @@
 <!-- 템플릿 include -->
 <!-- http://localhost:8088/attendance/attendance-leave -->
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="com.itwill.attendance.dto.AttendanceLeaveDTO" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>

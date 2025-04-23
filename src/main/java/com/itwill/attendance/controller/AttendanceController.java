@@ -1,47 +1,39 @@
 package com.itwill.attendance.controller;
 
-import javax.servlet.http.HttpSession;  // HttpSession 추가
-
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwill.attendance.dto.AttendanceCheckDTO;
-import com.itwill.attendance.dto.AttendanceDTO;
-import com.itwill.attendance.dto.AttendanceDetailDTO;
-import com.itwill.attendance.dto.AttendanceStatusDTO;
-import com.itwill.attendance.dto.AttendanceUpdateDTO;
-import com.itwill.attendance.dto.AttendanceWarningDTO;
-import com.itwill.attendance.dto.LatenessDTO;
-import com.itwill.attendance.dto.LeaveBalanceDTO;
-import com.itwill.attendance.dto.LeaveDTO;
-import com.itwill.attendance.dto.LeaveHistoryDTO;
-import com.itwill.attendance.dto.LeaveUpdateRequestDTO;
-import com.itwill.attendance.dto.WorkSummaryDTO;
-import com.itwill.attendance.service.AttendanceService;
-
-import lombok.RequiredArgsConstructor;
+import com.itwill.attendance.service.AttendanceService;  
 
 @Controller
-@RequestMapping("/attendance/attendance_main")
+@RequestMapping("/attendance")
 public class AttendanceController {
 	
 	@Autowired
 	private AttendanceService attendanceService;
+	
+	// 출퇴근 메인 페이지 진입
+	@GetMapping("/main")
+	public String showAttendanceMainPage(HttpSession session) {
+	    // 로그인 확인용 세션 처리도 여기서 할 수 있음
+	    String empId = (String) session.getAttribute("id");
+	    if (empId == null) {
+	        return "redirect:/member/login"; // 로그인 안 되어 있으면 로그인 페이지로 이동
+	    }
+	    return "attendance/attendance-main"; // JSP 경로 
+	}
 	
 	// ===== 1. 출퇴근 기록부 및 현황 =====
     // 1) 출근 시간 등록
@@ -81,7 +73,6 @@ public class AttendanceController {
     }
 
 
-	
 	// 3) 특정 사원의 출퇴근 기록 조회 (날짜 기준)
     @PostMapping("/attendance/check-attendance")
     @ResponseBody

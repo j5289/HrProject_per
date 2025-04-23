@@ -21,6 +21,13 @@ public interface EmployeeService {
 	
 	void deleteEmployee(String empId);
 	
+	int countTotalEmployees();
+    int countNewEmployeesThisMonth();
+    
+    void updateQuitDate(String empId, Date empQd);
+
+    
+
 	
     
 }

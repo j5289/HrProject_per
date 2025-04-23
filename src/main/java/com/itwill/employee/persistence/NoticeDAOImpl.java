@@ -45,5 +45,10 @@ public class NoticeDAOImpl implements NoticeDAO {
         sqlSession.update(NAMESPACE + ".increaseViewCount", not_id);
     }
     
+    @Override
+    public List<NoticeVO> findRecentNotices() {
+        return sqlSession.selectList(NAMESPACE + ".findRecentNotices");
+    }
+    
 }
 

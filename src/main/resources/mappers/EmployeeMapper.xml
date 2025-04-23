@@ -51,5 +51,25 @@
     <delete id="deleteEmployee" parameterType="string">
         DELETE FROM EMPLOYEE WHERE emp_id = #{empId}
     </delete>
+    
+    <!-- 총 직원 수 -->
+	<select id="countTotalEmployees" resultType="int">
+	    SELECT COUNT(*) FROM EMPLOYEE WHERE emp_qd IS NULL
+	</select>
+	
+	<!-- 이번 달 입사자 수 -->
+	<select id="countNewEmployeesThisMonth" resultType="int">
+	    SELECT COUNT(*) 
+	    FROM EMPLOYEE 
+	    WHERE MONTH(emp_jd) = MONTH(NOW()) AND YEAR(emp_jd) = YEAR(NOW())
+	</select>
+	
+	<!-- 퇴사승인으로 퇴사일 받기 -->
+    <update id="updateQuitDate">
+	    UPDATE EMPLOYEE
+	    SET emp_qd = #{empQd}
+	    WHERE emp_id = #{empId}
+	</update>
+    
 
 </mapper>

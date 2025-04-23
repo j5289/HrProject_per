@@ -46,5 +46,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeDAO.deleteEmployee(empId);
     }
     
+    @Override
+    public int countTotalEmployees() {
+        return employeeDAO.countTotalEmployees();
+    }
+
+    @Override
+    public int countNewEmployeesThisMonth() {
+        return employeeDAO.countNewEmployeesThisMonth();
+    }
+    
+    @Override
+    public void updateQuitDate(String empId, Date empQd) {
+        employeeDAO.updateQuitDate(empId, empQd);
+    }
+    
     
 }

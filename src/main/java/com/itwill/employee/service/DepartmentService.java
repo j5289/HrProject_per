@@ -1,6 +1,7 @@
 package com.itwill.employee.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.itwill.employee.domain.DepartmentVO;
 import com.itwill.employee.domain.EmployeeVO;
@@ -11,5 +12,7 @@ public interface DepartmentService {
     boolean updateDepartment(DepartmentVO department);
     boolean deleteDepartment(String deptId);
     List<EmployeeVO> getEmployeesByDeptId(String deptId);
+    List<Map<String, Object>> getDepartmentEmployeeCounts();
 
+    
 }

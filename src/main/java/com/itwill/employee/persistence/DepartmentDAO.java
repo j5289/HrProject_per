@@ -1,6 +1,7 @@
 package com.itwill.employee.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 import com.itwill.employee.domain.DepartmentVO;
 import com.itwill.employee.domain.EmployeeVO;
@@ -21,5 +22,10 @@ public interface DepartmentDAO {
 
     // 부서별 사원 목록 조회
     List<EmployeeVO> getEmployeesByDeptId(String deptId);
+    
+    // 부서별 인원 현황
+    List<Map<String, Object>> getDepartmentEmployeeCounts();
 
+    
+    
 }

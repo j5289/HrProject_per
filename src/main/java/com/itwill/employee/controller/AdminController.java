@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -19,12 +20,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.itwill.approval.dto.ApprovalSearchDTO;
+import com.itwill.approval.service.ApprovalService;
 import com.itwill.employee.domain.AppointmentVO;
+import com.itwill.employee.domain.CalendarVO;
 import com.itwill.employee.domain.DepartmentVO;
 import com.itwill.employee.domain.EmployeeVO;
 import com.itwill.employee.domain.NoticeVO;
 import com.itwill.employee.domain.ResignationVO;
 import com.itwill.employee.service.AppointmentService;
+import com.itwill.employee.service.CalendarService;
 import com.itwill.employee.service.DepartmentService;
 import com.itwill.employee.service.EmployeeService;
 import com.itwill.employee.service.NoticeService;
@@ -45,12 +50,20 @@ public class AdminController {
 	@Autowired
     private AppointmentService appointmentService;
 	
+	@Autowired
+	private ApprovalService approvalService;
 	
 	@Autowired
     private ResignationService resignationService;
-
+	
+	@Autowired
+    private NoticeService noticeService;
+	
+	@Autowired
+	private CalendarService calendarService; 
+	
     @GetMapping("/main")
-    public String main(HttpSession session) {
+    public String main(HttpSession session, Model model) {
         // 세션에 사용자 정보가 없으면 로그인 페이지로 리다이렉트
         
         
@@ -59,9 +72,45 @@ public class AdminController {
 		 * session.getAttribute("user"); if (user == null || !user.getIsAdmin()) {
 		 * return "redirect:/user/main"; }
 		 */
+    	// 총 직원 수
+        int totalEmployees = employeeService.countTotalEmployees();
+        int newEmployees = employeeService.countNewEmployeesThisMonth();
+
+        model.addAttribute("totalEmployees", totalEmployees);
+        model.addAttribute("newEmployees", newEmployees);
+
+        // 부서별 인원 통계 추가
+        List<Map<String, Object>> depCounts = departmentService.getDepartmentEmployeeCounts();
+        model.addAttribute("depCounts", depCounts);
+    	
+        // 로그인 정보에서 사번 가져오기
+        String empId = (String) session.getAttribute("id");
         
+        // 결재 대기 문서 수 조회
+        int pendingCount = approvalService.getPendingApprovalCount(empId);
+        model.addAttribute("pendingCount", pendingCount);
+        
+        // 캘린더 일정 추가
+        List<CalendarVO> calendarList = calendarService.getCalendarList();
+        model.addAttribute("calendarList", calendarList);
+        
+        // 최근 공지사항 가져오기
+        List<NoticeVO> noticeList = noticeService.getRecentNotices();
+        model.addAttribute("noticeList", noticeList);
+        
+    	
         return "admin/main";
     }
+    
+    @PostMapping("/calendar/save")
+    public String saveCalendarEvent(@ModelAttribute CalendarVO calendar, HttpSession session) {
+        String writer = (String) session.getAttribute("id");
+        calendar.setCalWriter(writer != null ? writer : "admin");
+        calendarService.register(calendar);
+        return "redirect:/admin/main";
+    }
+
+    
     
     // 인사관리 - 인사리스트
     @GetMapping("/employee/list")
@@ -215,21 +264,9 @@ public class AdminController {
         return "admin/attendance/manage";
     }
     
-    // 급여관리
-    @GetMapping("/salary/manage")
-    public String salaryManage() {
-        return "admin/salary/manage";
-    }
     
     
-    // 전자결제
-    @GetMapping("/approval/manage")
-    public String approvalManage() {
-        return "admin/approval/manage";
-    }
     
-    @Autowired
-    private NoticeService noticeService;
     
     // 공지사항 관리
     @GetMapping("/notice/manage")
@@ -319,13 +356,19 @@ public class AdminController {
         if (approver == null) approver = "admin";
 
         try {
-            resignationService.updateStatus(resignId, status, approver);
+            // 해당 퇴사 신청 정보 조회
+            ResignationVO vo = resignationService.getResignationById(resignId);
+            vo.setStatus(status);
+            vo.setApprover(approver);
+
+            resignationService.updateResignationStatus(vo);
             return "OK";
         } catch (Exception e) {
-            e.printStackTrace(); // 로그 확인용
+            e.printStackTrace();
             return "FAIL";
         }
     }
+
 
     
     

@@ -34,4 +34,13 @@
     <delete id="deleteNotice" parameterType="int">
         DELETE FROM NOTICE WHERE not_id = #{notId}
     </delete>
+    
+    <select id="findRecentNotices" resultType="com.itwill.employee.domain.NoticeVO">
+	    SELECT * 
+	    FROM NOTICE 
+	    ORDER BY not_wd DESC 
+	    LIMIT 3
+	</select>
+    
+    
 </mapper>

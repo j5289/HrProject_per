@@ -285,4 +285,9 @@ public class ApprovalServiceImpl implements ApprovalService {
     public List<PendingApprovalDTO> getMyRequestedDocuments(String empId) {
         return approvalDAO.selectRequestedApprovals(sqlSession, empId);
     }
+    
+    @Override
+    public int getPendingApprovalCount(String empId) {
+        return approvalDAO.countPendingApprovals(sqlSession, empId);
+    }
 }

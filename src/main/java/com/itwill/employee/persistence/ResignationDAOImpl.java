@@ -30,31 +30,11 @@ public class ResignationDAOImpl implements ResignationDAO {
         return sqlSession.selectOne(NAMESPACE + ".getResignationById", resignId);
     }
 
+    
+    
     @Override
-    public void approveResignation(int resignId, String approver) {
-        sqlSession.update(NAMESPACE + ".approveResignation", 
-            new java.util.HashMap<String, Object>() {{
-                put("resignId", resignId);
-                put("approver", approver);
-            }});
+    public void updateResignationStatus(ResignationVO vo) {
+        sqlSession.update(NAMESPACE + ".updateResignationStatus", vo);
     }
-
-    @Override
-    public void rejectResignation(int resignId, String approver) {
-        sqlSession.update(NAMESPACE + ".rejectResignation", 
-            new java.util.HashMap<String, Object>() {{
-                put("resignId", resignId);
-                put("approver", approver);
-            }});
-    }
-
-    @Override
-    public void updateStatus(int resignId, String status, String approver) {
-        sqlSession.update(NAMESPACE + ".updateStatus", 
-            new java.util.HashMap<String, Object>() {{
-                put("resignId", resignId);
-                put("status", status);
-                put("approver", approver);
-            }});
-    }
+    
 }

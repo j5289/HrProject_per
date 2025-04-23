@@ -30,7 +30,7 @@ public class AttendanceLateDTO {
 	//지각 사유서 파일 정보 
 	private String fimeName; //지각 사유서 제목
 	private String filePath; //지각 사유서 경로 
-	private String fileSize; //지각 사유서 크기
+	private Long fileSize; //지각 사유서 크기
 	private String fileType; //파일 유형 
 	
 	//기간 조회 시만 사용(옵션, 둘 다 DB에 없음)

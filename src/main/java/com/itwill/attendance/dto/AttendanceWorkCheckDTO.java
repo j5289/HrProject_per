@@ -33,7 +33,7 @@ public class AttendanceWorkCheckDTO {
 	private Integer latenessMinutes; //지각 시간, 해당 데이터가 있는 날짜의 근무 일수에서 해당 데이터 값만큼 뺀 값이 근무 시간.
 	//만약 2024년 05월 12일에 latenessMinutes 가 존재한다면 해당 지각 시간만큼 근무 시간에서 빼서 누적 근무 시간 계산 
 	
-	private String category; //근무 유형 필터 (ex. 일반근무, 야근, 출장 등), DB에 없음
+	private String category; //근무 유형 필터 (ex. 일반근무, 야근, 출장, 휴일 근무 등), DB에 없음
 	
 	private String absenceId; //결근 Id, 결근한 경우 해당 날짜는 근무시간과 근무일수에 포함되지 않음
 	
@@ -45,5 +45,6 @@ public class AttendanceWorkCheckDTO {
 	private LocalDate businessTripStart; //출장 시작일, 출장 근무 일수 계산에 사용
 	private LocalDate businessTripEnd; //출장 종료일, 출장 근무 일수 계산에 사용
 	//출장 근무 일수 = 출장 종료일 - 출장 시작일 
+	private String leaveDays; //휴가일수, 해당 정보 있으면 근무 일수에서 휴가 일수만큼 제외하기
 
 }

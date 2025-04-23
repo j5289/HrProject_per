@@ -96,6 +96,7 @@ public class AttendanceController {
 
             if (result != null) {
                 response.put("attendance", result); 
+                response.put("lateStatus", result.getLateStatus()); //지각 여부 추가
                 response.put("message", "출퇴근 기록 조회 성공");
             } else {
                 response.put("message", "해당 날짜의 출퇴근 기록이 없습니다.");

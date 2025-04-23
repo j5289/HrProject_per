@@ -25,8 +25,16 @@ public class AttendanceCheckDTO {
 	private LocalTime checkInTime; //출근 시간
 	private LocalTime checkOutTime; //퇴근 시간 
 	
-	private Boolean isLate; //지각 여부(DB에 없음, true 면 지각)
 	private LocalTime nowTime; //현재 시각(DB에 없음, 출근/퇴근 버튼 누를 때 표시용) 
+	private Boolean isLate; //지각 여부(DB에 없음, true 면 지각)
 	
+	//지각 여부 출력하는 메서드 
+	public String getLateStatus() {
+		if(isLate != null && isLate) {
+			return "예";
+		}else {
+			return "아니오";
+		}
+	}
 	
 }

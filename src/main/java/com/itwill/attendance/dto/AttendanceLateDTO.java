@@ -1,5 +1,6 @@
 package com.itwill.attendance.dto;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +20,9 @@ import lombok.NoArgsConstructor;
 public class AttendanceLateDTO {
 
 	private String empId; //사원 번호
-	private String workDate; //근무 날짜(단일 날짜 or 가장 최근 날짜)
+	
+	private LocalDate startDate; //조회 시작 날짜 (DB에 없음)
+	private LocalDate endDate; //조회 종료 날짜 (DB에 없음)
 	
 	private Integer latenessMinutes; //지각 시간(분)
 	private String reason; //지각 이유 

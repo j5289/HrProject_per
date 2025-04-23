@@ -25,5 +25,38 @@
 		where emp_id = #{empId} and work_date = #{workDate}
 	</select>
 		
+	<!-- ===== 2. 사원의 지각 현황 ===== -->	
+	
+	<!-- 1) 사원의 지각 상세 기록 조회 (파일 및 승인 상태 포함) -->
+	<select id="findLatenessRecordsByEmpIdAndDateRange" parameterType="map" resultType="com.itwill.attendance.dto.AttendanceLateDTO">
+		SELECT 
+			a.emp_id, a.work_date AS startDate, a.lateness_minutes, a.reason,
+			f.file_name AS fimeName, f.file_path, f.file_size, f.file_type,
+			s.status AS managerCheck
+		FROM 
+			attendance a
+			LEFT JOIN file f ON a.attendance_id = f.attendance_id
+			LEFT JOIN signatures s ON a.attendance_id = s.attendance_id
+		WHERE 
+			a.emp_id = #{empId}
+			AND a.work_date BETWEEN #{startDate} AND #{endDate}
+			AND a.lateness_minutes > 0
+		ORDER BY 
+			a.work_date ASC
+	</select>
+	
+	<!-- 2) 사원의 지각 통계 조회 (횟수, 총 지각 시간) -->
+	<select id="countTotalLateStatsByEmpIdAndDateRange" parameterType="map" resultType="com.itwill.attendance.dto.AttendanceLateDTO">
+		SELECT 
+			COUNT(*) AS totalLateCount,
+			SUM(lateness_minutes) AS totalLateMinutes
+		FROM 
+			attendance
+		WHERE 
+			emp_id = #{empId}
+			AND work_date BETWEEN #{startDate} AND #{endDate}
+			AND lateness_minutes > 0
+	</select>
+		
 
 </mapper>

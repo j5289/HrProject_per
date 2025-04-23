@@ -1,12 +1,13 @@
 package com.itwill.attendance.mapper;
 
 import java.time.LocalDate;
-
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.repository.query.Param;
 import org.apache.ibatis.annotations.Mapper;
 import com.itwill.attendance.dto.AttendanceCheckDTO;
+import com.itwill.attendance.dto.AttendanceLateDTO;
 import com.itwill.attendance.model.Attendance;
 
 /**
@@ -27,6 +28,10 @@ public interface AttendanceMapper {
     // 3) 특정 사원의 출퇴근 기록 조회 (날짜 기준)
     AttendanceCheckDTO selectAttendanceByEmpIdAndDate(@Param("empId") String empId, @Param("workDate") String workDate);
 
-    
-    
+    // ===== 2. 사원의 지각 현황 =====
+    // 1) 특정 사원의 기간 내 지각 기록 전체 조회 (날짜별, 사유서 포함)
+    List<AttendanceLateDTO> findLatenessRecordsByEmpIdAndDateRange(Map<String, Object> paramMap);
+        
+    // 2) 특정 사원의 기간 내 지각 총 횟수 및 총 시간 
+    AttendanceLateDTO countTotalLateStatsByEmpIdAndDateRange(Map<String, Object> paramMap);
 }

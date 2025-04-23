@@ -2,6 +2,7 @@ package com.itwill.attendance.controller;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwill.attendance.dto.AttendanceCheckDTO;
+import com.itwill.attendance.dto.AttendanceLateDTO;
 import com.itwill.attendance.service.AttendanceService;  
 
 @Controller
@@ -35,7 +37,7 @@ public class AttendanceController {
 	    return "attendance/attendance-main"; // JSP 경로 
 	}
 	
-	// ===== 1. 출퇴근 기록부 및 현황 =====
+	// ===== 1. 사용자 출퇴근 기록부 및 현황 =====
     // 1) 출근 시간 등록
     @PostMapping("attendance/check-in")
     @ResponseBody
@@ -97,5 +99,50 @@ public class AttendanceController {
         }
         return response;
     }
+    
+    
+    // ===== 2. 사용자 지각 현황 =====
+    @PostMapping("/attendance/late-status")
+    @ResponseBody
+    public Map<String, Object> getLateStatus(
+            @RequestParam("empId") String empId,
+            @RequestParam("startDate") String startDateStr,
+            @RequestParam("endDate") String endDateStr) {
 
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // 날짜 파싱
+            LocalDate startDate = LocalDate.parse(startDateStr);
+            LocalDate endDate = LocalDate.parse(endDateStr);
+
+            // 파라미터 맵 생성
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("empId", empId);
+            paramMap.put("startDate", startDate);
+            paramMap.put("endDate", endDate);
+
+            // 지각 상세 목록 조회
+            List<AttendanceLateDTO> lateDetails = attendanceService.getLateDetailsByEmpIdAndDateRange(paramMap);
+
+            // 지각 통계 조회
+            AttendanceLateDTO lateStats = attendanceService.getLateStatsByEmpIdAndDateRange(paramMap);
+
+            // 응답 구성
+            response.put("lateDetails", lateDetails);  // 지각 내역
+            response.put("lateStats", lateStats);      // 지각 통계
+            response.put("message", "지각 현황 조회 성공");
+
+        } catch (Exception e) {
+            response.put("message", "지각 현황 조회에 실패했습니다.");
+        }
+
+        return response;
+    }
+    
+    
+    
+    
+    
+    
 }

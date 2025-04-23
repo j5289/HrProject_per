@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,5 +56,18 @@ public class AttendanceServiceImpl implements AttendanceService {
          return result;
      }
    
+    // ===== 2. 사용자 지각 현황 =====
+    // 1) 지각 상세 내역 조회
+    @Override
+    public List<AttendanceLateDTO> getLateDetailsByEmpIdAndDateRange(Map<String, Object> paramMap) {
+        return attendanceMapper.findLatenessRecordsByEmpIdAndDateRange(paramMap);
+    }
+
+    // 2) 지각 통계 조회 (총 횟수, 총 시간)
+    @Override
+    public AttendanceLateDTO getLateStatsByEmpIdAndDateRange(Map<String, Object> paramMap) {
+        return attendanceMapper.countTotalLateStatsByEmpIdAndDateRange(paramMap);
+    }
+
     
 }

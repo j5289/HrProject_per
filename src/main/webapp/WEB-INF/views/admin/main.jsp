@@ -258,20 +258,38 @@
 
         <!-- 최근 공지/결재 -->
         <div class="dashboard-row">
-            <div class="recent-notices">
-                <h3>최근 공지사항</h3>
-                <table class="data-table">
-                    <thead><tr><th>제목</th><th>작성자</th><th>작성일</th><th>조회수</th></tr></thead>
-                    <tbody>
-                        <tr><td><a href="#">2025년 상반기 인사발령 안내</a></td><td>관리자</td><td>2025-03-27</td><td>45</td></tr>
-                        <tr><td><a href="#">사내 시스템 업데이트 안내</a></td><td>관리자</td><td>2025-03-25</td><td>38</td></tr>
-                        <tr><td><a href="#">4월 회식 일정 안내</a></td><td>관리자</td><td>2025-03-23</td><td>42</td></tr>
-                    </tbody>
-                </table>
-                <div class="view-more">
-                    <a href="<c:url value='/admin/notice/manage' />" class="btn btn-outline">더보기</a>
-                </div>
-            </div>
+			    <div class="recent-notices">
+			        <h3>최근 공지사항</h3>
+			        <table class="data-table">
+			            <thead>
+			                <tr>
+			                    <th>제목</th>
+			                    <th>작성자</th>
+			                    <th>작성일</th>
+			                    <th>조회수</th>
+			                </tr>
+			            </thead>
+			            <tbody>
+			                <c:forEach var="notice" items="${noticeList}">
+			                    <tr>
+			                        <td>
+			                            <a href="<c:url value='/admin/notice/detail/${notice.notId}' />">
+			                                ${notice.notTi}
+			                            </a>
+			                        </td>
+			                        <td>${notice.notRegister}</td>
+			                        <td><fmt:formatDate value="${notice.notWd}" pattern="yyyy-MM-dd" /></td>
+			                        <td>${notice.viewCount}</td>
+			                    </tr>
+			                </c:forEach>
+			            </tbody>
+			        </table>
+			        <div class="view-more">
+			            <a href="<c:url value='/admin/notice/manage' />" class="btn btn-outline">더보기</a>
+			        </div>
+			    </div>
+			
+
 
             <div class="pending-approvals">
                 <h3>결재 대기 문서</h3>

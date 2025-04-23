@@ -11,4 +11,6 @@ public interface NoticeService {
     public void updateNotice(NoticeVO vo);
     public void deleteNotice(int not_id);
     public void increaseViewCount(int not_id);
+    List<NoticeVO> getRecentNotices();
+
 }

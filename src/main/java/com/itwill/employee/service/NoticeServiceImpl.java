@@ -42,4 +42,10 @@ public class NoticeServiceImpl implements NoticeService {
         noticeDAO.increaseViewCount(not_id);
     }
     
+    @Override
+    public List<NoticeVO> getRecentNotices() {
+        return noticeDAO.findRecentNotices(); 
+    }
+
+    
 }

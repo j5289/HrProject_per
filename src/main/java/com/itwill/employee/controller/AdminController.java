@@ -21,11 +21,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itwill.employee.domain.AppointmentVO;
+import com.itwill.employee.domain.CalendarVO;
 import com.itwill.employee.domain.DepartmentVO;
 import com.itwill.employee.domain.EmployeeVO;
 import com.itwill.employee.domain.NoticeVO;
 import com.itwill.employee.domain.ResignationVO;
 import com.itwill.employee.service.AppointmentService;
+import com.itwill.employee.service.CalendarService;
 import com.itwill.employee.service.DepartmentService;
 import com.itwill.employee.service.EmployeeService;
 import com.itwill.employee.service.NoticeService;
@@ -53,6 +55,9 @@ public class AdminController {
 	@Autowired
     private NoticeService noticeService;
 	
+	@Autowired
+	private CalendarService calendarService; 
+	
     @GetMapping("/main")
     public String main(HttpSession session, Model model) {
         // 세션에 사용자 정보가 없으면 로그인 페이지로 리다이렉트
@@ -70,13 +75,31 @@ public class AdminController {
         model.addAttribute("totalEmployees", totalEmployees);
         model.addAttribute("newEmployees", newEmployees);
 
-        //  부서별 인원 통계 추가
+        // 부서별 인원 통계 추가
         List<Map<String, Object>> depCounts = departmentService.getDepartmentEmployeeCounts();
         model.addAttribute("depCounts", depCounts);
     	
+        // 캘린더 일정 추가
+        List<CalendarVO> calendarList = calendarService.getCalendarList();
+        model.addAttribute("calendarList", calendarList);
+        
+        // 최근 공지사항 가져오기
+        List<NoticeVO> noticeList = noticeService.getRecentNotices();
+        model.addAttribute("noticeList", noticeList);
+        
     	
         return "admin/main";
     }
+    
+    @PostMapping("/calendar/save")
+    public String saveCalendarEvent(@ModelAttribute CalendarVO calendar, HttpSession session) {
+        String writer = (String) session.getAttribute("id");
+        calendar.setCalWriter(writer != null ? writer : "admin");
+        calendarService.register(calendar);
+        return "redirect:/admin/main";
+    }
+
+    
     
     // 인사관리 - 인사리스트
     @GetMapping("/employee/list")

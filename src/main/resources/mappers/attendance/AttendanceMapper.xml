@@ -57,6 +57,58 @@
 			AND work_date BETWEEN #{startDate} AND #{endDate}
 			AND lateness_minutes > 0
 	</select>
+	
+	<!-- ===== 3. 사원의 근무 조회 ===== -->
+	<!-- 1) 특정 사원의 기간 및 근무 유형 기준 근무 통계 요약 -->
+	<select id="findWorkSummaryByEmpIdAndDateRange" parameterType="map" resultType="com.itwill.attendance.dto.AttendanceWorkCheckDTO">
+    SELECT 
+        e.emp_id AS empId,
+        e.emp_name AS empName,
+        
+        COUNT(DISTINCT a.work_date) AS totalDate,
+        -- 휴가 제외 실제 근무일 수
+        (COUNT(DISTINCT a.work_date) - IFNULL(SUM(lv.leave_days), 0)) AS actualWorkDays,
+        
+        SUM(TIMESTAMPDIFF(MINUTE, a.check_in_time, a.check_out_time)) AS totalTime,
+        
+        SUM(CASE WHEN a.night_work_hour IS NOT NULL THEN a.night_work_hour ELSE 0 END) AS nightWorkHour,
+        SUM(CASE WHEN a.holiday_work_hour IS NOT NULL THEN a.holiday_work_hour ELSE 0 END) AS hoildayWorkHour,
+        
+        SUM(CASE WHEN a.lateness_minutes IS NOT NULL THEN a.lateness_minutes ELSE 0 END) AS latenessMinutes,
+        
+        bt.business_trip_id AS businessTripId,
+        bt.start_date AS businessTripStart,
+        bt.end_date AS businessTripEnd,
+        
+        ab.absence_id AS absenceId,
+        lv.leave_days AS leaveDays
+        
+    FROM 
+        employee e
+        LEFT JOIN attendance a ON e.emp_id = a.emp_id
+        LEFT JOIN business bt ON a.attendance_id = bt.attendance_id
+        LEFT JOIN absence ab ON a.attendance_id = ab.attendance_id
+        LEFT JOIN leave lv ON a.attendance_id = lv.attendance_id
+    
+    WHERE 
+        e.emp_id = #{empId}
+        AND a.work_date BETWEEN #{startDate} AND #{endDate}
+        
+        <if test="category != null and category != ''">
+            AND (
+                (#{category} = '일반근무' AND a.night_work_hour IS NULL AND a.holiday_work_hour IS NULL)
+                OR (#{category} = '야근' AND a.night_work_hour IS NOT NULL)
+                OR (#{category} = '휴일근무' AND a.holiday_work_hour IS NOT NULL)
+                OR (#{category} = '출장' AND bt.business_trip_id IS NOT NULL)
+            )
+        </if>
+        
+    GROUP BY 
+        e.emp_id
+</select>
+
+
+	
 		
 
 </mapper>

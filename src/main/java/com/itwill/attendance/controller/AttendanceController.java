@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwill.attendance.dto.AttendanceCheckDTO;
 import com.itwill.attendance.dto.AttendanceLateDTO;
+import com.itwill.attendance.dto.AttendanceWorkCheckDTO;
 import com.itwill.attendance.service.AttendanceService;  
 
 @Controller
@@ -140,6 +141,41 @@ public class AttendanceController {
         return response;
     }
     
+    
+    // ===== 3. 사용자 근무 조회 =====
+    @PostMapping("/attendance/work-summary")
+    @ResponseBody
+    public Map<String, Object> getWorkSummary(
+            @RequestParam("empId") String empId,
+            @RequestParam("startDate") String startDateStr,
+            @RequestParam("endDate") String endDateStr) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // 날짜 파싱
+            LocalDate startDate = LocalDate.parse(startDateStr);
+            LocalDate endDate = LocalDate.parse(endDateStr);
+
+            // 파라미터 맵 구성
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("empId", empId);
+            paramMap.put("startDate", startDate);
+            paramMap.put("endDate", endDate);
+
+            // 서비스 호출
+            AttendanceWorkCheckDTO workSummary = attendanceService.findWorkSummaryByEmpIdAndDateRange(paramMap);
+
+            // 응답 구성
+            response.put("workSummary", workSummary);
+            response.put("message", "근무 통계 조회 성공");
+        } catch (Exception e) {
+            response.put("message", "근무 통계 조회에 실패했습니다.");
+        }
+
+        return response;
+    }
+
     
     
     

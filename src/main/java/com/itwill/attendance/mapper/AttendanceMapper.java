@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.apache.ibatis.annotations.Mapper;
 import com.itwill.attendance.dto.AttendanceCheckDTO;
 import com.itwill.attendance.dto.AttendanceLateDTO;
+import com.itwill.attendance.dto.AttendanceWorkCheckDTO;
 import com.itwill.attendance.model.Attendance;
 
 /**
@@ -34,4 +35,14 @@ public interface AttendanceMapper {
         
     // 2) 특정 사원의 기간 내 지각 총 횟수 및 총 시간 
     AttendanceLateDTO countTotalLateStatsByEmpIdAndDateRange(Map<String, Object> paramMap);
+
+    // ===== 3. 사원의 근무 조회 =====
+    // 1) 특정 사원의 기간 및 근무 유형 기준 근무 통계 요약
+    AttendanceWorkCheckDTO findWorkSummaryByEmpIdAndDateRange(Map<String, Object> paramMap);
+
+
+
+
+
+
 }

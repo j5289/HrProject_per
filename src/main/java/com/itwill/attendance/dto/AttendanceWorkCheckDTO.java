@@ -47,4 +47,7 @@ public class AttendanceWorkCheckDTO {
 	//출장 근무 일수 = 출장 종료일 - 출장 시작일 
 	private String leaveDays; //휴가일수, 해당 정보 있으면 근무 일수에서 휴가 일수만큼 제외하기
 
+	private Integer actualWorkDays; // 휴가 제외 실제 근무일 수(DB에 없음)
+
+	
 }

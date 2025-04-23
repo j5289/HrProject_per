@@ -56,6 +56,7 @@ public class AttendanceServiceImpl implements AttendanceService {
          return result;
      }
    
+    
     // ===== 2. 사용자 지각 현황 =====
     // 1) 지각 상세 내역 조회
     @Override
@@ -69,5 +70,12 @@ public class AttendanceServiceImpl implements AttendanceService {
         return attendanceMapper.countTotalLateStatsByEmpIdAndDateRange(paramMap);
     }
 
+    
+    // ===== 3. 사용자 근무 조회 =====
+    // 1) 기간 내 근무 통계 조회
+    @Override
+    public AttendanceWorkCheckDTO findWorkSummaryByEmpIdAndDateRange(Map<String, Object> paramMap) {
+        return attendanceMapper.findWorkSummaryByEmpIdAndDateRange(paramMap);
+    }
     
 }

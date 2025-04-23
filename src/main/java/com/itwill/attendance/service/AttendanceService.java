@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.itwill.attendance.dto.AttendanceCheckDTO;
 import com.itwill.attendance.dto.AttendanceLateDTO;
+import com.itwill.attendance.dto.AttendanceWorkCheckDTO;
 
 public interface AttendanceService {
 
@@ -25,4 +26,9 @@ public interface AttendanceService {
 
     // 2) 기간 내 지각 통계 조회 (총 지각 횟수, 총 지각 시간)
     AttendanceLateDTO getLateStatsByEmpIdAndDateRange(Map<String, Object> paramMap);
+
+    // ===== 3. 사용자 근무 조회 =====
+    // 1) 기간 내 근무 통계 조회 
+    AttendanceWorkCheckDTO findWorkSummaryByEmpIdAndDateRange(Map<String, Object> paramMap);
+    
 }

@@ -31,5 +31,15 @@
         FROM EMPLOYEE
         WHERE dep_id = #{deptId}
     </select>
+    
+    <select id="getDepartmentEmployeeCounts" resultType="map">
+	    SELECT d.dep_name AS depName, COUNT(e.emp_id) AS empCount
+	    FROM DEPARTMENT d
+	    LEFT JOIN EMPLOYEE e ON d.dep_id = e.dep_id
+	    GROUP BY d.dep_name
+	</select>
+
+    
+    
 
 </mapper>

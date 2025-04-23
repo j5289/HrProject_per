@@ -62,5 +62,22 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         sqlSession.delete("com.itwill.mapper.EmployeeMapper.deleteEmployee", empId);
     }
     
+    @Override
+    public int countTotalEmployees() {
+        return sqlSession.selectOne(NAMESPACE + ".countTotalEmployees");
+    }
+
+    @Override
+    public int countNewEmployeesThisMonth() {
+        return sqlSession.selectOne(NAMESPACE + ".countNewEmployeesThisMonth");
+    }
+    
+    @Override
+    public void updateQuitDate(String empId, Date empQd) {
+        sqlSession.update(NAMESPACE + ".updateQuitDate", Map.of("empId", empId, "empQd", empQd));
+    }
+
+    
+    
     
 }

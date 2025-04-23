@@ -73,10 +73,21 @@
         </div>
 
         <div class="actions mt-4">
-            <button class="btn btn-success" onclick="handleDecision('승인')">승인</button>
-            <button class="btn btn-danger" onclick="handleDecision('반려')">반려</button>
-            <a href="<c:url value='/admin/resignation/manage' />" class="btn btn-secondary">목록</a>
-        </div>
+		    <button class="btn btn-success"
+		            onclick="handleDecision('승인')"
+		            <c:if test="${resign.status ne '대기'}">disabled</c:if>>
+		        승인
+		    </button>
+		
+		    <button class="btn btn-danger"
+		            onclick="handleDecision('반려')"
+		            <c:if test="${resign.status ne '대기'}">disabled</c:if>>
+		        반려
+		    </button>
+		
+		    <a href="<c:url value='/admin/resignation/manage' />" class="btn btn-secondary">목록</a>
+		</div>
+
     </div>
 </div>
 
@@ -94,7 +105,6 @@ function handleDecision(status) {
         .then(result => {
             if (result === 'OK') {
                 alert("퇴사 신청이 '" + status + "' 처리되었습니다.");
-                // ✅ manage 페이지로 이동
                 window.location.href = '/admin/resignation/manage';
             } else {
                 alert('처리에 실패했습니다. 다시 시도해주세요.');
@@ -106,7 +116,6 @@ function handleDecision(status) {
     }
 }
 </script>
-
 
 <style>
 .card {
@@ -135,11 +144,25 @@ function handleDecision(status) {
 .actions {
     display: flex;
     gap: 10px;
+    align-items: center;
 }
 
 .actions .btn {
     min-width: 100px;
 }
+
+.text-muted {
+    color: #888;
+    margin-top: 10px;
+}
+
+.actions .btn[disabled] {
+    background-color: #ccc !important;
+    border-color: #ccc !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
 </style>
 
 <jsp:include page="../../common/footer.jsp" />

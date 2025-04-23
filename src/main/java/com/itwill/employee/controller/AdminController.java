@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -48,9 +49,12 @@ public class AdminController {
 	
 	@Autowired
     private ResignationService resignationService;
-
+	
+	@Autowired
+    private NoticeService noticeService;
+	
     @GetMapping("/main")
-    public String main(HttpSession session) {
+    public String main(HttpSession session, Model model) {
         // 세션에 사용자 정보가 없으면 로그인 페이지로 리다이렉트
         
         
@@ -59,7 +63,18 @@ public class AdminController {
 		 * session.getAttribute("user"); if (user == null || !user.getIsAdmin()) {
 		 * return "redirect:/user/main"; }
 		 */
-        
+    	// 총 직원 수
+        int totalEmployees = employeeService.countTotalEmployees();
+        int newEmployees = employeeService.countNewEmployeesThisMonth();
+
+        model.addAttribute("totalEmployees", totalEmployees);
+        model.addAttribute("newEmployees", newEmployees);
+
+        //  부서별 인원 통계 추가
+        List<Map<String, Object>> depCounts = departmentService.getDepartmentEmployeeCounts();
+        model.addAttribute("depCounts", depCounts);
+    	
+    	
         return "admin/main";
     }
     
@@ -215,21 +230,9 @@ public class AdminController {
         return "admin/attendance/manage";
     }
     
-    // 급여관리
-    @GetMapping("/salary/manage")
-    public String salaryManage() {
-        return "admin/salary/manage";
-    }
     
     
-    // 전자결제
-    @GetMapping("/approval/manage")
-    public String approvalManage() {
-        return "admin/approval/manage";
-    }
     
-    @Autowired
-    private NoticeService noticeService;
     
     // 공지사항 관리
     @GetMapping("/notice/manage")
@@ -319,13 +322,19 @@ public class AdminController {
         if (approver == null) approver = "admin";
 
         try {
-            resignationService.updateStatus(resignId, status, approver);
+            // 해당 퇴사 신청 정보 조회
+            ResignationVO vo = resignationService.getResignationById(resignId);
+            vo.setStatus(status);
+            vo.setApprover(approver);
+
+            resignationService.updateResignationStatus(vo);
             return "OK";
         } catch (Exception e) {
-            e.printStackTrace(); // 로그 확인용
+            e.printStackTrace();
             return "FAIL";
         }
     }
+
 
     
     

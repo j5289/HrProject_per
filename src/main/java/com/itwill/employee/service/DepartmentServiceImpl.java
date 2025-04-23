@@ -1,6 +1,7 @@
 package com.itwill.employee.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,4 +40,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     public List<EmployeeVO> getEmployeesByDeptId(String deptId) {
         return departmentDAO.getEmployeesByDeptId(deptId);
     }
+    @Override
+    public List<Map<String, Object>> getDepartmentEmployeeCounts() {
+        return departmentDAO.getDepartmentEmployeeCounts();
+    }
+
+    
+    
 }

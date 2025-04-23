@@ -131,6 +131,34 @@
     background: #4e73df;
     color: white;
 }
+
+.chart-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    background-color: #e9ecef;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.bar-label {
+    width: 120px;
+    padding: 6px 10px;
+    background-color: #6c757d;
+    color: white;
+    font-weight: 500;
+}
+.bar-value {
+    background-color: #8faee0;  
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    text-align: right;
+}
+
+
+}
+
+
 </style>
 
 <div class="content">
@@ -141,13 +169,13 @@
         <div class="dashboard-stats">
             <!-- 각 stat-card 반복 -->
             <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-users"></i></div>
-                <div class="stat-info">
-                    <h3>총 직원 수</h3>
-                    <p class="stat-value">125</p>
-                    <p class="stat-change positive">+3 (이번 달)</p>
-                </div>
-            </div>
+			    <div class="stat-icon"><i class="fas fa-users"></i></div>
+			    <div class="stat-info">
+			        <h3>총 직원 수</h3>
+			        <p class="stat-value">${totalEmployees}</p>
+			        <p class="stat-change positive">+${newEmployees} (이번 달)</p>
+			    </div>
+			</div>
 
             <div class="stat-card">
                 <div class="stat-icon"><i class="fas fa-user-clock"></i></div>
@@ -179,21 +207,36 @@
 
         <!-- 차트 + 달력 -->
         <div class="dashboard-row">
-            <div class="dashboard-chart">
-                <h3>부서별 인원 현황</h3>
-                <div class="chart-container">
-                    <div class="chart-bar"><div class="bar-label">인사팀</div><div class="bar-value" style="width:15%;">15</div></div>
-                    <div class="chart-bar"><div class="bar-label">개발팀</div><div class="bar-value" style="width:35%;">35</div></div>
-                    <div class="chart-bar"><div class="bar-label">영업팀</div><div class="bar-value" style="width:25%;">25</div></div>
-                    <div class="chart-bar"><div class="bar-label">마케팅팀</div><div class="bar-value" style="width:20%;">20</div></div>
-                    <div class="chart-bar"><div class="bar-label">경영지원팀</div><div class="bar-value" style="width:30%;">30</div></div>
-                </div>
-            </div>
+		    <div class="dashboard-chart" style="flex: 1;">
+		        <!-- 부서별 인원 현황 -->
+		        <h3>부서별 인원 현황</h3>
+		        <div class="chart-container">
+		            <c:forEach var="dept" items="${depCounts}">
+					    <c:set var="count" value="${dept.empCount}" />
+					    
+					    <%-- 전체 사원 수 기준으로 width 계산 --%>
+					    <c:set var="widthPercentRaw" value="${(count * 100) / totalEmployees}" />
+					    
+					    <%-- 최소 10% 보장 --%>
+					    <c:set var="widthPercent" value="${widthPercentRaw < 10 && count > 0 ? 10 : widthPercentRaw}" />
+					
+					    <div class="chart-bar">
+					        <div class="bar-label">${dept.depName}</div>
+					        <div class="bar-value" style="width: ${widthPercent}%;">
+					            ${count}
+					        </div>
+					    </div>
+					</c:forEach>
 
-            <div class="dashboard-calendar">
-                <h3>이번 달 일정</h3>
-                <table class="calendar-table">
-                    <thead>
+
+		        </div>
+		    </div>
+		
+		    <div class="dashboard-calendar" style="flex: 1;">
+		        <!-- 이번 달 일정 -->
+		        <h3>이번 달 일정</h3>
+		        <table class="calendar-table">
+		            <thead>
                         <tr><th class="sun">일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th class="sat">토</th></tr>
                     </thead>
                     <tbody>
@@ -203,14 +246,15 @@
                         <tr><td>21</td><td>22</td><td>23</td><td>24</td><td class="has-event">25</td><td>26</td><td>27</td></tr>
                         <tr><td>28</td><td>29</td><td>30</td><td>31</td><td></td><td></td><td></td></tr>
                     </tbody>
-                </table>
-                <div class="calendar-events">
-                    <div class="event"><span class="event-date">9일</span><span class="event-title">경영회의</span></div>
-                    <div class="event"><span class="event-date">17일</span><span class="event-title">신입사원 교육</span></div>
-                    <div class="event"><span class="event-date">25일</span><span class="event-title">부서장 회의</span></div>
-                </div>
-            </div>
-        </div>
+		        </table>
+		        <div class="calendar-events">
+		            <div class="event"><span class="event-date">9일</span><span class="event-title">경영회의</span></div>
+		            <div class="event"><span class="event-date">17일</span><span class="event-title">신입사원 교육</span></div>
+		            <div class="event"><span class="event-date">25일</span><span class="event-title">부서장 회의</span></div>
+		        </div>
+		    </div>
+		</div>
+
 
         <!-- 최근 공지/결재 -->
         <div class="dashboard-row">

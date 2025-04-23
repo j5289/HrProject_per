@@ -1,6 +1,7 @@
 package com.itwill.employee.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,12 @@ public class DepartmentDAOImpl implements DepartmentDAO {
     public List<EmployeeVO> getEmployeesByDeptId(String deptId) {
         return sqlSession.selectList("com.itwill.employee.persistence.DepartmentDAO.getEmployeesByDeptId", deptId);
     }
+    
+    @Override
+    public List<Map<String, Object>> getDepartmentEmployeeCounts() {
+        return sqlSession.selectList(NAMESPACE + ".getDepartmentEmployeeCounts");
+    }
+
 
     
 }

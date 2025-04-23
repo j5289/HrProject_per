@@ -14,6 +14,11 @@ public interface EmployeeDAO {
     void updateEmployeeAdmin(EmployeeVO employee);
     int updateResignationDate(@Param("empId") String empId, @Param("empQd") Date empQd);
     void deleteEmployee(String empId);
+    int countTotalEmployees();
+    int countNewEmployeesThisMonth();
+    void updateQuitDate(@Param("empId") String empId, @Param("empQd") Date empQd);
+
+
     
     
 }

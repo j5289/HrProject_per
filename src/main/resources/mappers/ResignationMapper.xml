@@ -25,29 +25,24 @@
         SELECT * FROM resignation WHERE resign_id = #{resignId}
     </select>
 
-    <update id="approveResignation" parameterType="map">
-        UPDATE resignation
-        SET status = '승인',
-            approver = #{approver},
-            approve_date = NOW()
-        WHERE resign_id = #{resignId}
-    </update>
+    
 
-    <update id="rejectResignation" parameterType="map">
-        UPDATE resignation
-        SET status = '반려',
-            approver = #{approver},
-            approve_date = NOW()
-        WHERE resign_id = #{resignId}
-    </update>
-
-    <update id="updateStatus" parameterType="map">
+    <update id="updateStatus" parameterType="com.itwill.employee.domain.ResignationVO">
 	    UPDATE resignation
 	    SET status = #{status},
 	        approver = #{approver},
-	        approve_date = NOW()
+	        approve_date = 
+	        <choose>
+	            <when test="approveDate != null">
+	                #{approveDate}
+	            </when>
+	            <otherwise>
+	                approve_date
+	            </otherwise>
+	        </choose>
 	    WHERE resign_id = #{resignId}
 	</update>
+
 
 
 </mapper>

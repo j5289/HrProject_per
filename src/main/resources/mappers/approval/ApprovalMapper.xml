@@ -642,4 +642,36 @@
 	  ORDER BY ar.request_date DESC
 	</select>
 	
+	<select id="countPendingApprovals" resultType="int" parameterType="String">
+	  SELECT COUNT(*) 
+	  FROM APPROVAL_LINE al
+	  WHERE al.approver_id = #{empId}
+	    AND NOT EXISTS (
+	        SELECT 1
+	        FROM APPROVAL_APP aa
+	        WHERE aa.approval_document_id = al.approval_document_id
+	          AND aa.approver_id = al.approver_id
+	    )
+	    AND al.approval_order = (
+	        SELECT MIN(al2.approval_order)
+	        FROM APPROVAL_LINE al2
+	        WHERE al2.approval_document_id = al.approval_document_id
+	          AND NOT EXISTS (
+	              SELECT 1
+	              FROM APPROVAL_APP aa2
+	              WHERE aa2.approval_document_id = al2.approval_document_id
+	                AND aa2.approver_id = al2.approver_id
+	          )
+	    )
+	    AND NOT EXISTS (
+	        SELECT 1
+	        FROM APPROVAL_APP aa3
+	        JOIN APPROVAL_LINE al3 ON aa3.approval_document_id = al3.approval_document_id 
+	                               AND aa3.approver_id = al3.approver_id
+	        WHERE aa3.approval_status = '반려'
+	          AND al3.approval_document_id = al.approval_document_id
+	          AND al3.approval_order &lt; al.approval_order
+	    )
+	</select>
+	
 </mapper>

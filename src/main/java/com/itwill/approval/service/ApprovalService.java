@@ -62,4 +62,6 @@ public interface ApprovalService {
     
     List<PendingApprovalDTO> getMyRequestedDocuments(String empId);
     
+    int getPendingApprovalCount(String empId);
+
 }

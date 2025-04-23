@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.itwill.approval.dto.ApprovalSearchDTO;
+import com.itwill.approval.service.ApprovalService;
 import com.itwill.employee.domain.AppointmentVO;
 import com.itwill.employee.domain.CalendarVO;
 import com.itwill.employee.domain.DepartmentVO;
@@ -48,6 +50,8 @@ public class AdminController {
 	@Autowired
     private AppointmentService appointmentService;
 	
+	@Autowired
+	private ApprovalService approvalService;
 	
 	@Autowired
     private ResignationService resignationService;
@@ -79,6 +83,13 @@ public class AdminController {
         List<Map<String, Object>> depCounts = departmentService.getDepartmentEmployeeCounts();
         model.addAttribute("depCounts", depCounts);
     	
+        // 로그인 정보에서 사번 가져오기
+        String empId = (String) session.getAttribute("id");
+        
+        // 결재 대기 문서 수 조회
+        int pendingCount = approvalService.getPendingApprovalCount(empId);
+        model.addAttribute("pendingCount", pendingCount);
+        
         // 캘린더 일정 추가
         List<CalendarVO> calendarList = calendarService.getCalendarList();
         model.addAttribute("calendarList", calendarList);

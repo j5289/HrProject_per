@@ -187,13 +187,13 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
-                <div class="stat-info">
-                    <h3>결재 대기</h3>
-                    <p class="stat-value">12</p>
-                    <p class="stat-change negative">+5 (어제 대비)</p>
-                </div>
-            </div>
+			    <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+			    <div class="stat-info">
+			        <h3>결재 대기</h3>
+			        <p class="stat-value">${pendingCount}</p>
+			        <p class="stat-change negative">미처리 문서</p>
+			    </div>
+			</div>
 
             <div class="stat-card">
                 <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>

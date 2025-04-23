@@ -169,4 +169,9 @@ public class ApprovalDAO {
     public List<PendingApprovalDTO> selectRequestedApprovals(SqlSession session, String requesterId) {
         return session.selectList(NAMESPACE + "selectRequestedApprovals", requesterId);
     }
+
+    public int countPendingApprovals(SqlSession session, String empId) {
+        return session.selectOne(NAMESPACE + "countPendingApprovals", empId);
+    }
+
 }

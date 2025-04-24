@@ -7,8 +7,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +22,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.itwill.attendance.dto.AttendanceCheckDTO;
 import com.itwill.attendance.dto.AttendanceLateDTO;
+import com.itwill.attendance.dto.AttendanceLeaveDTO;
 import com.itwill.attendance.dto.AttendanceWorkCheckDTO;
 import com.itwill.attendance.dto.AttendanceWorkListDTO;
-import com.itwill.attendance.service.AttendanceService;  
+import com.itwill.attendance.service.AttendanceService;
+//import com.itwill.util.ExcelLeaveExporter;  
 
 @Controller
 @RequestMapping("/attendance")
@@ -185,6 +193,83 @@ public class AttendanceController {
     }
 
     
+    // ===== 5. 사원의 휴가 내역 조회 =====
+    // 1) 휴가 내역 조회 페이지 이동
+    @GetMapping("/leave")
+    public String showLeavePage() {
+        return "attendance/leave_list";
+    }
     
+    // 2) 휴가 내역 조회 (조회 조건 : 단일 날짜 / 기간)
+    @PostMapping("/leave/search")
+    public String searchLeave(
+        @RequestParam("empId") String empId,
+        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+        Model model
+    ) {
+        List<AttendanceLeaveDTO> leaveList;
+
+        if (date != null) {
+            leaveList = attendanceService.findLeaveByDate(empId, date);
+        } else if (startDate != null && endDate != null) {
+            leaveList = attendanceService.findLeaveByDateRange(empId, startDate, endDate);
+        } else {
+            model.addAttribute("alertMsg", "조회 조건을 다시 확인해주세요.");
+            return "attendance/leave_list";
+        }
+
+        if (leaveList.isEmpty()) {
+            model.addAttribute("alertMsg", "해당하는 정보가 존재하지 않습니다.");
+        } else {
+            model.addAttribute("leaveList", leaveList);
+        }
+
+        return "attendance/leave_list";
+    }
+
+    
+    // 3) 휴가 보고서 상세 보기 
+    @GetMapping("/leave/report/{leaveId}")
+    public String viewLeaveReport(@PathVariable("leaveId") String leaveId, Model model) {
+        AttendanceLeaveDTO report = attendanceService.findLeaveReportById(leaveId);
+        model.addAttribute("report", report);
+        return "attendance/leave_report_detail";
+    }
+    
+//    // ===== 5-1. 사원의 휴가보고서 엑셀/PDF 다운로드 =====
+//    // 생성자 주입
+//    public AttendanceController(AttendanceService attendanceService) {
+//        this.attendanceService = attendanceService;
+//    }
+//    
+//    @GetMapping("/download/my-leave-reports/{empId}/excel")
+//    public ResponseEntity<byte[]> downloadMyLeaveReportsExcel(@PathVariable String empId) {
+//        // 해당 사원의 휴가 보고서 조회
+//        List<AttendanceLeaveDTO> leaveReports = attendanceService.findMyLeaveReports(empId);
+//
+//        try {
+//            // 엑셀로 변환
+//            byte[] excelData = ExcelLeaveExporter.exportLeaveToExcel(leaveReports);
+//
+//            // HttpHeaders에 Content-Disposition 설정 (파일 다운로드)
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);  // 파일 다운로드를 위한 미디어 타입 설정
+//            headers.set("Content-Disposition", "attachment; filename=my_leave_report_" + empId + ".xlsx");
+//
+//            // ResponseEntity로 반환
+//            return ResponseEntity.ok()
+//                    .headers(headers)
+//                    .body(excelData);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(500).body(null); // 예외 처리 (에러 시 500 반환)
+//        }
+//    }
+//
+//    // 향후 PDF 다운로드 기능도 추가 가능 (추후 PDF 다운로드 로직 추가)
+//
+//    
     
 }

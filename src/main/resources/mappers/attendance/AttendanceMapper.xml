@@ -270,8 +270,98 @@
 
     	</choose>
 	</select>
-
 	
+	<!-- ===== 5. 사원의 휴가 내역 조회 ===== -->
+	 <!-- 1) 날짜 범위로 휴가 내역 조회 -->
+    <select id="selectLeaveByDateRange" resultType="com.itwill.attendance.dto.AttendanceLeaveDTO">
+        SELECT 
+            l.leave_id AS leaveId,
+            l.emp_id AS empId,
+            l.upload_date AS uploadDate,
+            l.leave_start_date AS leaveStartDate,
+            l.leave_end_date AS leaveEndDate,
+            l.leave_status AS leaveStatus,
+            l.leave_days AS leaveDays,
+            a.approval_confirmed AS approvalConfirmed,
+            f.file_name AS fileName,
+            f.file_path AS filePath,
+            f.file_size AS fileSize,
+            f.file_type AS fileType
+        FROM LEAVE l
+        LEFT JOIN APPROVAL a ON l.leave_id = a.ref_id
+        LEFT JOIN FILE f ON l.leave_id = f.ref_id
+        WHERE l.emp_id = #{empId}
+          AND l.leave_start_date <![CDATA[>=]]> #{startDate}
+          AND l.leave_end_date <![CDATA[<=]]> #{endDate}
+        ORDER BY l.leave_start_date DESC
+    </select>
+	
+	<!-- 2) 단일 날짜에 해당하는 휴가 내역 조회 -->
+    <select id="selectLeaveByDate" resultType="com.itwill.attendance.dto.AttendanceLeaveDTO">
+        SELECT 
+            l.leave_id AS leaveId,
+            l.emp_id AS empId,
+            l.upload_date AS uploadDate,
+            l.leave_start_date AS leaveStartDate,
+            l.leave_end_date AS leaveEndDate,
+            l.leave_status AS leaveStatus,
+            l.leave_days AS leaveDays,
+            a.approval_confirmed AS approvalConfirmed,
+            f.file_name AS fileName,
+            f.file_path AS filePath,
+            f.file_size AS fileSize,
+            f.file_type AS fileType
+        FROM LEAVE l
+        LEFT JOIN APPROVAL a ON l.leave_id = a.ref_id
+        LEFT JOIN FILE f ON l.leave_id = f.ref_id
+        WHERE l.emp_id = #{empId}
+          AND #{date} BETWEEN l.leave_start_date AND l.leave_end_date
+        ORDER BY l.leave_start_date DESC
+    </select>
+
+    <!-- 3) 휴가 ID로 상세 보고서 조회 -->
+    <select id="selectLeaveReportById" resultType="com.itwill.attendance.dto.AttendanceLeaveDTO">
+        SELECT 
+            l.leave_id AS leaveId,
+            l.emp_id AS empId,
+            l.upload_date AS uploadDate,
+            l.leave_start_date AS leaveStartDate,
+            l.leave_end_date AS leaveEndDate,
+            l.leave_status AS leaveStatus,
+            l.leave_days AS leaveDays,
+            a.approval_confirmed AS approvalConfirmed,
+            f.file_name AS fileName,
+            f.file_path AS filePath,
+            f.file_size AS fileSize,
+            f.file_type AS fileType
+        FROM LEAVE l
+        LEFT JOIN APPROVAL a ON l.leave_id = a.ref_id
+        LEFT JOIN FILE f ON l.leave_id = f.ref_id
+        WHERE l.leave_id = #{leaveId}
+    </select>
+		
+	<!-- ===== 5-1. 사원의  휴가보고서 엑셀/PDF 다운로드 ===== -->
+	<select id="selectMyLeaveReports" resultType="com.itwill.attendance.dto.AttendanceLeaveDTO">
+	    SELECT 
+	        l.leave_id,
+	        l.emp_id,
+	        l.start_date,
+	        l.end_date,
+	        l.leave_type,
+	        l.reason,
+	        l.status
+	    FROM LEAVE l
+	    WHERE l.emp_id = #{empId}
+	    ORDER BY l.start_date DESC
+	</select>
+		
+		
+		
+		
+		
+		
+		
+		
 		
 
 </mapper>

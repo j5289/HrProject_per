@@ -84,8 +84,30 @@ public class AttendanceServiceImpl implements AttendanceService {
     	return attendanceMapper.findWorkItemByDateAndCategory(dto);
     }
     
+    // ==== 5. 사원의 휴가 내역 조회 =====
+    // 1) 단일 날짜 기준 휴가 조회
+    @Override
+    public List<AttendanceLeaveDTO> findLeaveByDate(String empId, LocalDate date) {
+        return attendanceMapper.selectLeaveByDate(empId, date.toString());
+    }
+
+    // 2) 기간 기준 휴가 조회
+    @Override
+    public List<AttendanceLeaveDTO> findLeaveByDateRange(String empId, LocalDate startDate, LocalDate endDate) {
+        return attendanceMapper.selectLeaveByDateRange(empId, startDate.toString(), endDate.toString());
+    }
+
+    // 3) 휴가 보고서 단건 조회
+    @Override
+    public AttendanceLeaveDTO findLeaveReportById(String leaveId) {
+        return attendanceMapper.selectLeaveReportById(leaveId);
+    }
     
-    
+    // ===== 5-1. 사원의 휴가 보고서 엑셀/PDF 다운로드 
+    @Override
+    public List<AttendanceLeaveDTO> getMyLeaveReports(String empId) {
+        return attendanceMapper.selectMyLeaveReports(empId);
+    }
     
     
     

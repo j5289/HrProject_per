@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.itwill.attendance.dto.AttendanceCheckDTO;
 import com.itwill.attendance.dto.AttendanceLateDTO;
+import com.itwill.attendance.dto.AttendanceLeaveDTO;
 import com.itwill.attendance.dto.AttendanceWorkCheckDTO;
 import com.itwill.attendance.dto.AttendanceWorkListDTO;
 
@@ -35,8 +36,17 @@ public interface AttendanceService {
     // ===== 4. 사원의 근태 항목 조회 =====
     AttendanceWorkListDTO findWorkItemByDateAndCategory(AttendanceWorkListDTO dto);
    
+    // ===== 5. 사원의 휴가 내역 조회 =====
+    // 1) 단일 날짜로 휴가 조회
+    List<AttendanceLeaveDTO> findLeaveByDate(String empId, LocalDate date);
     
+    // 2) 기간으로 휴가 조회
+    List<AttendanceLeaveDTO> findLeaveByDateRange(String empId, LocalDate startDate, LocalDate endDate);
+
+    // 3) 휴가 보고서 상세 조회
+    AttendanceLeaveDTO findLeaveReportById(String leaveId);
     
-    
+    // ====== 5-1. 사원의 휴가 보고서 엑셀/PDF 다운로드 
+    List<AttendanceLeaveDTO> getMyLeaveReports(String empId);
     
 }

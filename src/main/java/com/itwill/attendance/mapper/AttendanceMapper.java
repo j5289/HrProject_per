@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.apache.ibatis.annotations.Mapper;
 import com.itwill.attendance.dto.AttendanceCheckDTO;
 import com.itwill.attendance.dto.AttendanceLateDTO;
+import com.itwill.attendance.dto.AttendanceLeaveDTO;
 import com.itwill.attendance.dto.AttendanceWorkCheckDTO;
 import com.itwill.attendance.dto.AttendanceWorkListDTO;
 import com.itwill.attendance.model.Attendance;
@@ -45,8 +46,25 @@ public interface AttendanceMapper {
     // 1) 사원의 특정 날짜 + 테고리로 근태 항목 조회 
     AttendanceWorkListDTO findWorkItemByDateAndCategory(AttendanceWorkListDTO dto);
     
+    // ===== 5. 사원의 휴가 내역 조회 =====
+    // 1) 사원의 휴가 내역을 날짜 범위로 조회 return 휴가 내역 리스트 
+    List<AttendanceLeaveDTO> selectLeaveByDateRange(
+            @Param("empId") String empId,
+            @Param("startDate") String startDate,
+            @Param("endDate") String endDate
+        );
+    
+    // 2) 단일 날짜에 해당하는 휴가 내역 조회 (2024-05-01 하루에 해당하는 휴가) return 해당 날짜에 있는 휴가 내역 리스트
+    List<AttendanceLeaveDTO> selectLeaveByDate(
+            @Param("empId") String empId,
+            @Param("date") String date
+        );
+    
+    // 3) 휴가 Id로 상세 보고서 조회 return 해당 휴가에 첨부된 보고서 정보 포함 객체
+    AttendanceLeaveDTO selectLeaveReportById(@Param("leaveId") String leaveId);
 
-
+    // ===== 5-1. 사원의 휴가 보고서 엑셀/PDF 다운로드 =====
+    List<AttendanceLeaveDTO> selectMyLeaveReports(@Param("empId") String empId);
 
 
 }

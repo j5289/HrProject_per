@@ -40,21 +40,20 @@ public class AttendanceServiceImpl implements AttendanceService {
     // 3) 특정 사원의 출퇴근 기록 조회 (날짜 기준)
     @Override
     public AttendanceCheckDTO getAttendanceByEmpIdAndDate(String empId, LocalDate workDate) {
-    	//출퇴근 기록 조회
-    	AttendanceCheckDTO result = attendanceMapper.selectAttendanceByEmpIdAndDate(empId, workDate.toString());
+        AttendanceCheckDTO result = attendanceMapper.selectAttendanceByEmpIdAndDate(empId, workDate.toString());
 
-         if (result != null && result.getCheckInTime() != null) {
-             // 출근 시간이 9시 이후면 지각으로 간주
-             LocalTime expectedCheckInTime = LocalTime.of(9, 0); // 9시
-             if (result.getCheckInTime().isAfter(expectedCheckInTime)) {
-                 result.setIsLate(true); //지각 여부 설정
-             } else {
-                 result.setIsLate(false); //지각 아님
-             }
-         }
-         
-         return result;
-     }
+        if (result != null && result.getCheckInTime() != null) {
+            // Timestamp → LocalTime 변환
+            LocalTime checkInTime = result.getCheckInTime().toLocalDateTime().toLocalTime();
+            LocalTime expectedCheckInTime = LocalTime.of(9, 0); // 기준 시간: 9시
+
+            // 지각 여부 판단
+            result.setIsLate(checkInTime.isAfter(expectedCheckInTime));
+        }
+
+        return result;
+    }
+
    
     
     // ===== 2. 사용자 지각 현황 =====

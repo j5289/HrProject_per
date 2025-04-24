@@ -43,7 +43,7 @@ public class AttendanceController {
 	    if (empId == null) {
 	        return "redirect:/member/login"; // 로그인 안 되어 있으면 로그인 페이지로 이동
 	    }
-	    return "attendance/attendance-main"; // JSP 경로
+	    return "attendance-main"; // JSP 경로
 	}
 	
 	// ===== 1. 사용자 출퇴근 기록부 및 현황 =====

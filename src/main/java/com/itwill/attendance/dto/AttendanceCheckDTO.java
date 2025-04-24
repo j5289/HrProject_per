@@ -1,5 +1,7 @@
 package com.itwill.attendance.dto;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -21,9 +23,9 @@ public class AttendanceCheckDTO {
 	
 	private String empId; //사원 Id
 	private String empName; //사원 이름
-	private LocalDate workDate; //근무 날짜(단일 날짜)
-	private LocalTime checkInTime; //출근 시간
-	private LocalTime checkOutTime; //퇴근 시간 
+	private Date workDate; //근무 날짜(단일 날짜)
+	private Timestamp checkInTime; //출근 시간
+	private Timestamp checkOutTime; //퇴근 시간 
 	
 	private LocalTime nowTime; //현재 시각(DB에 없음, 출근/퇴근 버튼 누를 때 표시용) 
 	private Boolean isLate; //지각 여부(DB에 없음, true 면 지각)

@@ -10,15 +10,15 @@
 <!-- 공통 템플릿 include -->
 
 <%
-    //세션 로그인 체크
-    String empId = (String) session.getAttribute("id");
-    if (empId == null) {
-        response.sendRedirect(request.getContextPath() + "/member/login");  // 컨트롤러 호출 → 뷰 리졸버 통해 JSP 열림
-        return;
-    }
-    com.itwill.approval.dto.ApprovalSearchDTO loginUser = new com.itwill.approval.dto.ApprovalSearchDTO();
-    loginUser.setEmpId(empId);
-%>
+     //세션 로그인 체크
+     String empId = (String) session.getAttribute("id");
+     if (empId == null) {
+         response.sendRedirect(request.getContextPath() + "/member/login");  // 컨트롤러 호출 → 뷰 리졸버 통해 JSP 열림
+         return;
+     }
+     com.itwill.approval.dto.ApprovalSearchDTO loginUser = new com.itwill.approval.dto.ApprovalSearchDTO();
+     loginUser.setEmpId(empId);
+ %> 
 
 <head>
     <!-- 스타일 시트 -->
@@ -98,6 +98,8 @@
 </head>
 
 <body>
+    <h1>출퇴근 메인 페이지</h1>
+    <p>정상적으로 jsp 연결됨!</p>
     <!-- 출근 버튼 -->
     <form>
         <input type="hidden" id="empId" value="${empId}" />
@@ -114,7 +116,13 @@
     <div id="statusMessage"></div>
     <div>출근 시간: <span id="checkInTime"></span></div>
     <div>퇴근 시간: <span id="checkOutTime"></span></div>
-    
+
+    <!-- 출퇴근 기록 조회 -->
+    <form id="check-attendance-form">
+        <input type="text" name="empId" placeholder="사원 ID" />
+        <input type="date" name="workDate" />
+        <button type="submit">출퇴근 기록 조회</button>
+    </form>
+
 <jsp:include page="../common/footer2.jsp" />
 </body>
-

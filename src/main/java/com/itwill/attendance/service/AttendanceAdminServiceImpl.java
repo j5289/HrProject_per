@@ -1,6 +1,7 @@
 package com.itwill.attendance.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,26 +14,22 @@ public class AttendanceAdminServiceImpl implements AttendanceAdminService{
 
 	  private final AttendanceAdminMapper attendanceAdminMapper;
 
-	    @Autowired
+	  @Autowired
 	    public AttendanceAdminServiceImpl(AttendanceAdminMapper attendanceAdminMapper) {
 	        this.attendanceAdminMapper = attendanceAdminMapper;
 	    }
 
-	    // 전체 사원 근무 기록 조회
+	    // 통합 조건 기반 전체 조회
 	    @Override
-	    public List<AttendanceAdminCheckDTO> getAllEmployeeAttendance() {
-	        return attendanceAdminMapper.selectAllAttendance();
+	    public List<AttendanceAdminCheckDTO> getAdminAttendanceList(Map<String, Object> params) {
+	        return attendanceAdminMapper.selectAdminAttendanceList(params);
 	    }
 
-	    // 특정 사원 근무 기록 조회
+	    // 단건 조회 (예: 상세보기용)
 	    @Override
-	    public List<AttendanceAdminCheckDTO> getEmployeeAttendanceByEmpId(String empId) {
-	        return attendanceAdminMapper.selectAttendanceByEmpId(empId);
-	    }
-
-	    // 특정 날짜의 전체 근무 기록 조회
-	    @Override
-	    public List<AttendanceAdminCheckDTO> getAttendanceByDate(String workDate) {
-	        return attendanceAdminMapper.selectAttendanceByDate(workDate);
+	    public AttendanceAdminCheckDTO getAdminAttendanceDetail(Map<String, Object> params) {
+	        return attendanceAdminMapper.selectAdminAttendanceByEmpIdAndDate(params);
 	    }
 }
+
+	   

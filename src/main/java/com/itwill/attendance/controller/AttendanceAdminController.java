@@ -22,27 +22,26 @@ import com.itwill.attendance.service.AttendanceAdminService;
 
 @Controller
 @RequestMapping("/admin/attendance")
-public class AttendanceAdminController {
-
-	 @Autowired
-	    private AttendanceAdminService attendanceAdminService;
-
-	    // ===== 1. 관리자의 사원 출퇴근 기록 및 현황 조회 =====
-	 @GetMapping("/list")
+public class AttendanceAdminController{
+	
+		@Autowired
+		private AttendanceAdminService attendanceAdminService;
+	
+		// 전체 사원의 출퇴근 기록 리스트 조회(조건 : 이름, 날짜)
+		@GetMapping("/list")
 	    public String getAdminAttendanceList(
 	            @RequestParam(value = "empName", required = false) String empName,
 	            @RequestParam(value = "workDate", required = false) Date workDate,
 	            Model model) {
 
-	        // 필요한 파라미터를 Map으로 묶어 전달
 	        Map<String, Object> params = new HashMap<>();
 	        params.put("empName", empName);
 	        params.put("workDate", workDate);
 
-	        // 기존 메서드로 조회한 출퇴근 기록 리스트
-	        List<AttendanceAdminCheckDTO> attendanceList = attendanceAdminService.getAttendanceByDate(workDate.toString());
+	        // Map 기반으로 출퇴근 기록 조회
+	        List<AttendanceAdminCheckDTO> attendanceList = attendanceAdminService.getAdminAttendanceList(params);
 
-	        // 근무 상태 및 지각 여부 판단 로직 추가
+	        // 근무 상태 및 지각 여부 판단
 	        for (AttendanceAdminCheckDTO dto : attendanceList) {
 	            if (dto.getCheckInTime() != null && dto.getCheckInTime().toLocalDateTime().getHour() >= 9) {
 	                dto.setIsLate(true);
@@ -56,13 +55,12 @@ public class AttendanceAdminController {
 	            }
 	        }
 
-	        // 모델에 데이터를 추가하여 뷰에 전달
+	        // 뷰로 전달
 	        model.addAttribute("attendanceList", attendanceList);
 	        model.addAttribute("empName", empName);
 	        model.addAttribute("workDate", workDate);
 
-	        // 뷰 경로 반환 (예: /WEB-INF/views/admin/attendanceList.jsp)
-	        return "admin/attendanceList";
+	        return "admin/attendanceList"; // JSP 또는 Thymeleaf 템플릿
 	    }
 
 }

@@ -78,4 +78,15 @@ public class AttendanceServiceImpl implements AttendanceService {
         return attendanceMapper.findWorkSummaryByEmpIdAndDateRange(paramMap);
     }
     
+    // ===== 4. 사원의 근태 항목 조회 =====
+    @Override
+    public AttendanceWorkListDTO findWorkItemByDateAndCategory(AttendanceWorkListDTO dto) {
+    	return attendanceMapper.findWorkItemByDateAndCategory(dto);
+    }
+    
+    
+    
+    
+    
+    
 }

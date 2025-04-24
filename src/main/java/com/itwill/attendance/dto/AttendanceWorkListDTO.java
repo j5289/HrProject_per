@@ -1,6 +1,7 @@
 package com.itwill.attendance.dto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,10 @@ public class AttendanceWorkListDTO {
 	private String businessTripId; //출장 Id, 해당 정보 있다면 출장 처리
 	private String latenessMinutes; //지각 시간, 해당 정보 있다면 지각 처리
 	private String leaveId; //휴가Id, 해당 정보 있다면 휴가 처리
+	private String latenessDates; //지각 날짜
+	private int latenessCounts; //지각 횟수
+	private LocalTime checkInTime; //출근 시간
+	private LocalTime checkOutTime; //퇴근 시간 
 	
 	private String workStatus; //근태 상태 요약(최종 출력용 근무 상태)(근무,지각,결근,출장) DB에 없음
 	

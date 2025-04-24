@@ -107,6 +107,169 @@
         e.emp_id
 </select>
 
+	<!-- ===== 4. 사원의 근태 항목 조회 ===== -->
+	<select id="findWorkItemByDateAndCategory" resultType="com.itwill.attendance.dto.AttendanceWorkListDTO">
+    <choose>
+
+        <!-- 근무 -->
+        <when test="categoryAtt == '근무'">
+            SELECT
+                emp_id,
+                work_date,
+                check_in_time,
+                check_out_time,
+                night_work_hour,
+                holiday_work_hour,
+                NULL AS absence_id,
+                NULL AS business_trip_id,
+                NULL AS lateness_minutes,
+                NULL AS leave_id,
+                NULL AS lateness_dates,
+                0 AS lateness_counts,
+                '근무' AS work_status
+            FROM attendance
+            WHERE emp_id = #{empId}
+              AND work_date = #{workDate}
+              AND check_in_time IS NOT NULL
+              AND check_out_time IS NOT NULL
+        </when>
+
+        <!-- 지각 -->
+        <when test="categoryAtt == '지각'">
+            SELECT
+                emp_id,
+                work_date,
+                NULL AS check_in_time,
+                NULL AS check_out_time,
+                NULL AS night_work_hour,
+                NULL AS holiday_work_hour,
+                NULL AS absence_id,
+                NULL AS business_trip_id,
+                CAST(lateness_count AS CHAR) AS lateness_minutes,
+                NULL AS leave_id,
+                lateness_dates,
+                lateness_count AS lateness_counts,
+                '지각' AS work_status
+            FROM attendance
+            WHERE emp_id = #{empId}
+              AND work_date = #{workDate}
+              AND lateness_count > 0
+        </when>
+
+        <!-- 결근 -->
+        <when test="categoryAtt == '결근'">
+            SELECT
+                emp_id,
+                absence_date AS work_date,
+                NULL AS check_in_time,
+                NULL AS check_out_time,
+                NULL AS night_work_hour,
+                NULL AS holiday_work_hour,
+                absence_id,
+                NULL AS business_trip_id,
+                NULL AS lateness_minutes,
+                NULL AS leave_id,
+                NULL AS lateness_dates,
+                0 AS lateness_counts,
+                '결근' AS work_status
+            FROM absence
+            WHERE emp_id = #{empId}
+              AND absence_date = #{workDate}
+        </when>
+
+        <!-- 출장 -->
+        <when test="categoryAtt == '출장'">
+            SELECT
+                emp_id,
+                #{workDate} AS work_date,
+                NULL AS check_in_time,
+                NULL AS check_out_time,
+                NULL AS night_work_hour,
+                NULL AS holiday_work_hour,
+                NULL AS absence_id,
+                business_id AS business_trip_id,
+                NULL AS lateness_minutes,
+                NULL AS leave_id,
+                NULL AS lateness_dates,
+                0 AS lateness_counts,
+                '출장' AS work_status
+            FROM business
+            WHERE emp_id = #{empId}
+              AND #{workDate} BETWEEN start_date AND end_date
+        </when>
+
+        <!-- 휴가 -->
+        <when test="categoryAtt == '휴가'">
+            SELECT
+                emp_id,
+                #{workDate} AS work_date,
+                NULL AS check_in_time,
+                NULL AS check_out_time,
+                NULL AS night_work_hour,
+                NULL AS holiday_work_hour,
+                NULL AS absence_id,
+                NULL AS business_trip_id,
+                NULL AS lateness_minutes,
+                leave_id,
+                NULL AS lateness_dates,
+                0 AS lateness_counts,
+                '휴가' AS work_status
+            FROM leave
+            WHERE emp_id = #{empId}
+              AND #{workDate} BETWEEN start_date AND end_date
+        </when>
+
+        <!-- 야근 -->
+        <when test="categoryAtt == '야근'">
+            SELECT
+                emp_id,
+                work_date,
+                NULL AS check_in_time,
+                NULL AS check_out_time,
+                night_work_hour,
+                NULL AS holiday_work_hour,
+                NULL AS absence_id,
+                NULL AS business_trip_id,
+                NULL AS lateness_minutes,
+                NULL AS leave_id,
+                NULL AS lateness_dates,
+                0 AS lateness_counts,
+                '야근' AS work_status
+            FROM attendance
+            WHERE emp_id = #{empId}
+              AND work_date = #{workDate}
+              AND night_work_hour > 0
+        </when>
+
+        <!-- 휴일근무 -->
+        <when test="categoryAtt == '휴일근무'">
+            SELECT
+                emp_id,
+                work_date,
+                NULL AS check_in_time,
+                NULL AS check_out_time,
+                NULL AS night_work_hour,
+                holiday_work_hour,
+                NULL AS absence_id,
+                NULL AS business_trip_id,
+                NULL AS lateness_minutes,
+                NULL AS leave_id,
+                NULL AS lateness_dates,
+                0 AS lateness_counts,
+                '휴일근무' AS work_status
+            FROM attendance
+            WHERE emp_id = #{empId}
+              AND work_date = #{workDate}
+              AND holiday_work_hour > 0
+        </when>
+
+        <!-- 예외 처리 -->
+        <otherwise>
+            SELECT NULL
+        </otherwise>
+
+    	</choose>
+	</select>
 
 	
 		

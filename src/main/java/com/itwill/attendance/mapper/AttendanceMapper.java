@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.itwill.attendance.dto.AttendanceCheckDTO;
 import com.itwill.attendance.dto.AttendanceLateDTO;
 import com.itwill.attendance.dto.AttendanceWorkCheckDTO;
+import com.itwill.attendance.dto.AttendanceWorkListDTO;
 import com.itwill.attendance.model.Attendance;
 
 /**
@@ -40,7 +41,10 @@ public interface AttendanceMapper {
     // 1) 특정 사원의 기간 및 근무 유형 기준 근무 통계 요약
     AttendanceWorkCheckDTO findWorkSummaryByEmpIdAndDateRange(Map<String, Object> paramMap);
 
-
+    // ===== 4. 사원의 근태 항목 조회 =====
+    // 1) 사원의 특정 날짜 + 테고리로 근태 항목 조회 
+    AttendanceWorkListDTO findWorkItemByDateAndCategory(AttendanceWorkListDTO dto);
+    
 
 
 

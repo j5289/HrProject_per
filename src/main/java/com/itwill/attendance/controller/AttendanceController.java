@@ -6,18 +6,18 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.itwill.attendance.dto.AttendanceCheckDTO;
 import com.itwill.attendance.dto.AttendanceLateDTO;
 import com.itwill.attendance.dto.AttendanceWorkCheckDTO;
+import com.itwill.attendance.dto.AttendanceWorkListDTO;
 import com.itwill.attendance.service.AttendanceService;  
 
 @Controller
@@ -35,7 +35,7 @@ public class AttendanceController {
 	    if (empId == null) {
 	        return "redirect:/member/login"; // 로그인 안 되어 있으면 로그인 페이지로 이동
 	    }
-	    return "attendance/attendance-main"; // JSP 경로 
+	    return "attendance/attendance-main"; // JSP 경로
 	}
 	
 	// ===== 1. 사용자 출퇴근 기록부 및 현황 =====
@@ -177,7 +177,13 @@ public class AttendanceController {
     }
 
     
-    
+    // ===== 4. 사원의 근태 항목 조회 =====
+    // 1) 사원의 특정 날짜에 대한 근태 항목 조회(카테고리별)
+    @PostMapping("/work-item")
+    public AttendanceWorkListDTO getWorkItemByDate(@RequestBody AttendanceWorkListDTO requestDto) {
+        return attendanceService.findWorkItemByDateAndCategory(requestDto);
+    }
+
     
     
     

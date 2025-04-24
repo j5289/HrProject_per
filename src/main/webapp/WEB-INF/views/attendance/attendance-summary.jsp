@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page session="true" %>
 <%@ page import="com.itwill.attendance.dto.AttendanceWorkCheckDTO" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!-- 공통 템플릿 include -->
 <jsp:include page="../common/header.jsp" />
@@ -9,18 +11,14 @@
 </jsp:include>
 <!-- 공통 템플릿 include -->
 
-<%
-    // 세션 로그인 체크
-    String empId = (String) session.getAttribute("id");
-    if (empId == null) {
-        response.sendRedirect(request.getContextPath() + "/member/login");  // 컨트롤러 호출 → 뷰 리졸버 통해 JSP 열림
-        return;
-    }
-    com.itwill.approval.dto.ApprovalSearchDTO loginUser = new com.itwill.approval.dto.ApprovalSearchDTO();
-    loginUser.setEmpId(empId);
-%>
+<!-- 세션 로그인 체크 (JSTL 방식) -->
+<c:if test="${empty sessionScope.id}">
+    <c:redirect url="/member/login" />
+</c:if>
 
 <head>
+    <title>근무 조회</title>
+
     <!-- 스타일 시트 -->
     <link rel="stylesheet" href="<c:url value='/resources/css/style.css' />">
     <link rel="stylesheet" href="<c:url value='/resources/css/user-style.css' />">
@@ -28,17 +26,14 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <title>근무 조회</title>
-
+    <!-- AJAX Script -->
     <script>
         $(document).ready(function() {
             $('#searchButton').click(function() {
-                // 폼 데이터 가져오기
-                var empId = "<%= empId %>";
+                var empId = '${sessionScope.id}';
                 var startDate = $('#startDate').val();
                 var endDate = $('#endDate').val();
 
-                // AJAX 요청 보내기
                 $.ajax({
                     url: '/attendance/work-summary',
                     method: 'POST',
@@ -48,19 +43,18 @@
                         endDate: endDate
                     },
                     success: function(response) {
-                        if (response.workSummary) {
-                            // 근무 통계가 존재할 경우
+                        if (response.workSummary && typeof response.workSummary === 'object') {
+                            const ws = response.workSummary;
                             $('#workSummary').html(`
                                 <h3>근무 통계</h3>
-                                <p>누적 근무 일수: ${response.workSummary.totalDate}일</p>
-                                <p>누적 근무 시간: ${response.workSummary.totalTime}시간</p>
-                                <p>일반 근무 일수: ${response.workSummary.workDays}일</p>
-                                <p>일반 근무 시간: ${response.workSummary.workHours}시간</p>
-                                <p>지각 시간: ${response.workSummary.latenessMinutes}분</p>
-                                <p>휴가일수: ${response.workSummary.leaveDays}일</p>
+                                <p>누적 근무 일수: ${ws.totalDate || 0}일</p>
+                                <p>누적 근무 시간: ${ws.totalTime || 0}시간</p>
+                                <p>일반 근무 일수: ${ws.workDays || 0}일</p>
+                                <p>일반 근무 시간: ${ws.workHours || 0}시간</p>
+                                <p>지각 시간: ${ws.latenessMinutes || 0}분</p>
+                                <p>휴가일수: ${ws.leaveDays || 0}일</p>
                             `);
                         } else {
-                            // 근무 통계가 없을 경우
                             $('#workSummary').html('<p>해당 근무 정보가 존재하지 않습니다.</p>');
                         }
                     },

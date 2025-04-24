@@ -9,16 +9,10 @@
 </jsp:include>
 <!-- 공통 템플릿 include -->
 
-<%
-    //세션 로그인 체크 
-    String empId = (String) session.getAttribute("id");
-    if (empId == null) {
-        response.sendRedirect(request.getContextPath() + "/member/login");  // 컨트롤러 호출 → 뷰 리졸버 통해 JSP 열림
-        return;
-    }
-    com.itwill.approval.dto.ApprovalSearchDTO loginUser = new com.itwill.approval.dto.ApprovalSearchDTO();
-    loginUser.setEmpId(empId);
-%>
+<!-- 세션 로그인 체크 (JSTL 방식) -->
+<c:if test="${empty sessionScope.id}">
+    <c:redirect url="/member/login" />
+</c:if>
 
 <head>
     <!-- 스타일 시트 -->
@@ -32,45 +26,41 @@
 
     <script>
         function loadLateStatus() {
-            var empId = $('#empId').val();
-            var startDate = $('#startDate').val();
-            var endDate = $('#endDate').val();
-            
+            const empId = $('#empId').val();
+            const startDate = $('#startDate').val();
+            const endDate = $('#endDate').val();
+
             $.ajax({
-                url: "<c:url value='/attendance/late-status' />", // 컨트롤러 경로
+                url: "<c:url value='/attendance/late-status' />",
                 type: "POST",
                 data: {
-                    empId: empId, // 사원 ID
+                    empId: empId,
                     startDate: startDate,
                     endDate: endDate
                 },
                 success: function(response) {
-                    // 지각 내역 출력
-                    var lateDetails = response.lateDetails;
-                    var lateStats = response.lateStats;
+                    const lateDetails = response.lateDetails;
+                    const lateStats = response.lateStats;
 
-                    // 지각 내역 출력
-                    var tableContent = '';
-                    if (lateDetails.length > 0) {
+                    let tableContent = '';
+                    if (lateDetails && lateDetails.length > 0) {
                         $.each(lateDetails, function(index, record) {
-                            tableContent += '<tr>';
-                            tableContent += '<td>' + record.startDate + '</td>';
-                            tableContent += '<td>' + record.latenessMinutes + '</td>';
-                            tableContent += '<td>' + record.reason + '</td>';
-                            tableContent += '<td>' + record.managerCheck + '</td>';
-                            tableContent += '<td>' + record.fimeName + '</td>';
-                            tableContent += '</tr>';
+                            tableContent += `
+                                <tr>
+                                    <td>${record.startDate}</td>
+                                    <td>${record.latenessMinutes}</td>
+                                    <td>${record.reason}</td>
+                                    <td>${record.managerCheck}</td>
+                                    <td>${record.fileName || '-'}</td>
+                                </tr>`;
                         });
                     } else {
                         tableContent = '<tr><td colspan="5">해당 기간 내 지각 정보가 없습니다.</td></tr>';
                     }
-                    $('#lateDetailsTable tbody').html(tableContent);
 
-                    // 지각 통계 출력
-                    var totalLateCount = lateStats.totalLateCount;
-                    var totalLateMinutes = lateStats.totalLateMinutes;
-                    $('#totalLateCount').text(totalLateCount);
-                    $('#totalLateMinutes').text(totalLateMinutes);
+                    $('#lateDetailsTable tbody').html(tableContent);
+                    $('#totalLateCount').text(lateStats.totalLateCount || 0);
+                    $('#totalLateMinutes').text(lateStats.totalLateMinutes || 0);
                 },
                 error: function() {
                     alert('지각 현황 조회에 실패했습니다.');
@@ -78,11 +68,10 @@
             });
         }
 
-        // 페이지 로드 시 자동으로 지각 현황 조회
         $(document).ready(function() {
-            $('#fetchLateStatusBtn').on('click', function() {
-                loadLateStatus();
-            });
+            // 세션의 로그인 ID를 EL로 전달
+            $('#empId').val('${sessionScope.id}');
+            $('#fetchLateStatusBtn').on('click', loadLateStatus);
         });
     </script>
 </head>
@@ -95,11 +84,14 @@
             <!-- 지각 현황 조회 폼 -->
             <form id="lateStatusForm">
                 <label for="empId">사원 ID:</label>
-                <input type="text" id="empId" name="empId">
+                <input type="text" id="empId" name="empId" readonly>
+                
                 <label for="startDate">조회 시작 날짜:</label>
                 <input type="date" id="startDate" name="startDate">
+                
                 <label for="endDate">조회 종료 날짜:</label>
                 <input type="date" id="endDate" name="endDate">
+                
                 <button type="button" id="fetchLateStatusBtn">조회하기</button>
             </form>
 
@@ -122,7 +114,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- AJAX 응답으로 지각 내역이 여기에 동적으로 출력 -->
+                    <!-- AJAX 응답으로 동적으로 출력 -->
                 </tbody>
             </table>
         </div>

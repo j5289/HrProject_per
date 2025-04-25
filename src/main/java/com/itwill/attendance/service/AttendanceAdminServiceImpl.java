@@ -6,30 +6,35 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.itwill.attendance.dao.AttendanceAdminDAO;
 import com.itwill.attendance.dto.AttendanceAdminCheckDTO;
-import com.itwill.attendance.mapper.AttendanceAdminMapper;
+import com.itwill.attendance.dto.AttendanceAdminLeaveDTO;
 
 @Service
-public class AttendanceAdminServiceImpl implements AttendanceAdminService{
+public class AttendanceAdminServiceImpl implements AttendanceAdminService {
 
-	  private final AttendanceAdminMapper attendanceAdminMapper;
+    private final AttendanceAdminDAO attendanceAdminDAO;
 
-	  @Autowired
-	    public AttendanceAdminServiceImpl(AttendanceAdminMapper attendanceAdminMapper) {
-	        this.attendanceAdminMapper = attendanceAdminMapper;
-	    }
+    @Autowired
+    public AttendanceAdminServiceImpl(AttendanceAdminDAO attendanceAdminDAO) {
+        this.attendanceAdminDAO = attendanceAdminDAO;
+    }
 
-	    // 통합 조건 기반 전체 조회
-	    @Override
-	    public List<AttendanceAdminCheckDTO> getAdminAttendanceList(Map<String, Object> params) {
-	        return attendanceAdminMapper.selectAdminAttendanceList(params);
-	    }
+    // 관리자의 사원 출퇴근 기록 및 현황 조회
+    @Override
+    public List<AttendanceAdminCheckDTO> getAdminAttendanceList(Map<String, Object> params) {
+        return attendanceAdminDAO.selectAdminAttendanceList(params);
+    }
 
-	    // 단건 조회 (예: 상세보기용)
-	    @Override
-	    public AttendanceAdminCheckDTO getAdminAttendanceDetail(Map<String, Object> params) {
-	        return attendanceAdminMapper.selectAdminAttendanceByEmpIdAndDate(params);
-	    }
+    // 관리자의 특정 사원의 특정 날짜 근무 기록 조회
+    @Override
+    public AttendanceAdminCheckDTO getAdminAttendanceDetail(Map<String, Object> params) {
+        return attendanceAdminDAO.selectAdminAttendanceByEmpIdAndDate(params);
+    }
+
+    // 관리자의 사원 휴가 목록 조회
+    @Override
+    public List<AttendanceAdminLeaveDTO> getAdminLeaveList(String startDate, String endDate) {
+        return attendanceAdminDAO.selectLeaveByEmployeeForAdmin(startDate, endDate);
+    }
 }
-
-	   

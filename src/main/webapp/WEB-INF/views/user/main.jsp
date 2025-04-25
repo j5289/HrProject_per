@@ -6,6 +6,46 @@
 <jsp:include page="../common/user-sidebar.jsp">
     <jsp:param name="menu" value="dashboard" />
 </jsp:include>
+
+<style>
+
+.calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.calendar-table th,
+.calendar-table td {
+    text-align: center;
+    padding: 10px;
+}
+
+.calendar-table .has-event {
+    background-color: #fffbdd;
+    border: 1px solid #ffdd57;
+}
+
+.calendar-events .event {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.calendar-events .event-date {
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.event-title {
+    color: #333 !important; /* 글자 보이게 */
+    font-size: 14px !important;
+    font-weight: normal;
+    display: inline !important; /* 혹시 none으로 되어 있었을 경우 */
+}
+</style>
+
+
+
 <!-- 모달창 -->
 <div class="modal fade" id="calendarModal" tabindex="-1">
   <div class="modal-dialog">
@@ -63,8 +103,7 @@
         </div>
 
         <!-- 캘린더 -->
-        <div class="calendar-container">
-            <div class="dashboard-calendar">
+        <div class="dashboard-calendar">
       <h3>이번 달 일정</h3>
       <table class="calendar-table">
         <thead>
@@ -77,7 +116,6 @@
       <div class="calendar-events" id="eventList"></div>
     </div>
   </div>
-        </div>
 
         <!-- TO DO & MEMO -->
         <div class="dashboard-row">
@@ -127,22 +165,29 @@
     calendarBody.appendChild(row);
   }
 
-  function createDayCell(day) {
-    const td = document.createElement("td");
-    td.textContent = day;
-    td.style.cursor = "pointer";
-    td.addEventListener("click", () => {
-      document.getElementById("modalDate").value = day;
-      document.getElementById("calTitle").value = "";
-      const modal = new bootstrap.Modal(document.getElementById("calendarModal"));
-      modal.show();
-    });
-    return td;
-  }
-
+  
+ function createDayCell(dayNumber) {
+	  const td = document.createElement("td");
+	  td.textContent = dayNumber;
+	  td.style.cursor = "pointer";
+	  td.addEventListener("click", () => openCalendarModal(dayNumber));  // 날짜 클릭 시 openCalendarModal 호출
+	  return td;
+	}
+ 
+ function openCalendarModal(dayNumber) {
+	  document.getElementById("modalDate").value = dayNumber;  // 모달 날짜 값 세팅
+	  document.getElementById("calTitle").value = "";  // 제목 초기화
+	  const modal = new bootstrap.Modal(document.getElementById("calendarModal"));
+	  modal.show();
+	}
+ 
+ 
   function saveEvent() {
-    const day = document.getElementById("modalDate").value;
+    const selectedDay = document.getElementById("modalDate").value;
     const title = document.getElementById("calTitle").value;
+    console.log("선택된 날짜:", selectedDay);
+    console.log("입력된 제목:", title);
+    
     if (!title.trim()) {
       alert("제목을 입력해주세요.");
       return;
@@ -150,12 +195,15 @@
 
     const eventDiv = document.createElement("div");
     eventDiv.className = "event";
-    eventDiv.innerHTML = `<span class="event-date">${day}일</span> <span class="event-title">${title}</span>`;
+    eventDiv.innerHTML = selectedDay + "일 - " + title;
+    //eventDiv.innerHTML = `<span class="event-date">${selectedDay}일</span> <span class="event-title">${title}</span>`;
     eventList.appendChild(eventDiv);
 
     const modal = bootstrap.Modal.getInstance(document.getElementById("calendarModal"));
     modal.hide();
   }
+  
+  
 </script>
 
 

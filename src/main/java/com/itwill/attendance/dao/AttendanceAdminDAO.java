@@ -14,6 +14,6 @@ public interface AttendanceAdminDAO {
     AttendanceAdminCheckDTO selectAdminAttendanceByEmpIdAndDate(Map<String, Object> params);
 
     // 2. 관리자용 사원 휴가 목록 조회
-    List<AttendanceAdminLeaveDTO> selectLeaveByEmployeeForAdmin(String startDate, String endDate);
+    List<AttendanceAdminLeaveDTO> selectLeaveListByAdmin(String empId, String empName);
 
 }

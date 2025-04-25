@@ -20,6 +20,7 @@ public class AttendanceAdminServiceImpl implements AttendanceAdminService {
         this.attendanceAdminDAO = attendanceAdminDAO;
     }
 
+    // ===== 1. 관리자의 사원 출퇴근 기록 및 현황 조회 =====
     // 관리자의 사원 출퇴근 기록 및 현황 조회
     @Override
     public List<AttendanceAdminCheckDTO> getAdminAttendanceList(Map<String, Object> params) {
@@ -32,9 +33,10 @@ public class AttendanceAdminServiceImpl implements AttendanceAdminService {
         return attendanceAdminDAO.selectAdminAttendanceByEmpIdAndDate(params);
     }
 
-    // 관리자의 사원 휴가 목록 조회
+    // ===== 2. 관리자의 사원 휴가 목록 조회 =====
     @Override
-    public List<AttendanceAdminLeaveDTO> getAdminLeaveList(String startDate, String endDate) {
-        return attendanceAdminDAO.selectLeaveByEmployeeForAdmin(startDate, endDate);
+    public List<AttendanceAdminLeaveDTO> getLeaveListByAdmin(String empId, String empName) {
+        return attendanceAdminDAO.selectLeaveListByAdmin(empId, empName);
     }
+    
 }

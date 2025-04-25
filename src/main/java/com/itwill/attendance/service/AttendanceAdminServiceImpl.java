@@ -67,7 +67,7 @@ public class AttendanceAdminServiceImpl implements AttendanceAdminService {
     }
 
     @Override
-    public boolean insertWorkStatus(Map<String, Object> params) {
+    public boolean insertWorkStatus(Map<String, String> params) {
         return attendanceAdminDAO.insertWorkStatus(params) > 0;
     }
 

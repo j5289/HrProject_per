@@ -32,7 +32,7 @@ public interface AttendanceAdminService {
 
     boolean updateWorkStatus(AttendanceAdminUpdateAndDeleteDTO dto);
 
-    boolean insertWorkStatus(Map<String, Object> params);
+    public boolean insertWorkStatus(Map<String, String> params);
 
     boolean deleteWorkStatus(AttendanceAdminUpdateAndDeleteDTO dto);
 

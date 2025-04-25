@@ -74,7 +74,7 @@ public class AttendanceAdminDAOImpl implements AttendanceAdminDAO {
     }
 
     @Override
-    public int insertWorkStatus(Map<String, Object> params) {
+    public int insertWorkStatus(Map<String, String> params) {
         return sqlSession.insert(NAMESPACE + "insertWorkStatus", params);
     }
 

@@ -24,6 +24,7 @@ public class AttendanceAdminCheckDTO {
 	private Boolean isLate; //지각 여부(DB에 없음, true 면 지각)
 	
 	private String workStatus; //근무 상태(출근,퇴근,지각) 
+	private String workTime; //근무 시간
 	
 	//지각 여부 출력하는 메서드 
 	public String getLateStatus() {
@@ -34,5 +35,7 @@ public class AttendanceAdminCheckDTO {
 		}
 	}
 	
-
+//work_time 필드 추가
+	
+	//attendance_status는 db에 없음... 필드가 db에서 정확하게 일치하는지?!..
 }

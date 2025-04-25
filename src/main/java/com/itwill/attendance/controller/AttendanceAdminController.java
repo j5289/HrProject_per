@@ -123,7 +123,7 @@ public class AttendanceAdminController{
 		// 관리자 근무 목록 조회
 	    @RequestMapping("/work-list")
 	    public String showWorkList(Model model) {
-	        List<AttendanceAdminWorkDTO> workList = attendanceService.getWorkStatusByAdmin(new HashMap<>());
+	        List<AttendanceAdminWorkDTO> workList = attendanceAdminService.getWorkStatusByAdmin(new HashMap<>());
 	        model.addAttribute("workList", workList);
 	        return "attendance/admin_work_list";
 	    }
@@ -134,7 +134,7 @@ public class AttendanceAdminController{
 	            @PathVariable String empId,
 	            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date workDate,
 	            Model model) {
-	        AttendanceAdminUpdateAndDeleteDTO dto = attendanceService.getWorkDetail(empId, workDate);
+	        AttendanceAdminUpdateAndDeleteDTO dto = attendanceAdminService.getWorkDetail(empId, workDate);
 	        model.addAttribute("work", dto);
 	        return "attendance/admin_work_update_form";
 	    }
@@ -142,7 +142,7 @@ public class AttendanceAdminController{
 	    // 근무 수정 처리
 	    @PostMapping("/work-update")
 	    public String updateWorkStatus(@ModelAttribute AttendanceAdminUpdateAndDeleteDTO dto, Model model) {
-	        boolean success = attendanceService.updateWorkStatus(dto);
+	        boolean success = attendanceAdminService.updateWorkStatus(dto);
 	        if (success) {
 	            model.addAttribute("successMessage", "수정이 완료되었습니다.");
 	        } else {
@@ -154,7 +154,7 @@ public class AttendanceAdminController{
 	    // 근무 삭제 처리
 	    @PostMapping("/work-delete")
 	    public String deleteWorkStatus(@ModelAttribute AttendanceAdminUpdateAndDeleteDTO dto, Model model) {
-	        boolean success = attendanceService.deleteWorkStatus(dto);
+	        boolean success = attendanceAdminService.deleteWorkStatus(dto);
 	        if (success) {
 	            model.addAttribute("successMessage", "삭제가 완료되었습니다.");
 	        } else {
@@ -166,7 +166,7 @@ public class AttendanceAdminController{
 	    // 근무 등록 처리
 	    @PostMapping("/work-insert")
 	    public String insertWorkStatus(@RequestParam Map<String, String> params, Model model) {
-	        boolean success = attendanceService.insertWorkStatus(params);
+	        boolean success = attendanceAdminService.insertWorkStatus(params);
 	        if (success) {
 	            model.addAttribute("successMessage", "등록이 완료되었습니다.");
 	        } else {
@@ -174,6 +174,7 @@ public class AttendanceAdminController{
 	        }
 	        return "redirect:/admin/work-list";
 	    }
+
 
  
 

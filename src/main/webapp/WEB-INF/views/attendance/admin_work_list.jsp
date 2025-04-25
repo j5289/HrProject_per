@@ -18,9 +18,9 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 	<script>
-        function confirmDelete(empId) {
+        function confirmDelete(key) {
             if (confirm("해당 기록을 삭제하시겠습니까?")) {
-                document.getElementById("deleteForm-" + empId).submit();
+                document.getElementById("deleteForm-" + key).submit();
             }
         }
 
@@ -35,6 +35,11 @@
 <body>
 <div class="container">
     <h2>사원 근무 조회</h2>
+
+    <!-- 등록 버튼 -->
+    <a href="<c:url value='/admin/work-insert-form' />">
+        <button type="button">+ 근무 등록</button>
+    </a>
 
     <!-- 필터 폼 -->
     <form action="<c:url value='/admin/work-list' />" method="get">
@@ -76,14 +81,16 @@
                     <td>${work.workStatus}</td>
                     <td>${work.workTime}</td>
                     <td>
-                        <!-- 수정: GET으로 수정 폼 이동 -->
-                        <a href="<c:url value='/admin/work-update-form/${work.empId}' />">
+                        <!-- 수정 버튼 -->
+                        <a href="<c:url value='/admin/work-update-form/${work.empId}/${work.attendanceDate}' />">
                             <button type="button">수정하기</button>
                         </a>
 
-                        <!-- 삭제: POST form으로 실행 -->
-                        <form id="deleteForm-${work.empId}" action="<c:url value='/admin/work-delete/${work.empId}' />" method="post" style="display:inline;">
-                            <button type="button" onclick="confirmDelete('${work.empId}')">삭제하기</button>
+                        <!-- 삭제 form -->
+                        <form id="deleteForm-${work.empId}-${work.attendanceDate}" action="<c:url value='/admin/work-delete' />" method="post" style="display:inline;">
+                            <input type="hidden" name="empId" value="${work.empId}" />
+                            <input type="hidden" name="workDate" value="${work.attendanceDate}" />
+                            <button type="button" onclick="confirmDelete('${work.empId}-${work.attendanceDate}')">삭제하기</button>
                         </form>
                     </td>
                 </tr>
@@ -99,4 +106,3 @@
 
 <jsp:include page="../common/footer2.jsp" />
 </body>
-</html>

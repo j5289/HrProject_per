@@ -1,11 +1,14 @@
 package com.itwill.attendance.service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.itwill.attendance.dto.AttendanceAdminCheckDTO;
 import com.itwill.attendance.dto.AttendanceAdminLateDTO;
 import com.itwill.attendance.dto.AttendanceAdminLeaveDTO;
+import com.itwill.attendance.dto.AttendanceAdminUpdateAndDeleteDTO;
+import com.itwill.attendance.dto.AttendanceAdminWorkDTO;
 
 public interface AttendanceAdminService {
 
@@ -21,4 +24,19 @@ public interface AttendanceAdminService {
     
     // ===== 3. 관리자의 사원 지각 조회 =====
     List<AttendanceAdminLateDTO> getLateStatusByAdmin(Map<String, Object> params);
+
+    // ===== 4. 관리자의 사원 근무 조회 및 근무 입력 
+    List<AttendanceAdminWorkDTO> getWorkStatusByAdmin(Map<String, Object> params);
+
+    AttendanceAdminUpdateAndDeleteDTO getWorkDetail(String empId, Date workDate);
+
+    boolean updateWorkStatus(AttendanceAdminUpdateAndDeleteDTO dto);
+
+    boolean insertWorkStatus(Map<String, Object> params);
+
+    boolean deleteWorkStatus(AttendanceAdminUpdateAndDeleteDTO dto);
+
+
+
+
 }

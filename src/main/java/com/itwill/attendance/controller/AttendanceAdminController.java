@@ -1,22 +1,31 @@
 package com.itwill.attendance.controller;
 
 import java.sql.Date;
+import com.itwill.config.AppConfig;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwill.attendance.dto.AttendanceAdminCheckDTO;
 import com.itwill.attendance.dto.AttendanceAdminLateDTO;
 import com.itwill.attendance.dto.AttendanceAdminLeaveDTO;
+import com.itwill.attendance.dto.AttendanceAdminUpdateAndDeleteDTO;
+import com.itwill.attendance.dto.AttendanceAdminWorkDTO;
 import com.itwill.attendance.service.AttendanceAdminService;
 
 /**
@@ -109,4 +118,63 @@ public class AttendanceAdminController{
 		    return "attendance/admin_lateness_check"; // JSP 템플릿
 
 		}
+		
+		// ===== 4. 관리자의 사원 근무 조회 및 근무 입력 =====
+		// 관리자 근무 목록 조회
+	    @RequestMapping("/work-list")
+	    public String showWorkList(Model model) {
+	        List<AttendanceAdminWorkDTO> workList = attendanceService.getWorkStatusByAdmin(new HashMap<>());
+	        model.addAttribute("workList", workList);
+	        return "attendance/admin_work_list";
+	    }
+
+	    // 관리자 근무 상세 조회 폼 이동
+	    @GetMapping("/work-update-form/{empId}/{workDate}")
+	    public String showWorkUpdateForm(
+	            @PathVariable String empId,
+	            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date workDate,
+	            Model model) {
+	        AttendanceAdminUpdateAndDeleteDTO dto = attendanceService.getWorkDetail(empId, workDate);
+	        model.addAttribute("work", dto);
+	        return "attendance/admin_work_update_form";
+	    }
+
+	    // 근무 수정 처리
+	    @PostMapping("/work-update")
+	    public String updateWorkStatus(@ModelAttribute AttendanceAdminUpdateAndDeleteDTO dto, Model model) {
+	        boolean success = attendanceService.updateWorkStatus(dto);
+	        if (success) {
+	            model.addAttribute("successMessage", "수정이 완료되었습니다.");
+	        } else {
+	            model.addAttribute("errorMessage", "수정에 실패했습니다.");
+	        }
+	        return "redirect:/admin/work-list";
+	    }
+
+	    // 근무 삭제 처리
+	    @PostMapping("/work-delete")
+	    public String deleteWorkStatus(@ModelAttribute AttendanceAdminUpdateAndDeleteDTO dto, Model model) {
+	        boolean success = attendanceService.deleteWorkStatus(dto);
+	        if (success) {
+	            model.addAttribute("successMessage", "삭제가 완료되었습니다.");
+	        } else {
+	            model.addAttribute("errorMessage", "삭제에 실패했습니다.");
+	        }
+	        return "redirect:/admin/work-list";
+	    }
+
+	    // 근무 등록 처리
+	    @PostMapping("/work-insert")
+	    public String insertWorkStatus(@RequestParam Map<String, String> params, Model model) {
+	        boolean success = attendanceService.insertWorkStatus(params);
+	        if (success) {
+	            model.addAttribute("successMessage", "등록이 완료되었습니다.");
+	        } else {
+	            model.addAttribute("errorMessage", "등록에 실패했습니다.");
+	        }
+	        return "redirect:/admin/work-list";
+	    }
+
+ 
+
 }

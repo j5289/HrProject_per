@@ -1,5 +1,6 @@
 package com.itwill.attendance.dao;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import com.itwill.attendance.dto.AttendanceAdminCheckDTO;
 import com.itwill.attendance.dto.AttendanceAdminLateDTO;
 import com.itwill.attendance.dto.AttendanceAdminLeaveDTO;
+import com.itwill.attendance.dto.AttendanceAdminUpdateAndDeleteDTO;
+import com.itwill.attendance.dto.AttendanceAdminWorkDTO;
 
 @Repository
 public class AttendanceAdminDAOImpl implements AttendanceAdminDAO {
@@ -51,6 +54,33 @@ public class AttendanceAdminDAOImpl implements AttendanceAdminDAO {
         return sqlSession.selectList("com.itwill.attendance.dao.AttendanceAdminDAO.getLateStatusByAdmin", params);
     }
     
-    
+    // ===== 4. 관리자의 사원 근무 조회 및 근무 입력
+    @Override
+    public List<AttendanceAdminWorkDTO> getWorkStatusByAdmin(Map<String, Object> params) {
+        return sqlSession.selectList(NAMESPACE + "getWorkStatusByAdmin", params);
+    }
+
+    @Override
+    public AttendanceAdminUpdateAndDeleteDTO selectWorkDetail(String empId, Date workDate) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("empId", empId);
+        paramMap.put("workDate", workDate);
+        return sqlSession.selectOne(NAMESPACE + "selectWorkDetail", paramMap);
+    }
+
+    @Override
+    public int updateWorkStatus(AttendanceAdminUpdateAndDeleteDTO dto) {
+        return sqlSession.update(NAMESPACE + "updateWorkStatus", dto);
+    }
+
+    @Override
+    public int insertWorkStatus(Map<String, Object> params) {
+        return sqlSession.insert(NAMESPACE + "insertWorkStatus", params);
+    }
+
+    @Override
+    public int deleteWorkStatus(AttendanceAdminUpdateAndDeleteDTO dto) {
+        return sqlSession.delete(NAMESPACE + "deleteWorkStatus", dto);
+    }
     
 }

@@ -70,5 +70,29 @@
             AND (#{empName} IS NULL OR e.emp_name LIKE CONCAT('%', #{empName}, '%'))
         ORDER BY l.upload_date DESC
     </select>
+    
+    <!-- ===== 3. 관리자의 사원 지각 조회 ===== -->
+    <select id="getLateStatusByAdmin" resultType="com.itwill.attendance.dto.AttendanceAdminLateDTO">
+        SELECT
+            emp.emp_id AS empId,
+            emp.emp_name AS empName,
+            att.work_date AS workDate,
+            att.check_in_time AS checkInTime,
+            CASE
+                WHEN att.check_in_time >= '09:00:00' THEN 'Y'
+                ELSE 'N'
+            END AS isLate
+        FROM
+            ATTENDANCE att
+            JOIN EMPLOYEE emp ON att.emp_id = emp.emp_id
+        WHERE
+            att.work_date BETWEEN #{startDate} AND #{endDate}
+            AND (emp.emp_name LIKE CONCAT('%', #{empName}, '%') OR #{empName} IS NULL)
+        ORDER BY
+            att.work_date;
+
+    </select>
+    
+    
 
 </mapper>

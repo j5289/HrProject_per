@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.itwill.attendance.dto.AttendanceAdminCheckDTO;
+import com.itwill.attendance.dto.AttendanceAdminLateDTO;
 import com.itwill.attendance.dto.AttendanceAdminLeaveDTO;
 
 public interface AttendanceAdminService {
@@ -18,4 +19,6 @@ public interface AttendanceAdminService {
     // ===== 2. 관리자용 사원 휴가 목록 조회 =====
     List<AttendanceAdminLeaveDTO> getLeaveListByAdmin(String empId, String empName);
     
+    // ===== 3. 관리자의 사원 지각 조회 =====
+    List<AttendanceAdminLateDTO> getLateStatusByAdmin(Map<String, Object> params);
 }

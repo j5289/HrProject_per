@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.itwill.attendance.dao.AttendanceAdminDAO;
 import com.itwill.attendance.dto.AttendanceAdminCheckDTO;
+import com.itwill.attendance.dto.AttendanceAdminLateDTO;
 import com.itwill.attendance.dto.AttendanceAdminLeaveDTO;
 
 @Service
@@ -37,6 +38,12 @@ public class AttendanceAdminServiceImpl implements AttendanceAdminService {
     @Override
     public List<AttendanceAdminLeaveDTO> getLeaveListByAdmin(String empId, String empName) {
         return attendanceAdminDAO.selectLeaveListByAdmin(empId, empName);
+    }
+    
+    // ===== 3. 관리자의 사원 지각 조회 =====
+    @Override
+    public List<AttendanceAdminLateDTO> getLateStatusByAdmin(Map<String, Object> params) {
+        return attendanceAdminDAO.getLateStatusByAdmin(params);
     }
     
 }

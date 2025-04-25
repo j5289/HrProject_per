@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwill.attendance.dto.AttendanceAdminCheckDTO;
+import com.itwill.attendance.dto.AttendanceAdminLateDTO;
 import com.itwill.attendance.dto.AttendanceAdminLeaveDTO;
 import com.itwill.attendance.service.AttendanceAdminService;
 
@@ -86,4 +87,26 @@ public class AttendanceAdminController{
 		    return "attendance/admin_leave_check"; // 정상 조회 결과
 		}
 		
+		// ===== 3. 관리자의 사원 지각 조회 =====
+		 // 관리자별 사원 지각 현황 조회
+		@GetMapping("/late-list")
+		public String getAdminLateStatusList(
+		        @RequestParam(value = "empName", required = false) String empName,
+		        @RequestParam(value = "startDate", required = false) String startDate,
+		        @RequestParam(value = "endDate", required = false) String endDate,
+		        Model model) {
+
+		    Map<String, Object> params = new HashMap<>();
+		    params.put("empName", empName);
+		    params.put("startDate", startDate);
+		    params.put("endDate", endDate);
+
+		    // 관리자별 사원 지각 현황 조회
+		    List<AttendanceAdminLateDTO> lateList = attendanceAdminService.getLateStatusByAdmin(params);
+		    model.addAttribute("lateList", lateList);
+
+		    // JSP 경로를 "attendance/admin_lateness_check.jsp"로 수정
+		    return "attendance/admin_lateness_check"; // JSP 템플릿
+
+		}
 }

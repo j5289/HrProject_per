@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.itwill.attendance.dto.AttendanceAdminCheckDTO;
+import com.itwill.attendance.dto.AttendanceAdminLateDTO;
 import com.itwill.attendance.dto.AttendanceAdminLeaveDTO;
 
 @Repository
@@ -43,4 +44,13 @@ public class AttendanceAdminDAOImpl implements AttendanceAdminDAO {
         params.put("empName", empName);
         return sqlSession.selectList(NAMESPACE + ".selectLeaveListByAdmin", params);
     }
+    
+    //===== 3. 관리자의 사원 지각 조회 =====
+    @Override
+    public List<AttendanceAdminLateDTO> getLateStatusByAdmin(Map<String, Object> params) {
+        return sqlSession.selectList("com.itwill.attendance.dao.AttendanceAdminDAO.getLateStatusByAdmin", params);
+    }
+    
+    
+    
 }

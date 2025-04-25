@@ -6,6 +6,26 @@
 <jsp:include page="../common/user-sidebar.jsp">
     <jsp:param name="menu" value="dashboard" />
 </jsp:include>
+<!-- 모달창 -->
+<div class="modal fade" id="calendarModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">일정 등록</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="modalDate">
+        <input type="text" id="calTitle" class="form-control" placeholder="일정 제목 입력">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="saveEvent()">저장</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div class="content">
     <div class="main-column">
@@ -44,31 +64,19 @@
 
         <!-- 캘린더 -->
         <div class="calendar-container">
-            <div class="calendar-header">
-                <h3>이번달 일정 캘린더</h3>
-            </div>
-            <table class="calendar-table">
-                <thead>
-                    <tr>
-                        <th class="sun">일 SUN</th>
-                        <th>월 MON</th>
-                        <th>화 TUE</th>
-                        <th>수 WED</th>
-                        <th>목 THU</th>
-                        <th>금 FRI</th>
-                        <th class="sat">토 SAT</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach begin="1" end="31" var="day" step="7">
-                        <tr>
-                            <c:forEach begin="${day}" end="${day+6}" var="d">
-                                <td><c:if test="${d <= 31}">${d}</c:if></td>
-                            </c:forEach>
-                        </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
+            <div class="dashboard-calendar">
+      <h3>이번 달 일정</h3>
+      <table class="calendar-table">
+        <thead>
+          <tr>
+            <th class="sun">일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th class="sat">토</th>
+          </tr>
+        </thead>
+        <tbody id="calendarBody"></tbody>
+      </table>
+      <div class="calendar-events" id="eventList"></div>
+    </div>
+  </div>
         </div>
 
         <!-- TO DO & MEMO -->
@@ -91,6 +99,65 @@
     </div>
 
 <jsp:include page="../common/footer.jsp" />
+<!-- 부트스트랩 및 일정 스크립트 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const calendarBody = document.getElementById("calendarBody");
+  const eventList = document.getElementById("eventList");
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const lastDate = new Date(year, month + 1, 0).getDate();
+
+  let day = 1;
+  let row = document.createElement("tr");
+  for (let i = 0; i < firstDay; i++) row.appendChild(document.createElement("td"));
+  for (let i = firstDay; i < 7; i++) row.appendChild(createDayCell(day++));
+  calendarBody.appendChild(row);
+
+  while (day <= lastDate) {
+    row = document.createElement("tr");
+    for (let i = 0; i < 7 && day <= lastDate; i++) {
+      row.appendChild(createDayCell(day++));
+    }
+    calendarBody.appendChild(row);
+  }
+
+  function createDayCell(day) {
+    const td = document.createElement("td");
+    td.textContent = day;
+    td.style.cursor = "pointer";
+    td.addEventListener("click", () => {
+      document.getElementById("modalDate").value = day;
+      document.getElementById("calTitle").value = "";
+      const modal = new bootstrap.Modal(document.getElementById("calendarModal"));
+      modal.show();
+    });
+    return td;
+  }
+
+  function saveEvent() {
+    const day = document.getElementById("modalDate").value;
+    const title = document.getElementById("calTitle").value;
+    if (!title.trim()) {
+      alert("제목을 입력해주세요.");
+      return;
+    }
+
+    const eventDiv = document.createElement("div");
+    eventDiv.className = "event";
+    eventDiv.innerHTML = `<span class="event-date">${day}일</span> <span class="event-title">${title}</span>`;
+    eventList.appendChild(eventDiv);
+
+    const modal = bootstrap.Modal.getInstance(document.getElementById("calendarModal"));
+    modal.hide();
+  }
+</script>
+
 
 <script src="<c:url value='/resources/js/script.js' />"></script>
 <script src="<c:url value='/resources/js/session-timer.js' />"></script>

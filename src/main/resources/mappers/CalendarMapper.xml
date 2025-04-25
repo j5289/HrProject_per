@@ -5,13 +5,11 @@
 
 <mapper namespace="com.itwill.employee.persistence.CalendarDAO">
 
-    <!-- 일정 등록 -->
     <insert id="insertCalendar" parameterType="com.itwill.employee.domain.CalendarVO">
         INSERT INTO CALENDAR (cal_date, cal_title)
         VALUES (#{calDate}, #{calTitle})
     </insert>
 
-    <!-- 일정 목록 조회 -->
     <select id="getAllCalendar" resultType="com.itwill.employee.domain.CalendarVO">
         SELECT cal_id, cal_date, cal_title
         FROM CALENDAR

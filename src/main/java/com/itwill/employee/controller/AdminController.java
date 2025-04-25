@@ -106,9 +106,11 @@ public class AdminController {
     public String saveCalendarEvent(@ModelAttribute CalendarVO calendar, HttpSession session) {
         String writer = (String) session.getAttribute("id");
         calendar.setCalWriter(writer != null ? writer : "admin");
+        
         calendarService.register(calendar);
         return "redirect:/admin/main";
     }
+
 
     
     

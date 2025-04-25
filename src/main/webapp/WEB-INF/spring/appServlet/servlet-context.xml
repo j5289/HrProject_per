@@ -49,5 +49,9 @@
     <!-- 이미지 파일 매핑 -->
     <mvc:resources mapping="/image/**" location="/image/" />
 
+	    <context:component-scan base-package="com.itwill" />
+	
+	
+	
 </beans>
 

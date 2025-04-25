@@ -1,239 +1,275 @@
 package com.itwill.attendance.controller;
 
-import javax.servlet.http.HttpSession;  // HttpSession 추가
-
-
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.itwill.attendance.dto.AttendanceDTO;
-import com.itwill.attendance.dto.AttendanceDetailDTO;
-import com.itwill.attendance.dto.AttendanceStatusDTO;
-import com.itwill.attendance.dto.AttendanceUpdateDTO;
-import com.itwill.attendance.dto.AttendanceWarningDTO;
-import com.itwill.attendance.dto.LatenessDTO;
-import com.itwill.attendance.dto.LeaveBalanceDTO;
-import com.itwill.attendance.dto.LeaveDTO;
-import com.itwill.attendance.dto.LeaveHistoryDTO;
-import com.itwill.attendance.dto.LeaveUpdateRequestDTO;
-import com.itwill.attendance.dto.WorkSummaryDTO;
+import com.itwill.attendance.dto.AttendanceCheckDTO;
+import com.itwill.attendance.dto.AttendanceLateDTO;
+import com.itwill.attendance.dto.AttendanceLeaveDTO;
+import com.itwill.attendance.dto.AttendanceWorkCheckDTO;
+import com.itwill.attendance.dto.AttendanceWorkListDTO;
 import com.itwill.attendance.service.AttendanceService;
-
-import lombok.RequiredArgsConstructor;
+//import com.itwill.util.ExcelLeaveExporter;  
 
 @Controller
 @RequestMapping("/attendance")
-@RequiredArgsConstructor
 public class AttendanceController {
-
-    @Autowired
-    private AttendanceService attendanceService;
-
-    @Autowired
-    private HttpSession session;  // HttpSession 객체를 주입받습니다.
-
-    /**
-     * [1. 사용자 출퇴근 기록 조회 + 현황]
-     * 사용자가 기간별 출퇴근 기록을 조회하고, 출근/퇴근 여부 및 상태를 확인할 수 있음
-     */
-    @GetMapping("/main")
-    public List<AttendanceDetailDTO> getMyAttendanceRecord(
-            @RequestParam String empId,
-            @RequestParam String startDate,
-            @RequestParam String endDate) {
-        return attendanceService.getMyAttendanceRecord(empId, startDate, endDate);
+	
+	@Autowired
+	private AttendanceService attendanceService;
+	
+	// 출퇴근 메인 페이지 진입
+	@GetMapping("/main")
+	public String showAttendanceMainPage(HttpSession session) {
+	    // 로그인 확인용 세션 처리도 여기서 할 수 있음
+	    String empId = (String) session.getAttribute("id");
+	    if (empId == null) {
+	        return "redirect:/member/login"; // 로그인 안 되어 있으면 로그인 페이지로 이동
+	    }
+	    return "attendance-main"; // JSP 경로
+	}
+	
+	// ===== 1. 사용자 출퇴근 기록부 및 현황 =====
+    // 1) 출근 시간 등록
+    @PostMapping("attendance/check-in")
+    @ResponseBody
+    public Map<String, Object> checkIn(@RequestParam("empId") String empId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // 출근 처리 메서드 호출
+            AttendanceCheckDTO attendanceCheckDTO = attendanceService.checkIn(empId);
+            
+            // 응답 데이터에 출근 시간 추가
+            response.put("checkInTime", attendanceCheckDTO.getCheckInTime());
+            response.put("message", "출근 완료!");
+        } catch (Exception e) {
+            response.put("message", "출근 처리에 실패했습니다.");
+        }
+        return response;
     }
 
-    /**
-     * [2. 사용자 지각 현황 조회]
-     * 사용자가 기간별 지각 횟수, 지각 시간, 지각 사유서와 승인 상태 등을 확인할 수 있음
-     */
-    @GetMapping("/lateness")
-    public List<LatenessDTO> getMyLateness(
-            @RequestParam String empId,
-            @RequestParam String startDate,
-            @RequestParam String endDate) {
-        return attendanceService.getMyLateness(empId, startDate, endDate);
+    // 2) 퇴근 시간 등록
+    @PostMapping("attendance/check-out")
+    @ResponseBody
+    public Map<String, Object> checkOut(@RequestParam("empId") String empId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // 퇴근 처리 메서드 호출
+            AttendanceCheckDTO attendanceCheckDTO = attendanceService.checkOut(empId);
+            
+            // 응답 데이터에 퇴근 시간 추가
+            response.put("checkOutTime", attendanceCheckDTO.getCheckOutTime());
+            response.put("message", "퇴근 완료!");
+        } catch (Exception e) {
+            response.put("message", "퇴근 처리에 실패했습니다.");
+        }
+        return response;
     }
 
-    /**
-     * [3. 사용자 근무 요약 조회]
-     * 사용자가 기간별 누적 근무 일수, 누적 근무 시간 등의 요약 정보를 조회할 수 있음
-     */
-    @GetMapping("/work-summary")
-    public WorkSummaryDTO getMyWorkSummary(
-            @RequestParam String empId,
-            @RequestParam String startDate,
-            @RequestParam String endDate) {
-        return attendanceService.getWorkSummary(empId, startDate, endDate);
-    }
 
-    /**
-     * [4. 사용자 근태 항목 및 근무 형태 조회]
-     * 사용자가 자신의 근무, 지각, 결근, 외근 등 근태 유형 및 일자별 내역을 확인할 수 있음
-     */
-    @GetMapping("/status")
-    public List<AttendanceStatusDTO> getMyAttendanceStatus(
-            @RequestParam String empId,
-            @RequestParam String startDate,
-            @RequestParam String endDate) {
-        return attendanceService.getMyAttendanceStatus(empId, startDate, endDate);
-    }
+	// 3) 특정 사원의 출퇴근 기록 조회 (날짜 기준)
+    @PostMapping("/attendance/check-attendance")
+    @ResponseBody
+    public Map<String, Object> checkAttendance(@RequestParam("empId") String empId, @RequestParam("workDate") String workDateStr) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // 출퇴근 기록 조회 서비스 호출
+            LocalDate workDate = LocalDate.parse(workDateStr);
+            
+            // 출퇴근 기록 조회 서비스 호출
+            AttendanceCheckDTO result = attendanceService.getAttendanceByEmpIdAndDate(empId, workDate);
 
-    /**
-     * [5. 사용자 휴가 내역 조회]
-     * 사용자가 자신이 신청한 휴가 기록과 승인 현황을 확인하고, 다운로드할 수 있음
-     */
-    @GetMapping("/leave-history")
-    public List<LeaveHistoryDTO> getMyLeaveHistory(@RequestParam String empId) {
-        return attendanceService.getMyTotalLeaveHistory(empId);  // LeaveHistoryDTO 반환
+            if (result != null) {
+                response.put("attendance", result); 
+                response.put("lateStatus", result.getLateStatus()); //지각 여부 추가
+                response.put("message", "출퇴근 기록 조회 성공");
+            } else {
+                response.put("message", "해당 날짜의 출퇴근 기록이 없습니다.");
+            }
+        } catch (Exception e) {
+            response.put("message", "출퇴근 기록 조회에 실패했습니다.");
+        }
+        return response;
     }
     
-    /**
-     * [5-1. 사용자 특정 기간 내의 휴가 내역 조회 ]
-     */
-    @RequestMapping("/attendance-leave")
-    public String showLeaveHistory(
-            @RequestParam("startDate") String startDate,
-            @RequestParam("endDate") String endDate,
-            Model model
+    
+    // ===== 2. 사용자 지각 현황 =====
+    @PostMapping("/attendance/late-status")
+    @ResponseBody
+    public Map<String, Object> getLateStatus(
+            @RequestParam("empId") String empId,
+            @RequestParam("startDate") String startDateStr,
+            @RequestParam("endDate") String endDateStr) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // 날짜 파싱
+            LocalDate startDate = LocalDate.parse(startDateStr);
+            LocalDate endDate = LocalDate.parse(endDateStr);
+
+            // 파라미터 맵 생성
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("empId", empId);
+            paramMap.put("startDate", startDate);
+            paramMap.put("endDate", endDate);
+
+            // 지각 상세 목록 조회
+            List<AttendanceLateDTO> lateDetails = attendanceService.getLateDetailsByEmpIdAndDateRange(paramMap);
+
+            // 지각 통계 조회
+            AttendanceLateDTO lateStats = attendanceService.getLateStatsByEmpIdAndDateRange(paramMap);
+
+            // 응답 구성
+            response.put("lateDetails", lateDetails);  // 지각 내역
+            response.put("lateStats", lateStats);      // 지각 통계
+            response.put("message", "지각 현황 조회 성공");
+
+        } catch (Exception e) {
+            response.put("message", "지각 현황 조회에 실패했습니다.");
+        }
+
+        return response;
+    }
+    
+    
+    // ===== 3. 사용자 근무 조회 =====
+    @PostMapping("/attendance/work-summary")
+    @ResponseBody
+    public Map<String, Object> getWorkSummary(
+            @RequestParam("empId") String empId,
+            @RequestParam("startDate") String startDateStr,
+            @RequestParam("endDate") String endDateStr) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // 날짜 파싱
+            LocalDate startDate = LocalDate.parse(startDateStr);
+            LocalDate endDate = LocalDate.parse(endDateStr);
+
+            // 파라미터 맵 구성
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("empId", empId);
+            paramMap.put("startDate", startDate);
+            paramMap.put("endDate", endDate);
+
+            // 서비스 호출
+            AttendanceWorkCheckDTO workSummary = attendanceService.findWorkSummaryByEmpIdAndDateRange(paramMap);
+
+            // 응답 구성
+            response.put("workSummary", workSummary);
+            response.put("message", "근무 통계 조회 성공");
+        } catch (Exception e) {
+            response.put("message", "근무 통계 조회에 실패했습니다.");
+        }
+
+        return response;
+    }
+
+    
+    // ===== 4. 사원의 근태 항목 조회 =====
+    // 1) 사원의 특정 날짜에 대한 근태 항목 조회(카테고리별)
+    @PostMapping("/work-item")
+    public AttendanceWorkListDTO getWorkItemByDate(@RequestBody AttendanceWorkListDTO requestDto) {
+        return attendanceService.findWorkItemByDateAndCategory(requestDto);
+    }
+
+    
+    // ===== 5. 사원의 휴가 내역 조회 =====
+    // 1) 휴가 내역 조회 페이지 이동
+    @GetMapping("/leave")
+    public String showLeavePage() {
+        return "attendance/leave_list";
+    }
+    
+    // 2) 휴가 내역 조회 (조회 조건 : 단일 날짜 / 기간)
+    @PostMapping("/leave/search")
+    public String searchLeave(
+        @RequestParam("empId") String empId,
+        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+        Model model
     ) {
-        String empId = (String) session.getAttribute("empId");
-        
-        // 기간별 휴가 내역 조회 시 LeaveHistoryDTO로 반환
-        List<LeaveHistoryDTO> leaveHistory = attendanceService.getMyLeaveHistoryByDate(empId, startDate, endDate);
-        
-        model.addAttribute("leaveList", leaveHistory);
-        
-        return "attendance/attendance-leave";  // JSP 뷰 이름
+        List<AttendanceLeaveDTO> leaveList;
+
+        if (date != null) {
+            leaveList = attendanceService.findLeaveByDate(empId, date);
+        } else if (startDate != null && endDate != null) {
+            leaveList = attendanceService.findLeaveByDateRange(empId, startDate, endDate);
+        } else {
+            model.addAttribute("alertMsg", "조회 조건을 다시 확인해주세요.");
+            return "attendance/leave_list";
+        }
+
+        if (leaveList.isEmpty()) {
+            model.addAttribute("alertMsg", "해당하는 정보가 존재하지 않습니다.");
+        } else {
+            model.addAttribute("leaveList", leaveList);
+        }
+
+        return "attendance/leave_list";
     }
 
-    /**
-     * [6. 사용자 휴가 잔여 일수 확인]
-     * 사용자가 현재 남은 연차, 사용한 연차 등의 정보를 확인할 수 있음
-     */
-    @GetMapping("/leave-balance")
-    public LeaveBalanceDTO getMyLeaveBalance(
-            @RequestParam String empId) {
-        return attendanceService.getMyLeaveBalance(empId);
+    
+    // 3) 휴가 보고서 상세 보기 
+    @GetMapping("/leave/report/{leaveId}")
+    public String viewLeaveReport(@PathVariable("leaveId") String leaveId, Model model) {
+        AttendanceLeaveDTO report = attendanceService.findLeaveReportById(leaveId);
+        model.addAttribute("report", report);
+        return "attendance/leave_report_detail";
     }
     
-    /**
-     * [6-1. 사용자 휴가 신청 기능]
-     */
-    @PostMapping("/leave/apply")
-    public void applyForLeave(@RequestBody LeaveDTO leaveDTO) {
-        attendanceService.applyForLeave(leaveDTO);
-    }
+//    // ===== 5-1. 사원의 휴가보고서 엑셀/PDF 다운로드 =====
+//    // 생성자 주입
+//    public AttendanceController(AttendanceService attendanceService) {
+//        this.attendanceService = attendanceService;
+//    }
+//    
+//    @GetMapping("/download/my-leave-reports/{empId}/excel")
+//    public ResponseEntity<byte[]> downloadMyLeaveReportsExcel(@PathVariable String empId) {
+//        // 해당 사원의 휴가 보고서 조회
+//        List<AttendanceLeaveDTO> leaveReports = attendanceService.findMyLeaveReports(empId);
+//
+//        try {
+//            // 엑셀로 변환
+//            byte[] excelData = ExcelLeaveExporter.exportLeaveToExcel(leaveReports);
+//
+//            // HttpHeaders에 Content-Disposition 설정 (파일 다운로드)
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);  // 파일 다운로드를 위한 미디어 타입 설정
+//            headers.set("Content-Disposition", "attachment; filename=my_leave_report_" + empId + ".xlsx");
+//
+//            // ResponseEntity로 반환
+//            return ResponseEntity.ok()
+//                    .headers(headers)
+//                    .body(excelData);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(500).body(null); // 예외 처리 (에러 시 500 반환)
+//        }
+//    }
+//
+//    // 향후 PDF 다운로드 기능도 추가 가능 (추후 PDF 다운로드 로직 추가)
+//
+//    
     
-
-    /**
-     * [7. 관리자용 출퇴근 기록부 조회 (사원별/부서별/일자별)]
-     */
-    @GetMapping("/admin/records")
-    public List<AttendanceDetailDTO> getAttendanceRecordsByCategory(
-            @RequestParam(required = false) String empId,
-            @RequestParam(required = false) String departmentId,
-            @RequestParam String startDate,
-            @RequestParam String endDate) {
-        return attendanceService.getAttendanceRecordsByCategory(empId, departmentId, startDate, endDate);
-    }
-
-    /**
-     * [8. 관리자용 사원별 휴가 관리 (일수 조회, 추가, 삭제)]
-     */
-    @PostMapping("/admin/leave/update")
-    public void updateLeaveDays(@RequestBody LeaveUpdateRequestDTO dto) {
-        attendanceService.updateLeaveDays(dto);
-    }
-
-    /**
-     * [9. 관리자용 지각 현황 조회 및 경고]
-     */
-    @GetMapping("/admin/lateness")
-    public List<LatenessDTO> getAllLatenessRecords(
-            @RequestParam(required = false) String empId,
-            @RequestParam(required = false) String departmentId,
-            @RequestParam String startDate,
-            @RequestParam String endDate) {
-        return attendanceService.getAllLatenessRecords(empId, departmentId, startDate, endDate);
-    }
-
-    /**
-     * [10. 관리자용 근무 형태 및 시간 조회]
-     */
-    @GetMapping("/admin/work-form")
-    public List<AttendanceStatusDTO> getAllWorkStatus(
-            @RequestParam(required = false) String empId,
-            @RequestParam String startDate,
-            @RequestParam String endDate) {
-        return attendanceService.getAllWorkStatus(empId, startDate, endDate);
-    }
-
-    /**
-     * [11. 관리자용 근무 입력/수정/삭제 기능]
-     */
-    @PostMapping("/admin/work/update")
-    public void updateAttendanceRecord(@RequestBody AttendanceUpdateDTO dto) {
-        attendanceService.updateAttendanceRecord(dto);
-    }
-
-    /**
-     * [12. 관리자용 근태 종합 조회 (지각/결근 기준 이상 시 경고)]
-     */
-    @GetMapping("/admin/summary")
-    public List<AttendanceWarningDTO> getAttendanceSummaryForAdmin(
-            @RequestParam String startDate,
-            @RequestParam String endDate) {
-        return attendanceService.getAttendanceSummaryForAdmin(startDate, endDate);
-    }
-
-    @PostMapping("/attendance/clock-in")
-    @ResponseBody
-    public void clockIn(@RequestBody Map<String, String> request) {
-        String empId = request.get("empId");
-        attendanceService.clockIn(empId);
-    }
-
-    @PostMapping("/attendance/clock-out")
-    @ResponseBody
-    public void clockOut(@RequestBody Map<String, String> request) {
-        String empId = request.get("empId");
-        attendanceService.clockOut(empId);
-    }
-
-    // jsp뷰페이지 - 근태 관리 메인 페이지  (변경 X!)
-    @RequestMapping("/attendance-main")
-    public String showAttendanceMain(Model model) {
-        return "attendance/attendance-main";  // /WEB-INF/views/attendance/attendance-main.jsp로 매핑
-    }
-
-    // jsp뷰페이지 - 근태관리 - 지각 현황 페이지로 이동
-    @RequestMapping("/attendance-late")
-    public String showLateAttendance(Model model, @RequestParam String startDate, @RequestParam String endDate) {
-        // 세션에서 empId 가져오기 (현재 로그인한 사용자)
-        String empId = (String) session.getAttribute("empId");
-
-        // 사용자의 지각 내역 조회
-        List<LatenessDTO> lateAttendanceList = attendanceService.getMyLateness(empId, startDate, endDate);
-
-        // 조회된 지각 내역을 모델에 추가
-        model.addAttribute("attendanceLateList", lateAttendanceList);
-
-        return "attendance/attendance-late";  // JSP 파일 이름
-    }
-    
-
 }

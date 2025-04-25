@@ -1,96 +1,128 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.itwill.attendance.dto.AttendanceStatusDTO" %>
-<!-- 템플릿 include -->
-<!-- http://localhost:8088/attendance/attendance-main -->
+<%@ page import="com.itwill.attendance.dto.AttendanceCheckDTO" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<link rel="stylesheet" href="<c:url value='/resources/css/style.css' />">
-<html>
+
+<!-- 공통 템플릿 include -->
+<jsp:include page="../common/header.jsp" />
+<jsp:include page="../common/admin-sidebar.jsp">
+    <jsp:param name="menu" value="attendance" />
+</jsp:include>
+<!-- 공통 템플릿 include -->
+
+<%
+     //세션 로그인 체크
+     String empId = (String) session.getAttribute("id");
+     if (empId == null) {
+         response.sendRedirect(request.getContextPath() + "/member/login");  // 컨트롤러 호출 → 뷰 리졸버 통해 JSP 열림
+         return;
+     }
+     com.itwill.approval.dto.ApprovalSearchDTO loginUser = new com.itwill.approval.dto.ApprovalSearchDTO();
+     loginUser.setEmpId(empId);
+ %> 
+
 <head>
-    <title>근태 관리 메인 페이지</title>
+    <!-- 스타일 시트 -->
     <link rel="stylesheet" href="<c:url value='/resources/css/style.css' />">
+    <link rel="stylesheet" href="<c:url value='/resources/css/user-style.css' />">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <title>출퇴근 기록부 및 현황</title>
+
     <script>
-        // 현재 시간 실시간 표시
-        function updateClock() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('ko-KR', { hour12: false });
-            document.getElementById("clock").textContent = timeStr;
-        }
+        $(document).ready(function () {
+            // 출근 처리
+            $('#checkInBtn').click(function (event) {
+                event.preventDefault();
+                var empId = $('#empId').val();
 
-        setInterval(updateClock, 1000);
-        window.onload = updateClock;
-
-        // 출근/퇴근 시간 기록
-        function setAttendanceTime(type) {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('ko-KR', { hour12: false });
-
-            if (type === 'start') {
-                document.getElementById("startTime").textContent = timeStr;
-            } else {
-                document.getElementById("endTime").textContent = timeStr;
-            }
-        }
-
-        // 출근/퇴근 요청 함수
-        function sendAttendance(type) {
-            const empId = document.getElementById("empId").value; // 세션에서 empId 가져오기
-            const url = (type === 'start') ? '/attendance/clock-in' : '/attendance/clock-out';
-
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ empId })
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert(type === 'start' ? '출근 등록 완료!' : '퇴근 등록 완료!');
-                    location.reload();
-                } else {
-                    alert('처리에 실패했습니다.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('에러 발생!');
+                $.ajax({
+                    type: 'POST',
+                    url: '/attendance/check-in',
+                    data: { empId: empId },
+                    success: function (response) {
+                        $('#statusMessage').text("출근 완료!");
+                        $('#checkInTime').text(response.checkInTime);
+                    },
+                    error: function () {
+                        $('#statusMessage').text("출근 처리에 실패했습니다. 다시 시도해주세요.");
+                    }
+                });
             });
-        }
+
+            // 퇴근 처리
+            $('#checkOutBtn').click(function (event) {
+                event.preventDefault();
+                var empId = $('#empId').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/attendance/check-out',
+                    data: { empId: empId },
+                    success: function (response) {
+                        $('#statusMessage').text("퇴근 완료!");
+                        $('#checkOutTime').text(response.checkOutTime);
+                    },
+                    error: function () {
+                        $('#statusMessage').text("퇴근 처리에 실패했습니다. 다시 시도해주세요.");
+                    }
+                });
+            });
+
+            // 특정 날짜 출퇴근 기록 조회
+            $("#check-attendance-form").submit(function (event) {
+                event.preventDefault();
+                var empId = $("input[name='empId']").val();
+                var workDate = $("input[name='workDate']").val();
+
+                $.ajax({
+                    url: "/attendance/check-attendance",
+                    type: "POST",
+                    data: { empId: empId, workDate: workDate },
+                    success: function (response) {
+                        if (response.attendance) {
+                            alert(response.message);
+                            console.log(response.attendance);
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert("출퇴근 기록 조회에 실패했습니다.");
+                    }
+                });
+            });
+        });
     </script>
 </head>
+
 <body>
-<div class="container">
-    <div class="sidebar">
-        <h2>근태 관리</h2>
-        <ul>
-            <li class="active"><a href="<c:url value='/attendance/main' />">출퇴근 기록부 및 현황</a></li>
-            <li><a href="<c:url value='/attendance/late' />">지각 현황</a></li>
-            <li><a href="<c:url value='/attendance/summary' />">근무 조회</a></li>
-            <li><a href="<c:url value='/attendance/items' />">근태 항목</a></li>
-            <li><a href="<c:url value='/attendance/leave' />">휴가 내역 확인</a></li>
-        </ul>
-    </div>
+    <h1>출퇴근 메인 페이지</h1>
+    <p>정상적으로 jsp 연결됨!</p>
+    <!-- 출근 버튼 -->
+    <form>
+        <input type="hidden" id="empId" value="${empId}" />
+        <button type="button" id="checkInBtn">출근하기</button>
+    </form>
 
-    <div class="main-content">
-        <h1>반갑습니다, <strong>${sessionScope.loginUser.emp_name}</strong>님!</h1>
+    <!-- 퇴근 버튼 -->
+    <form>
+        <input type="hidden" id="empId" value="${empId}" />
+        <button type="button" id="checkOutBtn">퇴근하기</button>
+    </form>
 
-        <!-- 세션에서 empId를 hidden input에 저장 -->
-        <input type="hidden" id="empId" value="${sessionScope.empId}" />
+    <!-- 상태 메시지 및 시간 출력 -->
+    <div id="statusMessage"></div>
+    <div>출근 시간: <span id="checkInTime"></span></div>
+    <div>퇴근 시간: <span id="checkOutTime"></span></div>
 
-        <div class="clock-box">
-            현재 시간: <span id="clock" style="font-weight: bold;"></span>
-        </div>
+    <!-- 출퇴근 기록 조회 -->
+    <form id="check-attendance-form">
+        <input type="text" name="empId" placeholder="사원 ID" />
+        <input type="date" name="workDate" />
+        <button type="submit">출퇴근 기록 조회</button>
+    </form>
 
-        <div class="attendance-buttons">
-            <button onclick="sendAttendance('start')">출근하기</button>
-            <button onclick="sendAttendance('end')">퇴근하기</button>
-        </div>
-
-        <div class="attendance-times">
-            <p>오늘의 출근 시간: <span id="startTime">--:--:--</span></p>
-            <p>오늘의 퇴근 시간: <span id="endTime">--:--:--</span></p>
-        </div>
-    </div>
-</div>
+<jsp:include page="../common/footer2.jsp" />
 </body>
-</html>

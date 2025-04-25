@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itwill.attendance.mapper.AttendanceAdminMapper">
+
+	<!-- ===== 1. 관리자용 사원 출퇴근 기록 및 현황 조회 ===== -->
+    <!-- ===== 1. 관리자용 사원 출퇴근 기록 및 현황 조회 ===== -->
+    <select id="selectAdminAttendanceList" resultType="com.itwill.attendance.dto.AttendanceAdminCheckDTO" parameterType="map">
+        SELECT 
+            e.emp_id AS empId,
+            e.emp_name AS empName,
+            a.work_date AS workDate,
+            a.check_in_time AS checkInTime,
+            a.check_out_time AS checkOutTime,
+            NULL AS managerId
+        FROM ATTENDANCE a
+        JOIN EMPLOYEE e ON a.emp_id = e.emp_id
+        <where>
+            <if test="empName != null and empName != ''">
+                AND e.emp_name LIKE CONCAT('%', #{empName}, '%')
+            </if>
+            <if test="workDate != null">
+                AND a.work_date = #{workDate}
+            </if>
+        </where>
+        ORDER BY a.work_date DESC, e.emp_id
+    </select>
+
+    <!-- 단일 사원 + 날짜 조회 -->
+    <select id="selectAdminAttendanceByEmpIdAndDate" resultType="com.itwill.attendance.dto.AttendanceAdminCheckDTO" parameterType="map">
+        SELECT 
+            e.emp_id AS empId,
+            e.emp_name AS empName,
+            a.work_date AS workDate,
+            a.check_in_time AS checkInTime,
+            a.check_out_time AS checkOutTime,
+            NULL AS managerId
+        FROM ATTENDANCE a
+        JOIN EMPLOYEE e ON a.emp_id = e.emp_id
+        WHERE e.emp_id = #{empId}
+        AND a.work_date = #{workDate}
+    </select>
+    
+    <!-- ===== 2. 관리자의 사원 휴가 목록 조회 ===== -->
+	<select id="selectLeaveListByAdmin" parameterType="map"
+            resultType="com.itwill.attendance.dto.AttendanceAdminLeaveDTO">
+        SELECT
+            l.emp_id AS empId,
+            e.emp_name AS empName,
+            d.dep_name AS depName,
+            l.leave_id AS leaveId,
+            l.upload_date AS uploadDate,
+            l.leave_start_date AS leaveStartDate,
+            l.leave_end_date AS leaveEndDate,
+            l.leave_status AS leaveStatus,
+            l.leave_days AS leaveDays,
+            l.approval_confirmed AS approvalConfirmed,
+            f.file_name AS fileName,
+            f.file_path AS filePath,
+            f.file_size AS fileSize,
+            f.file_type AS fileType
+        FROM LEAVE l
+        JOIN EMPLOYEE e ON l.emp_id = e.emp_id
+        JOIN DEPARTMENT d ON e.dep_id = d.dep_id
+        LEFT JOIN FILE f ON l.leave_id = f.leave_id
+        WHERE
+            (#{empId} IS NULL OR l.emp_id = #{empId})
+            AND (#{empName} IS NULL OR e.emp_name LIKE CONCAT('%', #{empName}, '%'))
+        ORDER BY l.upload_date DESC
+    </select>
+    
+    <!-- ===== 3. 관리자의 사원 지각 조회 ===== -->
+    <select id="getLateStatusByAdmin" resultType="com.itwill.attendance.dto.AttendanceAdminLateDTO">
+        SELECT
+            emp.emp_id AS empId,
+            emp.emp_name AS empName,
+            att.work_date AS workDate,
+            att.check_in_time AS checkInTime,
+            CASE
+                WHEN att.check_in_time >= '09:00:00' THEN 'Y'
+                ELSE 'N'
+            END AS isLate
+        FROM
+            ATTENDANCE att
+            JOIN EMPLOYEE emp ON att.emp_id = emp.emp_id
+        WHERE
+            att.work_date BETWEEN #{startDate} AND #{endDate}
+            AND (emp.emp_name LIKE CONCAT('%', #{empName}, '%') OR #{empName} IS NULL)
+        ORDER BY
+            att.work_date;
+
+    </select>
+    
+    <!-- ===== 4. 관리자의 사원 근무 조회 및 근무 입력 -->
+    <!-- 1. 관리자 사원 근무 상태 조회 -->
+    <select id="getWorkStatusByAdmin" resultType="com.itwill.attendance.dto.AttendanceAdminWorkDTO">
+        <![CDATA[
+        SELECT 
+            emp.emp_name,
+            dep.dep_name,
+            att.attendance_date,
+            att.work_status,
+            att.work_time
+        FROM
+            attendance att
+            JOIN employee emp ON att.emp_id = emp.emp_id
+            JOIN department dep ON emp.dep_id = dep.dep_id
+        WHERE
+            1 = 1
+        <if test="empId != null">
+            AND emp.emp_id = #{empId}
+        </if>
+        <if test="startDate != null">
+            AND att.attendance_date >= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND att.attendance_date <= #{endDate}
+        </if>
+        ]]>
+    </select>
+
+    <!-- 2. 근무 상세 조회 (수정 및 삭제용) -->
+    <select id="selectWorkDetail" resultType="com.itwill.attendance.dto.AttendanceAdminUpdateAndDeleteDTO">
+        <![CDATA[
+        SELECT 
+            emp_id, 
+            attendance_date AS workDate, 
+            work_hours AS workHours,
+            night_work_hour AS nightWorkHour, 
+            holiday_work_hour AS holidayWorkHour,
+            attendance_status AS attendanceStatus, 
+            vacation_days AS vacationDays
+        FROM attendance
+        WHERE emp_id = #{empId} 
+            AND attendance_date = #{workDate}
+        ]]>
+    </select>
+
+    <!-- 3. 근무 상태 수정 -->
+    <update id="updateWorkStatus">
+        <![CDATA[
+        UPDATE attendance
+        SET 
+            work_hours = #{workHours},
+            night_work_hour = #{nightWorkHour},
+            holiday_work_hour = #{holidayWorkHour},
+            attendance_status = #{attendanceStatus},
+            vacation_days = #{vacationDays}
+        WHERE 
+            emp_id = #{empId}
+            AND attendance_date = #{workDate}
+        ]]>
+    </update>
+
+    <!-- 4. 근무 상태 입력 -->
+    <insert id="insertWorkStatus">
+        <![CDATA[
+        INSERT INTO attendance 
+            (emp_id, attendance_date, work_status, work_time) 
+        VALUES 
+            (#{empId}, #{attendanceDate}, #{workStatus}, #{workTime})
+        ]]>
+    </insert>
+
+    <!-- 5. 근무 상태 삭제 -->
+    <delete id="deleteWorkStatus">
+        <![CDATA[
+        DELETE FROM attendance
+        WHERE
+            emp_id = #{empId}
+            AND attendance_date = #{attendanceDate}
+        ]]>
+    </delete>
+
+</mapper>

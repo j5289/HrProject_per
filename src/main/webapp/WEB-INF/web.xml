@@ -51,4 +51,11 @@
 		<filter-name>encodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	
+	<!-- 기본 시작 페이지 설정 -->
+	<welcome-file-list>
+    <welcome-file>main1.jsp</welcome-file>
+	</welcome-file-list>
+	
+	
 </web-app>

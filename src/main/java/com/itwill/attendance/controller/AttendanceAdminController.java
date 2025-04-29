@@ -34,7 +34,7 @@ import com.itwill.attendance.service.AttendanceAdminService;
  */
 
 @Controller
-@RequestMapping("/admin/attendance")
+@RequestMapping("/attendance")
 public class AttendanceAdminController{
 	
 		@Autowired
@@ -42,7 +42,7 @@ public class AttendanceAdminController{
 	
 		// ===== 1. 관리자의 사원 출퇴근 기록 및 현황 조회 =====
 		// 전체 사원의 출퇴근 기록 리스트 조회(조건 : 이름, 날짜)
-		@GetMapping("/list")
+		@GetMapping("/admin_attendance")
 	    public String getAdminAttendanceList(
 	            @RequestParam(value = "empName", required = false) String empName,
 	            @RequestParam(value = "workDate", required = false) Date workDate,

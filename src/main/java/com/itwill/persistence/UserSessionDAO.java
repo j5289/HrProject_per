@@ -1,7 +1,5 @@
 package com.itwill.persistence;
 
-import org.springframework.data.repository.query.Param;
-
 import com.itwill.domain.UserSessionVO;
 
 public interface UserSessionDAO {

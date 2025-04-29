@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
-
 import com.itwill.salary.dto.SalaryDetailDTO;
 import com.itwill.salary.dto.SalaryEmployeeDTO;
 

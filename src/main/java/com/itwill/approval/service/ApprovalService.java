@@ -1,8 +1,21 @@
 package com.itwill.approval.service;
 
-import com.itwill.approval.dto.*;
 import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
+
+import com.itwill.approval.dto.ApprovalAppDTO;
+import com.itwill.approval.dto.ApprovalApplyDTO;
+import com.itwill.approval.dto.ApprovalDetailDTO;
+import com.itwill.approval.dto.ApprovalLineDTO;
+import com.itwill.approval.dto.ApprovalLineDetailDTO;
+import com.itwill.approval.dto.ApprovalLineTemplateDTO;
+import com.itwill.approval.dto.ApprovalLineTemplateListDTO;
+import com.itwill.approval.dto.ApprovalSearchDTO;
+import com.itwill.approval.dto.BusinessReqDTO;
+import com.itwill.approval.dto.FileDTO;
+import com.itwill.approval.dto.LeaveReqDTO;
+import com.itwill.approval.dto.PendingApprovalDTO;
 
 public interface ApprovalService {
 	void saveApprovalRequest(

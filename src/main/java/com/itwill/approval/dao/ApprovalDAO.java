@@ -7,7 +7,17 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
-import com.itwill.approval.dto.*;
+import com.itwill.approval.dto.ApprovalAppDTO;
+import com.itwill.approval.dto.ApprovalApplyDTO;
+import com.itwill.approval.dto.ApprovalLineDTO;
+import com.itwill.approval.dto.ApprovalLineDetailDTO;
+import com.itwill.approval.dto.ApprovalLineTemplateDTO;
+import com.itwill.approval.dto.ApprovalLineTemplateListDTO;
+import com.itwill.approval.dto.ApprovalSearchDTO;
+import com.itwill.approval.dto.BusinessReqDTO;
+import com.itwill.approval.dto.FileDTO;
+import com.itwill.approval.dto.LeaveReqDTO;
+import com.itwill.approval.dto.PendingApprovalDTO;
 
 @Repository
 public class ApprovalDAO {

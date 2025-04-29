@@ -1,13 +1,11 @@
 package com.itwill.attendance.controller;
 
 import java.sql.Date;
-import com.itwill.config.AppConfig;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.stereotype.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwill.attendance.dto.AttendanceAdminCheckDTO;
@@ -78,7 +75,7 @@ public class AttendanceAdminController{
 	    }
 
 		// ===== 2. 관리자의 사원 휴가 내역 조회 =====
-		@RequestMapping("/leave-list")
+		@RequestMapping("/admin_leave_check")
 		public String getLeaveList(
 		        @RequestParam(required = false) String empId,
 		        @RequestParam(required = false) String empName,
@@ -165,8 +162,8 @@ public class AttendanceAdminController{
 
 	    // 근무 등록 처리
 	    @PostMapping("/work-insert")
-	    public String insertWorkStatus(@RequestParam Map<String, String> params, Model model) {
-	        boolean success = attendanceAdminService.insertWorkStatus(params);
+	    public String insertWorkStatus(@ModelAttribute AttendanceAdminWorkDTO dto, Model model) {
+	        boolean success = attendanceAdminService.insertWorkStatus(dto);
 	        if (success) {
 	            model.addAttribute("successMessage", "등록이 완료되었습니다.");
 	        } else {

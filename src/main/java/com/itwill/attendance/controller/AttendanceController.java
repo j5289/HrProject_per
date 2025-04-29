@@ -150,43 +150,48 @@ public class AttendanceController {
 
         return response;
     }
-
     
-    
-    // ===== 3. 사용자 근무 조회 =====
-    // 근무 통계 조회를 처리하는 POST 방식
-    @PostMapping("/attendance-summary")
-    @ResponseBody
-    public Map<String, Object> getWorkSummary(
-            @RequestParam("empId") String empId,
-            @RequestParam("startDate") String startDateStr,
-            @RequestParam("endDate") String endDateStr) {
+	 // ===== 3. 사용자 근무 조회 =====
+	 // 근무 통계 페이지를 보여주는 GET 방식 컨트롤러
+	 @GetMapping("/attendance-summary")
+	 public String showAttendanceSummaryPage() {
+	     return "attendance/attendance-summary"; 
+	 }
+	
+	 // 근무 통계 조회를 처리하는 POST 방식
+	 @PostMapping("/attendance-summary")
+	 @ResponseBody
+	 public Map<String, Object> getWorkSummary(
+	         @RequestParam("empId") String empId,
+	         @RequestParam("startDate") String startDateStr,
+	         @RequestParam("endDate") String endDateStr) {
+	
+	     Map<String, Object> response = new HashMap<>();
+	
+	     try {
+	         // 날짜 파싱
+	         LocalDate startDate = LocalDate.parse(startDateStr);
+	         LocalDate endDate = LocalDate.parse(endDateStr);
+	
+	         // 파라미터 맵 구성
+	         Map<String, Object> paramMap = new HashMap<>();
+	         paramMap.put("empId", empId);
+	         paramMap.put("startDate", startDate);
+	         paramMap.put("endDate", endDate);
+	
+	         // 서비스 호출
+	         AttendanceWorkCheckDTO workSummary = attendanceService.findWorkSummaryByEmpIdAndDateRange(paramMap);
+	
+	         // 응답 구성
+	         response.put("workSummary", workSummary);
+	         response.put("message", "근무 통계 조회 성공");
+	     } catch (Exception e) {
+	         response.put("message", "근무 통계 조회에 실패했습니다.");
+	     }
+	
+	     return response;
+	 }
 
-        Map<String, Object> response = new HashMap<>();
-
-        try {
-            // 날짜 파싱
-            LocalDate startDate = LocalDate.parse(startDateStr);
-            LocalDate endDate = LocalDate.parse(endDateStr);
-
-            // 파라미터 맵 구성
-            Map<String, Object> paramMap = new HashMap<>();
-            paramMap.put("empId", empId);
-            paramMap.put("startDate", startDate);
-            paramMap.put("endDate", endDate);
-
-            // 서비스 호출
-            AttendanceWorkCheckDTO workSummary = attendanceService.findWorkSummaryByEmpIdAndDateRange(paramMap);
-
-            // 응답 구성
-            response.put("workSummary", workSummary);
-            response.put("message", "근무 통계 조회 성공");
-        } catch (Exception e) {
-            response.put("message", "근무 통계 조회에 실패했습니다.");
-        }
-
-        return response;
-    }
 
     // ===== 4. 사원의 근태 항목 조회 =====
     // 1) /attendance/attendance-items 페이지 이동

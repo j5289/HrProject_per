@@ -28,7 +28,7 @@
 <body>
     <div class="container">
         <div class="main-content">
-            <h1>지각 현황</h1>
+        
 
             <!-- 지각 현황 조회 폼 -->
             <form id="lateStatusForm">

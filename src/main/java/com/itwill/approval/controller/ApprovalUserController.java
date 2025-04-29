@@ -1,16 +1,21 @@
 package com.itwill.approval.controller;
 
-import com.itwill.approval.dto.ApprovalDetailDTO;
-import com.itwill.approval.dto.ApprovalSearchDTO;
-import com.itwill.approval.dto.PendingApprovalDTO;
-import com.itwill.approval.service.ApprovalService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller; 
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.itwill.approval.dto.ApprovalDetailDTO;
+import com.itwill.approval.dto.PendingApprovalDTO;
+import com.itwill.approval.service.ApprovalService;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/approval")

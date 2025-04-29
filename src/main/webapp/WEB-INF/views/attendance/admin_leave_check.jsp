@@ -58,7 +58,7 @@
  <div class="container">
         <h2>사원 휴가 내역 조회</h2>
 
-        <form action="leave-check" method="get" class="search-box">
+        <form action="admin_leave_check" method="get" class="search-box">
             <input type="text" name="empId" placeholder="사원 번호" value="${param.empId}" />
             <input type="text" name="empName" placeholder="사원 이름" value="${param.empName}" />
             <button type="submit">조회하기</button>

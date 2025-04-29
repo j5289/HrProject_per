@@ -1,7 +1,8 @@
 package com.itwill.employee.domain;
 
-import lombok.Data;
 import java.sql.Timestamp;
+
+import lombok.Data;
 
 @Data
 public class NoticeVO {

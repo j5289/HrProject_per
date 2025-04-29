@@ -1,18 +1,34 @@
 package com.itwill.approval.controller;
 
-import com.itwill.approval.dto.*;
-import com.itwill.approval.service.ApprovalService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.itwill.approval.dto.ApprovalApplyDTO;
+import com.itwill.approval.dto.ApprovalLineDetailDTO;
+import com.itwill.approval.dto.ApprovalLineTemplateDTO;
+import com.itwill.approval.dto.ApprovalLineTemplateListDTO;
+import com.itwill.approval.dto.ApprovalSearchDTO;
+import com.itwill.approval.dto.ApprovalTemplateRequestDTO;
+import com.itwill.approval.dto.BusinessReqDTO;
+import com.itwill.approval.dto.LeaveReqDTO;
+import com.itwill.approval.dto.PendingApprovalDTO;
+import com.itwill.approval.service.ApprovalService;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/approval")

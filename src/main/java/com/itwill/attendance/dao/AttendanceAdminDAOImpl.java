@@ -17,10 +17,9 @@ import com.itwill.attendance.dto.AttendanceAdminWorkDTO;
 
 @Repository
 public class AttendanceAdminDAOImpl implements AttendanceAdminDAO {
-	
-	@Autowired
+
     private final SqlSession sqlSession;
-	
+
     private static final String NAMESPACE = "com.itwill.attendance.mapper.AttendanceAdminMapper.";
 
     @Autowired
@@ -28,7 +27,7 @@ public class AttendanceAdminDAOImpl implements AttendanceAdminDAO {
         this.sqlSession = sqlSession;
     }
 
-    // ===== 1. 관리자의 사원 출퇴근 기록 및 현황 조회 ======
+    // ===== 1. 관리자의 사원 출퇴근 기록 및 현황 조회 =====
     @Override
     public List<AttendanceAdminCheckDTO> selectAdminAttendanceList(Map<String, Object> params) {
         return sqlSession.selectList(NAMESPACE + "selectAdminAttendanceList", params);
@@ -39,22 +38,22 @@ public class AttendanceAdminDAOImpl implements AttendanceAdminDAO {
         return sqlSession.selectOne(NAMESPACE + "selectAdminAttendanceByEmpIdAndDate", params);
     }
 
-    //===== 2. 관리자의 사원 휴가 목록 조회 =====
+    // ===== 2. 관리자의 사원 휴가 목록 조회 =====
     @Override
     public List<AttendanceAdminLeaveDTO> selectLeaveListByAdmin(String empId, String empName) {
         Map<String, Object> params = new HashMap<>();
         params.put("empId", empId);
         params.put("empName", empName);
-        return sqlSession.selectList(NAMESPACE + ".selectLeaveListByAdmin", params);
+        return sqlSession.selectList(NAMESPACE + "selectLeaveListByAdmin", params);
     }
-    
-    //===== 3. 관리자의 사원 지각 조회 =====
+
+    // ===== 3. 관리자의 사원 지각 조회 =====
     @Override
     public List<AttendanceAdminLateDTO> getLateStatusByAdmin(Map<String, Object> params) {
-        return sqlSession.selectList("com.itwill.attendance.dao.AttendanceAdminDAO.getLateStatusByAdmin", params);
+        return sqlSession.selectList(NAMESPACE + "getLateStatusByAdmin", params);
     }
-    
-    // ===== 4. 관리자의 사원 근무 조회 및 근무 입력
+
+    // ===== 4. 관리자의 사원 근무 조회 및 근무 입력 =====
     @Override
     public List<AttendanceAdminWorkDTO> getWorkStatusByAdmin(Map<String, Object> params) {
         return sqlSession.selectList(NAMESPACE + "getWorkStatusByAdmin", params);
@@ -74,13 +73,12 @@ public class AttendanceAdminDAOImpl implements AttendanceAdminDAO {
     }
 
     @Override
-    public int insertWorkStatus(Map<String, String> params) {
-        return sqlSession.insert(NAMESPACE + "insertWorkStatus", params);
+    public int insertWorkStatus(AttendanceAdminWorkDTO dto) {
+        return sqlSession.insert(NAMESPACE + "insertWorkStatus", dto);  // DTO 그대로 전달
     }
 
     @Override
     public int deleteWorkStatus(AttendanceAdminUpdateAndDeleteDTO dto) {
         return sqlSession.delete(NAMESPACE + "deleteWorkStatus", dto);
     }
-    
 }

@@ -51,11 +51,11 @@
             padding: 8px 15px;
         }
     </style>
-    
 </head>
 
 <body>
- <div class="container">
+    <div class="container">
+        <!-- 출퇴근 기록 및 지각 조회 -->
         <h2>출퇴근 기록 및 지각 조회</h2>
 
         <!-- 검색 폼 -->

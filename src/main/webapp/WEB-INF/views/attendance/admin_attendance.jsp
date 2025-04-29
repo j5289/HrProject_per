@@ -56,7 +56,7 @@
 
 <body>
  <div class="container">
-        <h2>사원 출퇴근 기록 조회</h2>
+        <h2>출퇴근 기록 및 지각 조회</h2>
 
         <!-- 검색 폼 -->
         <form action="list" method="get" class="search-box">

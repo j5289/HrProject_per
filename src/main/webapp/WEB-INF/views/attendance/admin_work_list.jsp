@@ -42,7 +42,7 @@
     </a>
 
     <!-- 필터 폼 -->
-    <form action="<c:url value='/admin/work-list' />" method="get">
+    <form action="<c:url value='/admin_work_list' />" method="get">
         <label for="empName">사원 이름:</label>
         <input type="text" id="empName" name="empName" value="${param.empName}">
 

@@ -20,7 +20,9 @@
                 <span>근태관리</span>
             </a>
             <ul class="submenu ${param.menu == 'attendance' ? 'open' : ''}">
-                <li><a href="<c:url value='/admin/attendance/manage' />">근태관리</a></li>
+                <li><a href="<c:url value='/attendance/admin_attendance' />">출퇴근 및 지각 현황</a></li>
+                <li><a href="<c:url value='/attendance/admin_work_list' />">근무 조회 및 입력</a></li>
+                <li><a href="<c:url value='/attendance/admin_leave_check' />">휴가 조회</a></li>
             </ul>
         </li>
         <li class="menu-item ${param.menu == 'salary' ? 'active' : ''} has-submenu">

@@ -6,7 +6,7 @@
 
 <!-- 공통 템플릿 include -->
 <jsp:include page="../common/header.jsp" />
-<jsp:include page="../common/admin-sidebar.jsp">
+<jsp:include page="../common/user-sidebar.jsp">
     <jsp:param name="menu" value="attendance" />
 </jsp:include>
 <!-- 공통 템플릿 include -->
@@ -17,7 +17,6 @@
 </c:if>
 
 <head>
-    <title>근무 조회</title>
 
     <!-- 스타일 시트 -->
     <link rel="stylesheet" href="<c:url value='/resources/css/style.css' />">
@@ -30,12 +29,13 @@
     <script>
         $(document).ready(function() {
             $('#searchButton').click(function() {
-                var empId = '${sessionScope.id}';
-                var startDate = $('#startDate').val();
-                var endDate = $('#endDate').val();
+                var empId = '${sessionScope.id}';  // 세션에서 empId 가져오기
+                var startDate = $('#startDate').val();  // 시작 날짜
+                var endDate = $('#endDate').val();  // 끝 날짜
 
+                // AJAX 요청
                 $.ajax({
-                    url: '/attendance/work-summary',
+                    url: '/attendance-summary',  // 컨트롤러의 URL과 일치 (GET 방식으로 변경)
                     method: 'POST',
                     data: {
                         empId: empId,
@@ -43,10 +43,11 @@
                         endDate: endDate
                     },
                     success: function(response) {
+                        // 응답 처리
                         if (response.workSummary && typeof response.workSummary === 'object') {
                             const ws = response.workSummary;
                             $('#workSummary').html(`
-                                <h3>근무 통계</h3>
+                               <h3>근무 통계</h3>
                                 <p>누적 근무 일수: ${ws.totalDate || 0}일</p>
                                 <p>누적 근무 시간: ${ws.totalTime || 0}시간</p>
                                 <p>일반 근무 일수: ${ws.workDays || 0}일</p>
@@ -70,7 +71,7 @@
 <body>
     <!-- 조회 폼 -->
     <div class="container">
-        <h2>근무 조회</h2>
+     
         <form id="attendanceForm">
             <div>
                 <label for="startDate">시작 날짜:</label>

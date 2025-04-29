@@ -32,7 +32,8 @@ public class AttendanceDAOImpl implements AttendanceDAO {
 
     @Override
     public AttendanceCheckDTO selectAttendanceByEmpIdAndDate(String empId, String workDate) {
-        return sqlSession.selectOne(NAMESPACE + "selectAttendanceByEmpIdAndDate", Map.of("empId", empId, "workDate", workDate));
+        return sqlSession.selectOne(NAMESPACE + "selectAttendanceByEmpIdAndDate",
+        		Map.of("empId", empId, "workDate", workDate));
     }
 
     @Override

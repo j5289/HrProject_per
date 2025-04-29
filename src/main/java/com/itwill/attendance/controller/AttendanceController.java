@@ -1,6 +1,7 @@
 package com.itwill.attendance.controller;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -36,37 +38,34 @@ public class AttendanceController {
 	private AttendanceService attendanceService;
 	
 	// 출퇴근 메인 페이지 진입
-	@GetMapping("/main")
-	public String showAttendanceMainPage(HttpSession session) {
+	@GetMapping("/attendance-main")
+	public String attendanceMainPage(HttpSession session, Model model) {
 	    // 로그인 확인용 세션 처리도 여기서 할 수 있음
 	    String empId = (String) session.getAttribute("id");
 	    if (empId == null) {
 	        return "redirect:/member/login"; // 로그인 안 되어 있으면 로그인 페이지로 이동
 	    }
-	    return "attendance-main"; // JSP 경로
+	    return "attendance/attendance-main"; // JSP 경로
 	}
 	
 	// ===== 1. 사용자 출퇴근 기록부 및 현황 =====
     // 1) 출근 시간 등록
-    @PostMapping("attendance/check-in")
-    @ResponseBody
-    public Map<String, Object> checkIn(@RequestParam("empId") String empId) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            // 출근 처리 메서드 호출
-            AttendanceCheckDTO attendanceCheckDTO = attendanceService.checkIn(empId);
-            
-            // 응답 데이터에 출근 시간 추가
-            response.put("checkInTime", attendanceCheckDTO.getCheckInTime());
-            response.put("message", "출근 완료!");
-        } catch (Exception e) {
-            response.put("message", "출근 처리에 실패했습니다.");
-        }
-        return response;
-    }
+	@PostMapping("/attendance/check-in")
+	@ResponseBody
+	public ResponseEntity<?> checkIn(@RequestParam("empId") String empId) {
+	    try {
+	        AttendanceCheckDTO dto = attendanceService.checkIn(empId);
+	        return ResponseEntity.ok(dto); // 정상 처리 시 응답
+	    } catch (RuntimeException e) {
+	        return ResponseEntity
+	                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("출근 처리에 실패했습니다: " + e.getMessage()); // 실패 시 상세 메시지 전달
+	    }
+	}
+
 
     // 2) 퇴근 시간 등록
-    @PostMapping("attendance/check-out")
+    @PostMapping("/check-out")
     @ResponseBody
     public Map<String, Object> checkOut(@RequestParam("empId") String empId) {
         Map<String, Object> response = new HashMap<>();
@@ -85,7 +84,7 @@ public class AttendanceController {
 
 
 	// 3) 특정 사원의 출퇴근 기록 조회 (날짜 기준)
-    @PostMapping("/attendance/check-attendance")
+    @PostMapping("/check-attendance")
     @ResponseBody
     public Map<String, Object> checkAttendance(@RequestParam("empId") String empId, @RequestParam("workDate") String workDateStr) {
         Map<String, Object> response = new HashMap<>();
@@ -111,7 +110,16 @@ public class AttendanceController {
     
     
     // ===== 2. 사용자 지각 현황 =====
-    @PostMapping("/attendance/late-status")
+    //  2-1. 지각 현황 조회 화면 보여주기
+    @GetMapping("/attendance-late")
+    public String showLateStatusPage() {
+        // /WEB-INF/views/attendance/late_status.jsp 페이지를 보여줍니다.
+        return "attendance/attendance-late";
+    }
+
+    
+    //  2-2. 사용자 지각 현황 데이터 처리 (AJAX용 등) 
+    @PostMapping("/attendance-late")
     @ResponseBody
     public Map<String, Object> getLateStatus(
             @RequestParam("empId") String empId,
@@ -121,25 +129,19 @@ public class AttendanceController {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            // 날짜 파싱
             LocalDate startDate = LocalDate.parse(startDateStr);
             LocalDate endDate = LocalDate.parse(endDateStr);
 
-            // 파라미터 맵 생성
             Map<String, Object> paramMap = new HashMap<>();
             paramMap.put("empId", empId);
             paramMap.put("startDate", startDate);
             paramMap.put("endDate", endDate);
 
-            // 지각 상세 목록 조회
             List<AttendanceLateDTO> lateDetails = attendanceService.getLateDetailsByEmpIdAndDateRange(paramMap);
-
-            // 지각 통계 조회
             AttendanceLateDTO lateStats = attendanceService.getLateStatsByEmpIdAndDateRange(paramMap);
 
-            // 응답 구성
-            response.put("lateDetails", lateDetails);  // 지각 내역
-            response.put("lateStats", lateStats);      // 지각 통계
+            response.put("lateDetails", lateDetails);
+            response.put("lateStats", lateStats);
             response.put("message", "지각 현황 조회 성공");
 
         } catch (Exception e) {
@@ -148,10 +150,12 @@ public class AttendanceController {
 
         return response;
     }
+
     
     
     // ===== 3. 사용자 근무 조회 =====
-    @PostMapping("/attendance/work-summary")
+    // 근무 통계 조회를 처리하는 POST 방식
+    @PostMapping("/attendance-summary")
     @ResponseBody
     public Map<String, Object> getWorkSummary(
             @RequestParam("empId") String empId,
@@ -184,20 +188,33 @@ public class AttendanceController {
         return response;
     }
 
-    
     // ===== 4. 사원의 근태 항목 조회 =====
-    // 1) 사원의 특정 날짜에 대한 근태 항목 조회(카테고리별)
-    @PostMapping("/work-item")
-    public AttendanceWorkListDTO getWorkItemByDate(@RequestBody AttendanceWorkListDTO requestDto) {
-        return attendanceService.findWorkItemByDateAndCategory(requestDto);
+    // 1) /attendance/attendance-items 페이지 이동
+    @GetMapping("/attendance-items")
+    public String showAttendanceItemsPage() {
+        return "attendance/attendance-items";  // attendance-items.jsp
+    }
+
+    // 2) POST 요청을 처리하여 데이터를 반환하는 메서드
+    @PostMapping("/attendance/attendance-items")
+    @ResponseBody
+    public ResponseEntity<AttendanceCheckDTO> getAttendanceItems(@RequestBody AttendanceCheckDTO requestDto) {
+        // requestDto로 받은 데이터 처리
+        AttendanceCheckDTO result = attendanceService.getAttendanceItems(requestDto);
+        
+        if (result != null) {
+            return ResponseEntity.ok(result);  // 데이터가 있으면 200 OK 반환
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);  // 데이터가 없으면 404 반환
+        }
     }
 
     
     // ===== 5. 사원의 휴가 내역 조회 =====
     // 1) 휴가 내역 조회 페이지 이동
-    @GetMapping("/leave")
+    @GetMapping("/attendance-leave")
     public String showLeavePage() {
-        return "attendance/leave_list";
+        return "attendance/attendance-leave";
     }
     
     // 2) 휴가 내역 조회 (조회 조건 : 단일 날짜 / 기간)
@@ -226,7 +243,7 @@ public class AttendanceController {
             model.addAttribute("leaveList", leaveList);
         }
 
-        return "attendance/leave_list";
+        return "attendance/attendance-leave";
     }
 
     

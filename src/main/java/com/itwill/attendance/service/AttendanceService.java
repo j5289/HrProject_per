@@ -12,8 +12,8 @@ import com.itwill.attendance.dto.AttendanceWorkListDTO;
 
 public interface AttendanceService {
 
-	// ===== 1. 출퇴근 기록부 및 현황 =====
-	// 1) 출근 처리
+    // ===== 1. 출퇴근 기록부 및 현황 =====
+    // 1) 출근 처리
     AttendanceCheckDTO checkIn(String empId);
 
     // 2) 퇴근 처리
@@ -36,6 +36,8 @@ public interface AttendanceService {
     // ===== 4. 사원의 근태 항목 조회 =====
     AttendanceWorkListDTO findWorkItemByDateAndCategory(AttendanceWorkListDTO dto);
    
+    AttendanceCheckDTO getAttendanceItems(AttendanceCheckDTO requestDto);
+    
     // ===== 5. 사원의 휴가 내역 조회 =====
     // 1) 단일 날짜로 휴가 조회
     List<AttendanceLeaveDTO> findLeaveByDate(String empId, LocalDate date);

@@ -4,7 +4,7 @@
 
 <!-- 공통 템플릿 include -->
 <jsp:include page="../common/header.jsp" />
-<jsp:include page="../common/admin-sidebar.jsp">
+<jsp:include page="../common/user-sidebar.jsp">
     <jsp:param name="menu" value="attendance" />
 </jsp:include>
 <!-- 공통 템플릿 include -->
@@ -32,7 +32,6 @@
 </head>
 
 <body>
-	<h2>근태 항목 조회</h2>
      
      <form id="attendanceForm">
     <label>날짜: <input type="date" name="workDate" required></label><br><br>
@@ -70,7 +69,7 @@
         };
 
         $.ajax({
-            url: "/api/attendance/work-item",
+            url: "/api/attendance/attendance-items",
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify(formData),

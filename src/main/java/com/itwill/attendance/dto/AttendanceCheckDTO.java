@@ -2,7 +2,6 @@ package com.itwill.attendance.dto;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
@@ -12,9 +11,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 1. 사원의 출퇴근 기록부 및 현황 DTO
- *
  */
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,5 +35,4 @@ public class AttendanceCheckDTO {
 			return "아니오";
 		}
 	}
-	
 }

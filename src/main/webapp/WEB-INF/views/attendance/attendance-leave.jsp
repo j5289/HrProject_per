@@ -4,7 +4,7 @@
 
 <!-- 공통 템플릿 include -->
 <jsp:include page="../common/header.jsp" />
-<jsp:include page="../common/admin-sidebar.jsp">
+<jsp:include page="../common/user-sidebar.jsp">
     <jsp:param name="menu" value="attendance" />
 </jsp:include>
 <!-- 공통 템플릿 include -->
@@ -88,7 +88,7 @@
     </script>
 </head>
 <body>
-    <h2>사원 휴가 내역 조회</h2>
+
 
     <form action="${pageContext.request.contextPath}/attendance/leave/search" method="post">
         <input type="hidden" name="empId" value="${sessionScope.loginEmp.empId}" />

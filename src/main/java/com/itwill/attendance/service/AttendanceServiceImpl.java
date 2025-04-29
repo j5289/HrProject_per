@@ -22,17 +22,20 @@ public class AttendanceServiceImpl implements AttendanceService {
     // 1) 출근 시간 등록
     @Override
     public AttendanceCheckDTO checkIn(String empId) {
-        // 출근 시간 등록 메서드 호출
-        attendanceDAO.insertCheckInTime(empId);
-        return attendanceDAO.selectAttendanceByEmpIdAndDate(empId, "CURRENT_DATE"); // 출근 후 등록된 기록을 반환
+        try {
+            attendanceDAO.insertCheckInTime(empId);
+            return attendanceDAO.selectAttendanceByEmpIdAndDate(empId, "CURRENT_DATE");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("출근 처리 중 오류 발생: " + e.getMessage());
+        }
     }
-
+    
     // 2) 퇴근 처리
     @Override
     public AttendanceCheckDTO checkOut(String empId) {
-        // 퇴근 시간 등록 메서드 호출
         attendanceDAO.insertCheckOutTime(empId);
-        return attendanceDAO.selectAttendanceByEmpIdAndDate(empId, "CURRENT_DATE"); // 퇴근 후 등록된 기록을 반환
+        return attendanceDAO.selectAttendanceByEmpIdAndDate(empId, "CURRENT_DATE");
     }
 
     // 3) 특정 사원의 출퇴근 기록 조회 (날짜 기준)
@@ -41,11 +44,9 @@ public class AttendanceServiceImpl implements AttendanceService {
         AttendanceCheckDTO result = attendanceDAO.selectAttendanceByEmpIdAndDate(empId, workDate.toString());
 
         if (result != null && result.getCheckInTime() != null) {
-            // Timestamp → LocalTime 변환
             LocalTime checkInTime = result.getCheckInTime().toLocalDateTime().toLocalTime();
-            LocalTime expectedCheckInTime = LocalTime.of(9, 0); // 기준 시간: 9시
+            LocalTime expectedCheckInTime = LocalTime.of(9, 0); 
 
-            // 지각 여부 판단
             result.setIsLate(checkInTime.isAfter(expectedCheckInTime));
         }
 
@@ -78,6 +79,14 @@ public class AttendanceServiceImpl implements AttendanceService {
         return attendanceDAO.findWorkItemByDateAndCategory(dto);
     }
 
+    // 출퇴근 기록 조회 메서드
+    @Override
+    public AttendanceCheckDTO getAttendanceItems(AttendanceCheckDTO requestDto) {
+        // requestDto를 바탕으로 DB에서 출퇴근 정보를 조회
+        // 예시로, requestDto의 empId와 workDate를 이용해 조회한다고 가정
+        return attendanceDAO.selectAttendanceByEmpIdAndDate(requestDto.getEmpId(), requestDto.getWorkDate().toString());
+    }
+    
     // ===== 5. 사원의 휴가 내역 조회 =====
     // 1) 단일 날짜 기준 휴가 조회
     @Override
@@ -96,7 +105,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     public AttendanceLeaveDTO findLeaveReportById(String leaveId) {
         return attendanceDAO.selectLeaveReportById(leaveId);
     }
-    
+
     // ===== 5-1. 사원의 휴가 보고서 엑셀/PDF 다운로드 
     @Override
     public List<AttendanceLeaveDTO> getMyLeaveReports(String empId) {

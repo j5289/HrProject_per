@@ -43,24 +43,27 @@
     
     <!-- ===== 2. 관리자의 사원 휴가 목록 조회 ===== -->
     <select id="selectLeaveListByAdmin"
-            parameterType="map"
-            resultType="com.itwill.attendance.dto.AttendanceAdminLeaveDTO">
-        SELECT
-            l.leave_id,
-            l.emp_id,
-            e.emp_name,
-            l.leave_type,
-            l.start_date,
-            l.end_date,
-            l.status,
-            l.upload_date
-        FROM LEAVE l
-        JOIN EMPLOYEE e ON l.emp_id = e.emp_id
-        WHERE
-            (#{empId} IS NULL OR e.emp_id LIKE CONCAT('%', #{empId}, '%'))
-            AND (#{empName} IS NULL OR e.emp_name LIKE CONCAT('%', #{empName}, '%'))
-        ORDER BY l.upload_date DESC
-    </select>
+        parameterType="map"
+        resultType="com.itwill.attendance.dto.AttendanceAdminLeaveDTO">
+	    SELECT
+	        l.leave_id,
+	        l.emp_id,
+	        e.emp_name,
+	        l.leave_status,
+	        l.leave_start_date AS start_date,
+	        l.leave_end_date AS end_date,
+	        l.leave_unn,
+	        l.leave_days,
+	        l.created_at,
+	        l.updated_at
+	    FROM `LEAVE` l
+	    JOIN EMPLOYEE e ON l.emp_id = e.emp_id
+	    WHERE
+	        (#{empId} IS NULL OR e.emp_id LIKE CONCAT('%', #{empId}, '%'))
+	        AND (#{empName} IS NULL OR e.emp_name LIKE CONCAT('%', #{empName}, '%'))
+	    ORDER BY l.created_at DESC
+	</select>
+
 
     <!-- ===== 3. 관리자의 사원 지각 조회 ===== -->
     <select id="getLateStatusByAdmin" resultType="com.itwill.attendance.dto.AttendanceAdminLateDTO">

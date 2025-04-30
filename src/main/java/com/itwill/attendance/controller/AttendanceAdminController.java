@@ -118,7 +118,7 @@ public class AttendanceAdminController{
 		
 		// ===== 4. 관리자의 사원 근무 조회 및 근무 입력 =====
 		// 관리자 근무 목록 조회
-	    @RequestMapping("/work-list")
+	    @RequestMapping("/admin_work_list")
 	    public String showWorkList(Model model) {
 	        List<AttendanceAdminWorkDTO> workList = attendanceAdminService.getWorkStatusByAdmin(new HashMap<>());
 	        model.addAttribute("workList", workList);

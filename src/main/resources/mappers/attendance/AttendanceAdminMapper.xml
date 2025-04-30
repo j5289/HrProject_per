@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
@@ -86,29 +86,27 @@
     <!-- ===== 4. 관리자의 사원 근무 조회 및 근무 입력 ===== -->
     <!-- 1. 관리자 사원 근무 상태 조회 -->
     <select id="getWorkStatusByAdmin" resultType="com.itwill.attendance.dto.AttendanceAdminWorkDTO">
-        <![CDATA[
         SELECT 
             emp.emp_name,
             dep.dep_name,
-            att.attendance_date,
-            att.work_status,
-            att.work_time
+            att.work_date AS workDate,
+            att.work_days AS workDays,
+            att.work_hours AS workHours
         FROM
-            attendance att
-            JOIN employee emp ON att.emp_id = emp.emp_id
-            JOIN department dep ON emp.dep_id = dep.dep_id
-        WHERE
-            1 = 1
-        <if test="empId != null">
-            AND emp.emp_id = #{empId}
-        </if>
-        <if test="startDate != null">
-            AND att.attendance_date >= #{startDate}
-        </if>
-        <if test="endDate != null">
-            AND att.attendance_date <= #{endDate}
-        </if>
-        ]]>
+            ATTENDANCE att
+            JOIN EMPLOYEE emp ON att.emp_id = emp.emp_id
+            JOIN DEPARTMENT dep ON emp.dep_id = dep.dep_id
+        <where>
+            <if test="empId != null">
+                AND emp.emp_id = #{empId}
+            </if>
+            <if test="startDate != null">
+                AND att.work_date >= #{startDate}
+            </if>
+            <if test="endDate != null">
+                AND att.work_date &lt;= #{endDate}
+            </if>
+        </where>
     </select>
 
     <!-- 2. 근무 상세 조회 (수정 및 삭제용) -->
@@ -116,51 +114,50 @@
         <![CDATA[
         SELECT 
             emp_id, 
-            attendance_date AS workDate, 
+            work_date AS workDate, 
             work_hours AS workHours,
             night_work_hour AS nightWorkHour, 
             holiday_work_hour AS holidayWorkHour,
-            attendance_status AS attendanceStatus, 
-            vacation_days AS vacationDays
-        FROM attendance
+            -- attendance_status AS attendanceStatus, -- 주석 처리: 실제 컬럼이 존재하지 않음
+            vacation_days AS vacationDays -- 이 컬럼도 실제 테이블에 없으면 제거 필요
+        FROM ATTENDANCE
         WHERE emp_id = #{empId} 
-            AND attendance_date = #{workDate}
+            AND work_date = #{workDate}
         ]]>
     </select>
 
     <!-- 3. 근무 상태 수정 -->
     <update id="updateWorkStatus">
         <![CDATA[
-        UPDATE attendance
+        UPDATE ATTENDANCE
         SET 
             work_hours = #{workHours},
             night_work_hour = #{nightWorkHour},
             holiday_work_hour = #{holidayWorkHour},
-            attendance_status = #{attendanceStatus},
-            vacation_days = #{vacationDays}
+            -- attendance_status = #{attendanceStatus}, -- 실제 컬럼 없음
+            vacation_days = #{vacationDays} -- 실제 컬럼이 없으면 제거
         WHERE 
             emp_id = #{empId}
-            AND attendance_date = #{workDate}
+            AND work_date = #{workDate}
         ]]>
     </update>
 
     <!-- 4. 근무 상태 입력 -->
     <insert id="insertWorkStatus" parameterType="com.itwill.attendance.dto.AttendanceAdminWorkDTO">
         INSERT INTO ATTENDANCE (
-            attendance_id, emp_id, work_date, check_in_time, check_out_time, work_status
+            attendance_id, emp_id, work_date, check_in_time, check_out_time, work_days
         ) VALUES (
-            #{attendanceId}, #{empId}, #{workDate}, #{checkInTime}, #{checkOutTime}, #{workStatus}
+            #{attendanceId}, #{empId}, #{workDate}, #{checkInTime}, #{checkOutTime}, #{workDays}
         )
     </insert>
-
 
     <!-- 5. 근무 상태 삭제 -->
     <delete id="deleteWorkStatus">
         <![CDATA[
-        DELETE FROM attendance
+        DELETE FROM ATTENDANCE
         WHERE
             emp_id = #{empId}
-            AND attendance_date = #{attendanceDate}
+            AND work_date = #{attendanceDate}
         ]]>
     </delete>
 

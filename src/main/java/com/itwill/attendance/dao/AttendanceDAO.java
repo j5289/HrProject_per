@@ -14,6 +14,9 @@ import com.itwill.attendance.dto.AttendanceWorkListDTO;
 @Mapper
 public interface AttendanceDAO {
 
+	// 사원 이름 조회 
+	String selectEmpNameByEmpId(String empId);
+	
     // 출근 시간 등록
     void insertCheckInTime(String empId);
 

@@ -5,6 +5,15 @@
 <!-- Mapper에 작성한 기능 실행시킬 SQL 작성 -->
 
 	<!-- ===== 1. 사원의 출퇴근 기록부 및 현황 ===== -->
+	<!-- 0) 사원 이름 조회  -->
+	<select id="selectEmpNameByEmpId" parameterType="string" resultType="string">
+	    SELECT emp_name
+	    FROM EMPLOYEE
+	    WHERE emp_id = #{empId}
+	</select>
+
+	
+	
 	<!-- 1) 출근 시간 등록 -->
 	<insert id="insertCheckInTime" parameterType="AttendanceCheckDTO">
 	    insert into attendance (emp_id, work_date, check_in_time)

@@ -36,6 +36,7 @@ public class AttendanceController {
     @Autowired
     private AttendanceService attendanceService;
     
+    
     // 출퇴근 메인 페이지 진입
     @GetMapping("/attendance-main")
     public String attendanceMainPage(HttpSession session, Model model) {
@@ -44,6 +45,11 @@ public class AttendanceController {
         if (empId == null) {
             return "redirect:/member/login"; // 로그인 안 되어 있으면 로그인 페이지로 이동
         }
+
+        // 0) 사원 이름 조회
+        String empName = attendanceService.findEmpNameByEmpId(empId);
+        model.addAttribute("empName", empName);
+        
         return "attendance/attendance-main"; // JSP 경로
     }
     

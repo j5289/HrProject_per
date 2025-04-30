@@ -24,6 +24,13 @@ public class AttendanceServiceImpl implements AttendanceService {
     private final AttendanceDAO attendanceDAO;
 
     // ===== 1. 출퇴근 기록부 및 현황 =====
+    // 0) 사원 이름 조회 
+    @Override
+    public String findEmpNameByEmpId(String empId) {
+        return attendanceDAO.selectEmpNameByEmpId(empId);
+    }
+
+    
     // 1) 출근 시간 등록
     @Override
     public AttendanceCheckDTO checkIn(String empId) {

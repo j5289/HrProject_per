@@ -2,6 +2,7 @@ package com.itwill.attendance.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     public AttendanceCheckDTO checkIn(String empId) {
         try {
             attendanceDAO.insertCheckInTime(empId);
-            return attendanceDAO.selectAttendanceByEmpIdAndDate(empId, "CURRENT_DATE");
+            return attendanceDAO.selectAttendanceByEmpIdAndDate(empId, LocalDate.now().toString());
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("출근 처리 중 오류 발생: " + e.getMessage());
@@ -39,7 +40,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     public AttendanceCheckDTO checkOut(String empId) {
         attendanceDAO.insertCheckOutTime(empId);
-        return attendanceDAO.selectAttendanceByEmpIdAndDate(empId, "CURRENT_DATE");
+        return attendanceDAO.selectAttendanceByEmpIdAndDate(empId, LocalDate.now().toString());
     }
 
     // 3) 특정 사원의 출퇴근 기록 조회 (날짜 기준)
@@ -86,8 +87,6 @@ public class AttendanceServiceImpl implements AttendanceService {
     // 출퇴근 기록 조회 메서드
     @Override
     public AttendanceCheckDTO getAttendanceItems(AttendanceCheckDTO requestDto) {
-        // requestDto를 바탕으로 DB에서 출퇴근 정보를 조회
-        // 예시로, requestDto의 empId와 workDate를 이용해 조회한다고 가정
         return attendanceDAO.selectAttendanceByEmpIdAndDate(requestDto.getEmpId(), requestDto.getWorkDate().toString());
     }
     

@@ -1,7 +1,5 @@
 package com.itwill.persistence;
 
-import java.util.Map;
-
 import javax.inject.Inject;
 
 import org.apache.ibatis.session.SqlSession;

@@ -1,14 +1,11 @@
 package com.itwill.persistence;
 
-import java.util.Map;
-
 import javax.inject.Inject;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import com.itwill.domain.LoginHistoryVO;
-import com.itwill.domain.UserSessionVO;
 
 @Repository
 public class LoginHistoryDAOImpl implements LoginHistoryDAO {

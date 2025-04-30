@@ -1,8 +1,6 @@
 package com.itwill.employee.controller;
 
 import java.sql.Date;
-import java.sql.Timestamp;
-
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.itwill.approval.dto.ApprovalSearchDTO;
 import com.itwill.approval.service.ApprovalService;
 import com.itwill.employee.domain.AppointmentVO;
 import com.itwill.employee.domain.CalendarVO;

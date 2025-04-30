@@ -13,6 +13,9 @@ import com.itwill.attendance.dto.AttendanceWorkListDTO;
 public interface AttendanceService {
 
     // ===== 1. 출퇴근 기록부 및 현황 =====
+	//  0) 사원 이름 조회 
+	String findEmpNameByEmpId(String empId);
+
     // 1) 출근 처리
     AttendanceCheckDTO checkIn(String empId);
 

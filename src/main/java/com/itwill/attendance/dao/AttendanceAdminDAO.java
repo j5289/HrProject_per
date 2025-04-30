@@ -35,8 +35,8 @@ public interface AttendanceAdminDAO {
     // 관리자 근무 상태 수정
     int updateWorkStatus(AttendanceAdminUpdateAndDeleteDTO dto);
 
-    // 관리자 근무 상태 등록
-    int insertWorkStatus(Map<String, String> params);
+    // 관리자 근무 상태 등록 (DTO 파라미터 사용)
+    int insertWorkStatus(AttendanceAdminWorkDTO dto);
 
     // 관리자 근무 상태 삭제
     int deleteWorkStatus(AttendanceAdminUpdateAndDeleteDTO dto);

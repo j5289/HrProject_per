@@ -1,7 +1,8 @@
 package com.itwill.approval.dto;
 
-import lombok.Data;
 import java.time.LocalDate;
+
+import lombok.Data;
 
 @Data
 public class LeaveReqDTO {

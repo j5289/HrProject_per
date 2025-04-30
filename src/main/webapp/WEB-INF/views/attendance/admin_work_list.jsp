@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.itwill.attendance.dto.AttendanceCheckDTO" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!-- 공통 템플릿 include -->
 <jsp:include page="../common/header.jsp" />
@@ -17,7 +18,7 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-	<script>
+    <script>
         function confirmDelete(key) {
             if (confirm("해당 기록을 삭제하시겠습니까?")) {
                 document.getElementById("deleteForm-" + key).submit();
@@ -77,20 +78,24 @@
                 <tr>
                     <td>${work.empName}</td>
                     <td>${work.depName}</td>
-                    <td>${work.attendanceDate}</td>
+
+                    <!-- Date 출력은 formatDate로 -->
+                    <td><fmt:formatDate value="${work.workDate}" pattern="yyyy-MM-dd"/></td>
+
                     <td>${work.workStatus}</td>
-                    <td>${work.workTime}</td>
+                    <td>${work.workHours}</td>
+
                     <td>
                         <!-- 수정 버튼 -->
-                        <a href="<c:url value='/admin/work-update-form/${work.empId}/${work.attendanceDate}' />">
+                        <a href="<c:url value='/admin/work-update-form/${work.empId}/${work.workDate}' />">
                             <button type="button">수정하기</button>
                         </a>
 
                         <!-- 삭제 form -->
-                        <form id="deleteForm-${work.empId}-${work.attendanceDate}" action="<c:url value='/admin/work-delete' />" method="post" style="display:inline;">
+                        <form id="deleteForm-${work.empId}-${work.workDate}" action="<c:url value='/admin/work-delete' />" method="post" style="display:inline;">
                             <input type="hidden" name="empId" value="${work.empId}" />
-                            <input type="hidden" name="workDate" value="${work.attendanceDate}" />
-                            <button type="button" onclick="confirmDelete('${work.empId}-${work.attendanceDate}')">삭제하기</button>
+                            <input type="hidden" name="workDate" value="${work.workDate}" />
+                            <button type="button" onclick="confirmDelete('${work.empId}-${work.workDate}')">삭제하기</button>
                         </form>
                     </td>
                 </tr>

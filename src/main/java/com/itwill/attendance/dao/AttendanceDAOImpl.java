@@ -7,7 +7,11 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.itwill.attendance.dto.*;
+import com.itwill.attendance.dto.AttendanceCheckDTO;
+import com.itwill.attendance.dto.AttendanceLateDTO;
+import com.itwill.attendance.dto.AttendanceLeaveDTO;
+import com.itwill.attendance.dto.AttendanceWorkCheckDTO;
+import com.itwill.attendance.dto.AttendanceWorkListDTO;
 
 @Repository
 public class AttendanceDAOImpl implements AttendanceDAO {
@@ -15,6 +19,13 @@ public class AttendanceDAOImpl implements AttendanceDAO {
     private final SqlSession sqlSession;
     private static final String NAMESPACE = "com.itwill.attendance.mapper.AttendanceMapper.";
 
+    // 0) 사원 이름 조회
+    @Override
+    public String selectEmpNameByEmpId(String empId) {
+        return sqlSession.selectOne(NAMESPACE + "selectEmpNameByEmpId", empId);
+    }
+
+    
     @Autowired
     public AttendanceDAOImpl(SqlSession sqlSession) {
         this.sqlSession = sqlSession;

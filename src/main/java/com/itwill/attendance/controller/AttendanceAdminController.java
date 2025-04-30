@@ -145,7 +145,7 @@ public class AttendanceAdminController{
 	        } else {
 	            model.addAttribute("errorMessage", "수정에 실패했습니다.");
 	        }
-	        return "redirect:/admin/work-list";
+	        return "redirect:/admin_work_list";
 	    }
 
 	    // 근무 삭제 처리
@@ -157,7 +157,7 @@ public class AttendanceAdminController{
 	        } else {
 	            model.addAttribute("errorMessage", "삭제에 실패했습니다.");
 	        }
-	        return "redirect:/admin/work-list";
+	        return "redirect:/admin_work_list";
 	    }
 
 	    // 근무 등록 처리

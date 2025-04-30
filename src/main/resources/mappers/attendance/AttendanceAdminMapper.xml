@@ -86,7 +86,6 @@
     </select>
     
     <!-- ===== 4. 관리자의 사원 근무 조회 및 근무 입력 ===== -->
-    <!-- 1. 관리자 사원 근무 상태 조회 -->
     <select id="getWorkStatusByAdmin" resultType="com.itwill.attendance.dto.AttendanceAdminWorkDTO">
         SELECT 
             emp.emp_name,
@@ -127,7 +126,7 @@
             AND work_date = #{workDate}
         ]]>
     </select>
-
+    
     <!-- 3. 근무 상태 수정 -->
     <update id="updateWorkStatus">
         <![CDATA[
@@ -143,14 +142,16 @@
             AND work_date = #{workDate}
         ]]>
     </update>
-
+    
     <!-- 4. 근무 상태 입력 -->
     <insert id="insertWorkStatus" parameterType="com.itwill.attendance.dto.AttendanceAdminWorkDTO">
+        <![CDATA[
         INSERT INTO ATTENDANCE (
-            attendance_id, emp_id, work_date, check_in_time, check_out_time, work_days
+            attendance_id, emp_id, work_date, check_in_time, check_out_time, work_days, work_status, work_time
         ) VALUES (
-            #{attendanceId}, #{empId}, #{workDate}, #{checkInTime, jdbcType=TIMESTAMP}, #{checkOutTime, jdbcType=TIMESTAMP}, #{workDays}
+            #{attendanceId}, #{empId}, #{workDate}, #{checkInTime, jdbcType=TIMESTAMP}, #{checkOutTime, jdbcType=TIMESTAMP}, #{workDays}, #{workStatus}, #{workTime}
         )
+        ]]>
     </insert>
 
     <!-- 5. 근무 상태 삭제 -->
